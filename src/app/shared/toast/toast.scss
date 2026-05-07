@@ -1,0 +1,139 @@
+// ─── Contenedor principal ───────────────────────────────────────────────────
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none; // El contenedor no bloquea clicks
+}
+
+// ─── Toast individual ────────────────────────────────────────────────────────
+.toast {
+  display: flex;
+  align-items: center;
+  width: 320px;
+  max-width: calc(100vw - 40px); // Evita que sobresalga en móvil
+  min-height: 60px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  position: relative;
+  pointer-events: all; // Reactiva clicks solo en el toast
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  // Animación de entrada con CSS puro (reemplaza @angular/animations)
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// ─── Icono ───────────────────────────────────────────────────────────────────
+.toast-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0 14px;
+}
+
+.toast-icon-mask {
+  width: 26px;
+  height: 26px;
+  background-color: currentColor;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+// ─── Contenido ───────────────────────────────────────────────────────────────
+.toast-content {
+  flex: 1;
+  padding: 12px 8px 12px 0;
+  padding-right: 32px; // Espacio para el botón de cerrar
+  min-width: 0; // Permite que el texto haga ellipsis si es necesario
+}
+
+.toast-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  line-height: 1.3;
+}
+
+.toast-message {
+  font-size: 12px;
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+// ─── Botón cerrar ────────────────────────────────────────────────────────────
+.toast-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  border-radius: 3px;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// ─── Tipos de toast ───────────────────────────────────────────────────────────
+.success {
+  background-color: #c7ffd5;
+  color: #2e7d32;
+}
+
+.error {
+  background-color: #ffcdd1;
+  color: #c62828;
+}
+
+.info {
+  background-color: #caf8ff;
+  color: #0277bd;
+}
+
+.warning {
+  background-color: #fff3cd;
+  color: #e65100;
+}
+
+// ─── Barra de progreso ────────────────────────────────────────────────────────
+.toast-loader {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: currentColor;
+  opacity: 0.5;
+  animation: toastLoader 4s linear forwards;
+}
+
+@keyframes toastLoader {
+  from { width: 100%; }
+  to   { width: 0%; }
+}

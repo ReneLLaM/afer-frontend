@@ -1,0 +1,169 @@
+.menu-container {
+  width: 100%;
+  display: none; // Hidden by default (mobile)
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+
+  // Theme-aware background
+  :host-context([data-theme='light']) & {
+    background-color: var(--afer-primary);
+  }
+
+  :host-context([data-theme='dark']) & {
+    background-color: var(--afer-surface); // Or a dark color
+  }
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
+}
+
+.menu-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 44px; // Match link height
+}
+
+.menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  height: 100%;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  height: 100%; // Fill the height of the parent li
+  box-sizing: border-box; // Prevent border from expanding the height
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: rgba(255, 255, 255, 0.75); // Slightly faded by default for contrast
+
+  // Soft background pill
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 6px 4px; // Leaves a bit of margin top/bottom/sides
+    border-radius: 8px;
+    z-index: -1;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  // Glowing animated underline
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 3px;
+    width: 0;
+    border-radius: 3px 3px 0 0;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .menu-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    stroke: currentColor;
+    fill: none;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.icon-filled {
+      fill: currentColor;
+      stroke: none;
+      
+      path {
+        fill: currentColor;
+      }
+    }
+
+    &.icon-logo {
+      fill: currentColor;
+      stroke: none;
+    }
+
+    // Ensure all SVGs inside follow the size
+    &[width],
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &:hover,
+  &.active {
+    color: #ffffff; // Bright white on hover/active
+
+    .menu-icon {
+      transform: scale(1.15) translateY(-1px); // Dynamic icon pop
+    }
+
+    &::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    &::after {
+      width: 60%;
+      opacity: 1;
+    }
+
+    // Theme-specific enhancements
+    :host-context([data-theme='light']) & {
+      &::before {
+        background-color: rgba(255, 255, 255, 0.15); // Frosted white pill
+      }
+      &::after {
+        background-color: #ffffff;
+        box-shadow: 0 -2px 8px rgba(255, 255, 255, 0.4); // Bright white glow
+      }
+    }
+
+    :host-context([data-theme='dark']) & {
+      &::before {
+        background-color: rgba(239, 126, 38, 0.12); // Translucent orange (Primary)
+      }
+      &::after {
+        background-color: var(--afer-primary-absolute); // Solid Orange
+        box-shadow: 0 -2px 10px rgba(239, 126, 38, 0.6); // Neon orange glow
+      }
+    }
+  }
+}
+
+// Tablet adjustments
+@media (min-width: 768px) and (max-width: 1023px) {
+  .menu-link {
+    padding: 12px 10px;
+    font-size: 0.8rem;
+    gap: 5px;
+  }
+
+  .menu-list {
+    gap: 2px;
+  }
+}

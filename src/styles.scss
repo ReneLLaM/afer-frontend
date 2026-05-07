@@ -1,1 +1,48 @@
-/* You can add global styles to this file, and also import other style files */
+
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+@use 'assets/scss/theme-colors' as theme;
+
+@use 'assets/scss/main';
+
+html {
+  height: 100%;
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+  overflow-x: hidden; // Prevents horizontal scroll globally
+  @include mat.theme((
+    color: (
+      primary: theme.$primary-palette,
+      tertiary: theme.$tertiary-palette,
+    ),
+    typography: Inter,
+    density: 0,
+  ));
+
+  &[data-theme='light'] {
+    @include theme.high-contrast-overrides(light);
+  }
+  &[data-theme='dark'] {
+    @include theme.high-contrast-overrides(dark);
+  }
+}
+
+body {
+  background-color: var(--afer-background);
+  color: var(--afer-text-primary);
+  min-height: 100dvh;
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden; // Safety net for mobile
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+

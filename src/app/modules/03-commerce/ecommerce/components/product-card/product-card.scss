@@ -1,0 +1,362 @@
+.product-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: clamp(12px, 1.5vw, 16px);
+  overflow: hidden;
+
+  // Premium smart gradient that respects themes (Light/Dark mode safe)
+  background: linear-gradient(
+    180deg,
+    var(--afer-surface) 0%,
+    color-mix(in srgb, var(--afer-text-primary), var(--afer-surface) 96%) 100%
+  );
+
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0; // Eliminado para permitir contenido de canto a canto
+  gap: 0; // Controlamos el gap internamente
+
+  // Premium top glow accent just like the footer
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--afer-primary), transparent 60%) 50%,
+      transparent
+    );
+    filter: blur(1px);
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    border-color: var(--afer-secondary);
+  }
+
+  &__header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between; // Marca a la izquierda, SKU a la derecha
+    align-items: center;
+    padding: 8px 12px 0;
+    position: relative;
+    z-index: 3;
+  }
+
+  &__brand {
+    color: var(--afer-secondary);
+    background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
+    font-size: clamp(0.6rem, 1vw, 0.75rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 80%);
+
+    &:hover {
+      background: var(--afer-secondary);
+      color: #ffffff;
+    }
+  }
+
+  &__sku-tag {
+    font-size: clamp(0.6rem, 1vw, 0.7rem);
+    font-weight: 600;
+    color: var(--afer-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px; // Límite de ancho para no empujar la marca
+  }
+
+  &__link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    outline: none;
+    gap: 4px; // Gap reducido para aplanar card
+  }
+
+  &__visual {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.2 / 1;
+    overflow: hidden;
+    background: var(--afer-surface-variant, #f5f5f5); // Fondo neutro claro
+    
+    // Gradiente sutil solo para legibilidad, no negro sólido
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.2) 0%, transparent 30%);
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+
+  &__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // Llenado total sin espacios
+    transition: transform 0.5s ease;
+  }
+
+  &__labels {
+    position: absolute;
+    inset: auto 0 8px 0; // Centrado horizontal y un poco despegado del fondo
+    display: flex;
+    flex-direction: row;
+    justify-content: center; // Centrar los labels
+    flex-wrap: wrap;
+    gap: 6px;
+    z-index: 2;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 2px; // Gap reducido
+    padding: 8px 12px; // Padding reducido
+    position: relative;
+    z-index: 3;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 2px;
+
+    .tag {
+      color: var(--afer-secondary);
+      background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
+      font-size: clamp(0.55rem, 1vw, 0.65rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 2px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 80%);
+
+      &:hover {
+        background: var(--afer-secondary);
+        color: #ffffff;
+      }
+    }
+  }
+
+  &__title {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    font-weight: 800;
+    line-height: 1.3;
+    margin: 0;
+    color: var(--afer-text-secondary);
+  }
+
+  &__price {
+    display: flex;
+    align-items: flex-start;
+    gap: 2px;
+    margin-top: auto;
+
+    .currency {
+      font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+      font-weight: 800;
+      color: var(--afer-text-muted);
+      margin-top: 4px;
+    }
+
+    .amount {
+      font-size: clamp(1.4rem, 2.5vw, 1.7rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: var(--afer-text-primary);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 12px 8px; // Padding inferior reducido
+    margin-top: auto;
+    position: relative;
+    z-index: 3;
+  }
+
+  &__add {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    
+    // MODO CLARO: Sólido por defecto
+    background: var(--afer-secondary-absolute);
+    color: #ffffff;
+    border: 1px solid transparent;
+    
+    border-radius: clamp(10px, 1.5vw, 14px) 0;
+    padding: clamp(8px, 1.5vw, 10px) 16px;
+    font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    svg {
+      transition: transform 0.3s ease;
+    }
+
+    &:hover {
+      transform: translateY(-3px); // Elevación consistente en ambos modos
+      box-shadow: 0 8px 20px color-mix(in srgb, var(--afer-secondary-absolute), transparent 80%);
+      filter: brightness(1.1);
+      
+      svg {
+        transform: rotate(-10deg) scale(1.1);
+      }
+    }
+
+    // MODO OSCURO: Estilo "Facebook" (Vidrio/Transparente)
+    :host-context([data-theme='dark']) & {
+      background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 90%);
+      color: var(--afer-secondary-absolute);
+      border: 1px solid color-mix(in srgb, var(--afer-secondary-absolute), transparent 75%);
+      
+      &:hover {
+        background: var(--afer-secondary-absolute);
+        color: #ffffff;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px color-mix(in srgb, var(--afer-secondary-absolute), transparent 80%);
+      }
+    }
+
+    &:active {
+      transform: translateY(0) scale(0.98);
+    }
+  }
+
+  &__favorite {
+    background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
+    border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 80%);
+    color: var(--afer-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    svg {
+      width: clamp(18px, 2.5vw, 22px); // Un poco más pequeño
+      height: clamp(18px, 2.5vw, 22px);
+    }
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    &--active {
+      background: var(--afer-secondary);
+      color: #ffffff;
+      border-color: transparent;
+      svg {
+        fill: #ffffff;
+      }
+    }
+  }
+
+  // Mobile Optimizations
+  @media (max-width: 480px) {
+    &__header {
+      padding: 6px 8px 0;
+      gap: 4px;
+    }
+
+    &__brand {
+      padding: 2px 8px;
+      font-size: 0.6rem; // Marca más pequeña en móvil
+    }
+
+    &__sku-tag {
+      font-size: 0.5rem; // SKU ultra pequeño
+      max-width: none; // Permitimos que muestre los 15 caracteres completos
+    }
+
+    &__info {
+      padding: 6px 10px;
+    }
+
+    &__actions {
+      padding: 0 10px 6px;
+      gap: 8px;
+    }
+
+    &__add {
+      padding: 8px 10px;
+      font-size: 0.7rem;
+      gap: 4px;
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+}
+
+// Labels
+.label {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: clamp(0.55rem, 1vw, 0.6rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px); // Efecto de cristal sutil
+
+  &--new {
+    background: rgba(16, 185, 129, 0.7);
+  }
+  &--trending {
+    background: color-mix(in srgb, var(--afer-secondary), transparent 30%);
+  }
+  &--featured {
+    background: color-mix(in srgb, var(--afer-accent-absolute), transparent 30%);
+    color: #ffffff;
+  }
+}

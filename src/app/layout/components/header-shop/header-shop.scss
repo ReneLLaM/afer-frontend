@@ -1,0 +1,247 @@
+:host {
+  display: block;
+  width: 100%;
+  // Compensate for fixed navbar height
+  padding-top: 80px;
+
+  @media (max-width: 767px) {
+    padding-top: 105px; // Further reduced to bring content even closer
+  }
+}
+
+.container {
+  display: block;
+  width: 100%;
+}
+
+.navbar-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1001;
+  background-color: var(--afer-background);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-height: 80px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 10px 0px 10px;
+  // Removed transition for faster theme switching
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--afer-primary);
+
+  @media (max-width: 1023px) {
+    border-bottom: 1px solid var(--afer-primary);
+  }
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    position: relative; // Needed for badges
+    border-radius: 8px;
+    // Removed transitions for faster theme switching
+    -webkit-tap-highlight-color: transparent;
+
+    &:hover {
+      background-color: var(--afer-hover);
+    }
+
+    &:active {
+      transform: scale(0.92);
+    }
+
+    &.marca {
+      display: flex;
+      color: var(--afer-primary);
+      gap: 10px;
+      padding: 5px 12px;
+    }
+
+    .badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background-color: var(--afer-secondary);
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      min-width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      padding: 0 4px;
+      border: 2px solid var(--afer-background);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+  .text-login {
+    display: none;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--afer-primary);
+  }
+}
+
+.header-separator {
+  display: none; // No longer needed as we use border-bottom on .navbar-header
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  color: var(--afer-primary);
+  flex-shrink: 0;
+  display: block;
+}
+
+.icon-afer-txt {
+  display: none;
+}
+
+.theme-toggle-btn {
+  mat-icon {
+    transform: scale(1.15);
+    color: var(--afer-primary);
+  }
+}
+
+.icon-logo {
+  height: 32px;
+}
+.search-input {
+  flex-basis: 100%;
+  order: 2;
+  display: flex;
+  align-items: center;
+  background-color: color-mix(in srgb, var(--afer-primary), transparent 85%);
+  padding: 0 8px 0 16px;
+  border-radius: 20px 0;
+  // margin-top: 0px;
+
+  input {
+    flex: 1;
+    border: none;
+    background: none;
+    outline: none;
+    padding: 12px 0;
+    font-size: 0.95rem;
+    color: var(--afer-primary);
+    font-weight: 500;
+
+    &::placeholder {
+      color: var(--afer-primary);
+      opacity: 0.7;
+    }
+  }
+
+  .search-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--afer-primary);
+    // Removed transitions for faster theme switching
+
+    .icon {
+      width: auto;
+      height: 24px;
+      color: var(--afer-primary);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+    &:hover {
+      background-color: var(--afer-hover);
+    }
+  }
+}
+
+// Adjust logo size to be more prominent
+
+// Responsiveness
+@media (min-width: 768px) {
+  .navbar-header {
+    padding: 10px 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: nowrap; // Keep everything in one line on tablets/desktop
+  }
+
+  .icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .marca {
+    order: 1;
+  }
+
+  .search-input {
+    flex-basis: 40%;
+    order: 2;
+    margin-top: 0;
+  }
+
+  // Group or individual orders for the rest
+  button:not(.marca):not(.menu-mobile),
+  .theme-toggle-btn {
+    order: 3;
+  }
+}
+
+@media (min-width: 1024px) {
+  .icon-afer-txt {
+    display: block;
+    width: 100%;
+    height: 20px;
+  }
+
+  // On desktop, .navbar-header is 100% wide (for the background),
+  // but we limit its inner content width by using padding-based centering.
+  // max-width + margin: auto do NOT work on position: fixed elements.
+  .navbar-header {
+    // Use left/right padding to simulate centering:
+    // The content area stays at most 1350px wide, centered in the viewport.
+    padding: 15px max(50px, calc((100% - 1350px) / 2 + 50px));
+
+    .mobile-only {
+      display: none;
+    }
+    .menu-mobile {
+      display: none;
+    }
+
+    .text-login {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--afer-primary);
+      margin-left: 8px;
+      white-space: nowrap;
+    }
+
+    .user-btn {
+      padding: 8px 15px;
+      border-radius: 25px;
+      background-color: color-mix(in srgb, var(--afer-primary), transparent 92%);
+
+      &:hover {
+        background-color: color-mix(in srgb, var(--afer-primary), transparent 85%);
+      }
+    }
+  }
+
+  .header-separator {
+    display: none;
+  }
+}

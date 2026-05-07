@@ -1,0 +1,264 @@
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  visibility: hidden;
+  transition: visibility 0.3s;
+
+  &.is-open {
+    visibility: visible;
+
+    .menu-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menu-mobile {
+      transform: translateX(0);
+    }
+  }
+}
+
+.menu-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.menu-mobile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 82%;
+  max-width: 320px;
+  height: 100%;
+  background-color: var(--afer-background);
+  box-shadow:
+    4px 0 24px rgba(0, 0, 0, 0.12),
+    1px 0 0 color-mix(in srgb, var(--afer-primary-absolute), transparent 92%);
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--afer-primary-absolute), transparent 75%);
+    border-radius: 10px;
+  }
+
+  // ─── HEADER: Logo + Close ────────────────────────────
+  .header-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 10px 12px 16px;
+    border-bottom: 1px solid color-mix(in srgb, var(--afer-primary-absolute), transparent 90%);
+
+    .inicio {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      // Removed transition for faster theme switching
+      color: var(--afer-primary);
+
+      &:hover, &.active {
+        background: color-mix(in srgb, var(--afer-primary-absolute), transparent 92%);
+        color: var(--afer-primary-absolute);
+      }
+
+      .icon-logo {
+        width: 32px;
+        height: 32px;
+      }
+
+      .icon-afer-txt {
+        width: 70px;
+        height: auto;
+      }
+
+      .menu-text {
+        font-weight: 700;
+        font-size: 1rem;
+      }
+    }
+
+    button {
+      color: var(--afer-text-secondary);
+      // Removed transition for faster theme switching
+
+      &:hover {
+        color: var(--afer-corporate);
+      }
+
+      mat-icon {
+        font-size: 26px;
+        width: 26px;
+        height: 26px;
+      }
+    }
+  }
+
+  // ─── SECTIONS ────────────────────────────────────────
+  .menu-section {
+    padding: 0;
+    margin-bottom: 4px;
+    position: relative;
+
+    &:first-of-type {
+      margin-top: 4px;
+    }
+
+    &.menu-bottom {
+      margin-top: auto;
+      padding-bottom: 20px;
+      padding-top: 6px;
+      border-top: 1px solid color-mix(in srgb, var(--afer-primary-absolute), transparent 92%);
+    }
+
+    .menu-title {
+      padding: 16px 20px 6px 16px;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      color: var(--afer-secondary);
+      font-weight: 800;
+      letter-spacing: 1.8px;
+      display: flex;
+      align-items: center;
+
+      &::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          color-mix(in srgb, var(--afer-secondary), transparent 75%),
+          transparent 80%
+        );
+        margin-left: 12px;
+      }
+    }
+  }
+
+  // ─── NAV ITEMS ───────────────────────────────────────
+  .menu-list {
+    list-style: none;
+    margin: 0;
+  }
+
+  .menu-actions {
+    margin: 1px 0;
+
+    a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 12px;
+      text-decoration: none;
+      color: var(--afer-text-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 10px 0px 0px 10px;
+      // Removed transition for faster theme switching
+      cursor: pointer;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+
+      &:hover,
+      &.active {
+        background-color: color-mix(in srgb, var(--afer-primary-absolute), transparent 94%);
+        color: var(--afer-primary);
+
+        svg,
+        mat-icon,
+        .icon {
+          transform: scale(1.12);
+          color: var(--afer-primary-absolute);
+        }
+
+        .menu-text {
+          transform: translateX(2px);
+        }
+      }
+
+      &.active {
+        border-right: 3px solid var(--afer-primary);
+        background-color: color-mix(in srgb, var(--afer-primary-absolute), transparent 90%);
+      }
+
+      &:active {
+        background-color: color-mix(in srgb, var(--afer-primary-absolute), transparent 88%);
+        color: var(--afer-primary);
+        transform: scale(0.98);
+        border-right: 2px solid var(--afer-primary);
+      }
+
+      // Standardize ALL icons (SVGs and MatIcons)
+      svg,
+      mat-icon,
+      .icon {
+        width: 22px;
+        height: 22px;
+        min-width: 22px;
+        min-height: 22px;
+        color: var(--afer-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        object-fit: contain;
+        // Removed transition for faster theme switching
+      }
+
+      .menu-text {
+        flex: 1;
+        color: inherit;
+        font-weight: 600;
+        transition: transform 0.2s ease;
+      }
+
+      .counter {
+        background: var(--afer-primary-absolute);
+        color: white;
+        font-size: 0.65rem;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 20px;
+        min-width: 20px;
+        text-align: center;
+        margin-left: auto;
+        line-height: 1.3;
+      }
+    }
+  }
+
+  // ─── DARK MODE ───────────────────────────────────────
+  :host-context([data-theme='dark']) & {
+    background-color: var(--afer-surface);
+    box-shadow:
+      4px 0 30px rgba(0, 0, 0, 0.4),
+      1px 0 0 color-mix(in srgb, var(--afer-primary-absolute), transparent 85%);
+  }
+}
+
