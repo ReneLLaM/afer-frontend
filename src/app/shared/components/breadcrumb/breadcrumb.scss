@@ -1,0 +1,80 @@
+.breadcrumb {
+  padding: 0.75rem 2rem;
+  background-color: transparent; // Integración más limpia con el fondo
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--afer-text-muted);
+    letter-spacing: 0.01em;
+  }
+
+  &__link {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 6px 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    &:hover {
+      color: var(--afer-text-primary);
+      background-color: color-mix(in srgb, var(--afer-secondary), transparent 92%);
+    }
+  }
+
+  &__separator {
+    display: flex;
+    align-items: center;
+    color: var(--afer-text-muted);
+    opacity: 0.3;
+    margin: 0 2px;
+    pointer-events: none;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &__current {
+    color: var(--afer-text-primary);
+    font-weight: 700;
+    padding: 6px 10px;
+    pointer-events: none;
+  }
+}
+
+// Mobile optimization
+@media (max-width: 768px) {
+  .breadcrumb {
+    padding: 0.5rem 1rem;
+    
+    &__item {
+      font-size: 0.75rem;
+    }
+    
+    &__link, &__current {
+      padding: 4px 6px;
+    }
+  }
+}

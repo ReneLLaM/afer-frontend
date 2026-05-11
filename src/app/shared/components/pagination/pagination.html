@@ -1,0 +1,44 @@
+<nav class="pagination" aria-label="Navegación de páginas">
+  <!-- Botón Anterior -->
+  <button 
+    class="pagination__btn pagination__btn--prev"
+    [disabled]="meta().page === 1"
+    (click)="onPrev()"
+    aria-label="Página anterior"
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6"></path>
+    </svg>
+    <span>Anterior</span>
+  </button>
+
+  <!-- Números de Página -->
+  <div class="pagination__pages">
+    @for (page of pages(); track $index) {
+      @if (page === '...') {
+        <span class="pagination__ellipsis">...</span>
+      } @else {
+        <button
+          class="pagination__page"
+          [class.is-active]="page === meta().page"
+          (click)="onPageClick(page)"
+        >
+          {{ page }}
+        </button>
+      }
+    }
+  </div>
+
+  <!-- Botón Siguiente -->
+  <button 
+    class="pagination__btn pagination__btn--next"
+    [disabled]="meta().page === meta().totalPages"
+    (click)="onNext()"
+    aria-label="Página siguiente"
+  >
+    <span>Siguiente</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18l6-6-6-6"></path>
+    </svg>
+  </button>
+</nav>

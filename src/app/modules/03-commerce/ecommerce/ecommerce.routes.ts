@@ -1,34 +1,42 @@
-import { Routes } from "@angular/router";
-import { ShopLayout } from "../../../layout/shop-layout/shop-layout";
+import { Routes } from '@angular/router';
+import { ShopLayout } from '../../../layout/shop-layout/shop-layout';
 
 export const ecommerceRoutes: Routes = [
   {
     path: '',
-    component: ShopLayout,  
+    component: ShopLayout,
     children: [
       {
         path: '',
-        loadComponent: () => import('./pages/home/home').then(m => m.Home)
+        loadComponent: () => import('./pages/home-page/home-page').then((m) => m.HomePage),
+        data: { breadcrumb: 'Inicio' },
       },
       {
         path: 'productos',
-        loadComponent: () => import('./pages/products/products').then(m => m.Products)
+        loadComponent: () => import('./pages/products-page/products-page/products-page').then((m) => m.ProductsPage),
+        data: { breadcrumb: 'Productos' },
+      },
+      {
+        path: 'productos/:slug',
+        loadComponent: () => import('./pages/products-page/product-detail-page/product-detail-page').then((m) => m.ProductDetailPage),
+        data: { breadcrumb: 'Detalle Producto' },
       },
       {
         path: 'categorias',
-        loadComponent: () => import('./pages/categories/categories').then(m => m.Categories)
+        loadComponent: () => import('./pages/categories-page/categories-page').then((m) => m.CategoriesPage),
+        data: { breadcrumb: 'Categorías' },
       },
       {
         path: 'marcas',
-        loadComponent: () => import('./pages/brands/brands').then(m => m.Brands)
-      }
-
+        loadComponent: () => import('./pages/brands-page/brands-page').then((m) => m.BrandsPage),
+        data: { breadcrumb: 'Marcas' },
+      },
     ],
   },
   {
     path: '**',
-    redirectTo: ''
-  }
+    redirectTo: '',
+  },
 ];
 
 export default ecommerceRoutes;

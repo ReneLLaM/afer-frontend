@@ -4,35 +4,35 @@ export interface ProductsResponse {
 }
 
 export interface Datum {
-  id:         string;
-  title:      string;
-  sku:        string;
-  slug:       string;
-  price:      string;
+  id: string;
+  title: string;
+  sku: string;
+  slug: string;
+  price: string;
   isFeatured: boolean;
-  isNew:      boolean;
+  isNew: boolean;
   isTrending: boolean;
-  brand:      Brand;
+  brand: Brand;
   categories: Category[];
-  images:     string[];
+  images: string[];
   isFavorite: boolean;
 }
 
 export interface Brand {
-  id:   string;
+  id: string;
   name: string;
   slug: string;
 }
 
 export interface Category {
-  id:   string;
+  id: string;
   name: string;
   slug: string;
 }
 
 export interface Meta {
-  total:      number;
-  limit:      number;
-  page:       number;
+  total: number;
+  limit: number;
+  page: number;
   totalPages: number;
 }

@@ -1,0 +1,28 @@
+@if (displayBreadcrumbs().length > 0) {
+<nav aria-label="breadcrumb" class="breadcrumb">
+  <ol class="breadcrumb__list">
+    @for (breadcrumb of displayBreadcrumbs(); track breadcrumb.url; let last = $last) {
+      <li class="breadcrumb__item" [class.breadcrumb__item--active]="last">
+        @if (!last) {
+          <a [routerLink]="breadcrumb.url === '' ? '/' : breadcrumb.url" class="breadcrumb__link">
+            @if (breadcrumb.label === 'Inicio') {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+            }
+            {{ breadcrumb.label }}
+          </a>
+          <span class="breadcrumb__separator">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </span>
+        } @else {
+          <span class="breadcrumb__current">{{ breadcrumb.label }}</span>
+        }
+      </li>
+    }
+  </ol>
+</nav>
+}

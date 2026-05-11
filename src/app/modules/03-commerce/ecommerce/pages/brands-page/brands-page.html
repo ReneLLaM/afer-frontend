@@ -1,0 +1,111 @@
+<section class="brands-page">
+  <header class="brands-page__header">
+    <div class="brands-page__filter-bar">
+      <div class="brands-page__filters">
+        <!-- Ordenar por -->
+        <div class="filter-group" [class.is-modified]="isSortModified()">
+          <label>Ordenar por</label>
+          <div class="select-box">
+            <select [ngModel]="sortBy()" (ngModelChange)="handleSortChange($event)">
+              <option [ngValue]="null" selected>Seleccionar...</option>
+              <option value="name">Nombre</option>
+              <option value="isFeatured">Destacado</option>
+            </select>
+            <svg
+              class="select-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M6 9l6 6 6-6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Dirección -->
+        <div class="filter-group" [class.is-modified]="isOrderModified()">
+          <label>Dirección</label>
+          <div class="select-box">
+            <select [ngModel]="order()" (ngModelChange)="handleOrderChange($event)">
+              <option [ngValue]="null" selected>Seleccionar...</option>
+              <option value="ASC">Ascendente</option>
+              <option value="DESC">Descendente</option>
+            </select>
+            <svg
+              class="select-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M6 9l6 6 6-6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Destacadas -->
+        <div class="filter-group filter-group--checkbox" [class.is-modified]="isFeaturedModified()">
+          <label class="checkbox-wrapper">
+            <div class="checkbox-input">
+              <input 
+                type="checkbox" 
+                [ngModel]="isFeatured() === true" 
+                (ngModelChange)="toggleFeatured($event)"
+              />
+              <div class="checkbox-visual">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+            </div>
+            <span class="checkbox-label">Solo Destacadas</span>
+          </label>
+        </div>
+
+        <!-- Botón de reset -->
+        @if (isAnyFilterApplied()) {
+          <button class="brands-page__reset-btn" (click)="resetFilters()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 6L6 18M6 6l12 12"></path>
+            </svg>
+            Quitar filtros
+          </button>
+        }
+      </div>
+    </div>
+  </header>
+
+  <div class="brands-grid">
+    @if (isLoading()) {
+      <skeleton-card [count]="8"></skeleton-card>
+    } @else {
+      @for (brandItem of brands(); track brandItem.id) {
+        <app-brand-card [brand]="brandItem"></app-brand-card>
+      } @empty {
+        <div class="brands-empty">
+          <h2>No hay marcas disponibles</h2>
+          <p>Actualmente no contamos con marcas en esta sección.</p>
+        </div>
+      }
+    }
+  </div>
+  
+  @if (meta(); as metaData) {
+    @if (metaData.totalPages > 1) {
+      <app-pagination 
+        [meta]="metaData" 
+        (pageChange)="handlePageChange($event)"
+      />
+    }
+  }
+</section>

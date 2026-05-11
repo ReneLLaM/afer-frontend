@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, input, output, inject } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
-import { Datum } from '../../pages/products/interfaces/products-response.interface';
+import { Datum } from '../../pages/products-page/interfaces/products-response.interface';
 import { ProductImagePipe } from '../../pipes/product-image.pipe';
 
 @Component({
@@ -49,6 +49,4 @@ export class ProductCard {
   getProductUrl(): string {
     return `/productos/${this.product().slug}`;
   }
-
-
 }

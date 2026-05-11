@@ -14,8 +14,9 @@
   );
 
   border: 1px solid rgba(128, 128, 128, 0.15);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
-              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0; // Eliminado para permitir contenido de canto a canto
   gap: 0; // Controlamos el gap internamente
 
@@ -102,7 +103,7 @@
     aspect-ratio: 1.2 / 1;
     overflow: hidden;
     background: var(--afer-surface-variant, #f5f5f5); // Fondo neutro claro
-    
+
     // Gradiente sutil solo para legibilidad, no negro sólido
     &::after {
       content: '';
@@ -217,20 +218,21 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    
+
     // MODO CLARO: Sólido por defecto
     background: var(--afer-secondary-absolute);
     color: #ffffff;
     border: 1px solid transparent;
-    
+
     border-radius: clamp(10px, 1.5vw, 14px) 0;
     padding: clamp(8px, 1.5vw, 10px) 16px;
     font-size: clamp(0.7rem, 1.2vw, 0.85rem);
     font-weight: 700;
     letter-spacing: 0.5px;
     cursor: pointer;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
-                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     svg {
       transition: transform 0.3s ease;
@@ -240,7 +242,7 @@
       transform: translateY(-3px); // Elevación consistente en ambos modos
       box-shadow: 0 8px 20px color-mix(in srgb, var(--afer-secondary-absolute), transparent 80%);
       filter: brightness(1.1);
-      
+
       svg {
         transform: rotate(-10deg) scale(1.1);
       }
@@ -251,7 +253,7 @@
       background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 90%);
       color: var(--afer-secondary-absolute);
       border: 1px solid color-mix(in srgb, var(--afer-secondary-absolute), transparent 75%);
-      
+
       &:hover {
         background: var(--afer-secondary-absolute);
         color: #ffffff;

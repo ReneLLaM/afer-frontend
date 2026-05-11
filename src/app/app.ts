@@ -1,8 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { MaterialModule } from './shared/material/material-module';
 // import { ToastComponent } from "./shared/toast/toast";
-import { ToastService } from './shared/toast/toast.service';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',

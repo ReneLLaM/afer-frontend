@@ -4,7 +4,7 @@
     <skeleton-card [count]="10" />
   } @else {
     @for (product of products(); track product.id) {
-      <product-card 
+      <product-card
         [product]="product"
         (favoriteToggle)="handleFavorite($event)"
         (addToCart)="handleAddToCart($event)"
@@ -17,3 +17,12 @@
     }
   }
 </div>
+
+@if (meta(); as metaData) {
+  @if (metaData.totalPages > 1) {
+    <app-pagination 
+      [meta]="metaData" 
+      (pageChange)="handlePageChange($event)"
+    />
+  }
+}
