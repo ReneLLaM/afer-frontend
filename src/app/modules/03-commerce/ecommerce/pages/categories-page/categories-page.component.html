@@ -1,0 +1,23 @@
+<div class="categories-container">
+    @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando categorías...</p>
+    </div>
+  } @else if (hasError()) {
+    <div class="error-state">
+      <p>Error al cargar las categorías. Por favor, intenta de nuevo.</p>
+      <button class="btn-retry" (click)="categoriesResource.reload()">Reintentar</button>
+    </div>
+  } @else {
+    <div class="categories-tree">
+      @for (root of categories(); track root.id) {
+        <app-category-tree-node [node]="root" [level]="0" />
+      } @empty {
+        <div class="empty-state">
+          <p>No se encontraron categorías.</p>
+        </div>
+      }
+    </div>
+  }
+</div>

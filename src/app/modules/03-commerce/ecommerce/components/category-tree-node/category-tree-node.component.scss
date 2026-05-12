@@ -1,0 +1,365 @@
+// ─── Host sizing by level ─────────────────────────────────────────────────────
+:host {
+  display: block;
+}
+
+// ─── Tree connector lines ─────────────────────────────────────────────────────
+.tree-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  position: relative;
+}
+
+.tree-item {
+  position: relative;
+  padding-left: 1.25rem; // Sangría ligeramente reducida
+  margin-bottom: 0.75rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2.25rem;
+    width: 1.25rem; // Que toque exactamente el borde de la card
+    height: 2px;
+    background: var(--afer-text-muted);
+    border-radius: 1px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
+    opacity: 0.6;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -0.75rem;
+    width: 2px;
+    background: var(--afer-text-muted);
+    border-radius: 1px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
+    opacity: 0.6;
+  }
+
+  &:not(.tree-item--last)::after {
+    height: calc(100% + 0.75rem + 0.5rem);
+  }
+
+  &.tree-item--last::after {
+    height: 3rem; // Ajustado para la nueva posición de ::before
+  }
+
+  &:hover > &::before,
+  &:hover > &::after {
+    background: var(--afer-primary);
+    box-shadow: 0 0 8px rgba(239, 126, 38, 0.4);
+    opacity: 1;
+  }
+}
+
+// ─── Node card ────────────────────────────────────────────────────────────────
+.tree-node {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--afer-surface);
+  border: 1px solid var(--afer-border);
+  border-radius: clamp(12px, 1.5vw, 16px);
+  padding: 0.75rem 1rem;
+  min-height: 88px; // Altura única estandarizada globalmente
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  z-index: 2;
+
+  &--featured,
+  &--has-children {
+    min-height: 96px; // Un poco más de altura para estos estados especiales
+  }
+
+  &--featured {
+    border-color: var(--afer-accent-absolute);
+  }
+
+  &--expanded {
+    border-color: var(--afer-primary);
+  }
+
+  // Hover con borde sólido y marcado (sin degradados ni resplandores)
+  &:hover, 
+  &.tree-node:hover {
+    // Modo Claro (Azul sólido y grueso)
+    border-color: var(--afer-secondary) !important;
+    box-shadow: 0 0 0 1.5px var(--afer-secondary) !important; // Borde sólido exterior de 1.5px
+
+    // Modo Oscuro (Naranja sólido y grueso)
+    :host-context([data-theme='dark']) & {
+      border-color: var(--afer-primary-absolute) !important;
+      box-shadow: 0 0 0 1.5px var(--afer-primary-absolute) !important; // Borde sólido exterior de 1.5px
+    }
+  }
+}
+
+// ─── Image ────────────────────────────────────────────────────────────────────
+.tree-node__image-wrapper {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--afer-border);
+}
+
+.tree-node__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+// ─── Content ──────────────────────────────────────────────────────────────────
+.tree-node__content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tree-node__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap; // Permitir que el tag se acomode
+}
+
+.tree-node__name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--afer-text-primary);
+  line-height: 1.2;
+}
+
+.tree-node__description {
+  margin: 0.25rem 0 0;
+  color: var(--afer-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ─── Badges ───────────────────────────────────────────────────────────────────
+.tree-node__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  &--featured {
+    background: var(--afer-accent-absolute);
+    color: #2a2e35;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+}
+
+// ─── Actions ──────────────────────────────────────────────────────────────────
+.tree-node__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.tree-node__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tree-node__children-count {
+  color: var(--afer-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  .tree-node__label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+}
+
+.btn-view-products {
+  background: var(--afer-secondary-absolute);
+  color: #ffffff;
+  border: 1px solid transparent;
+  border-radius: 12px 0;
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+
+  &:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+}
+
+// ─── Toggle button ────────────────────────────────────────────────────────────
+.tree-node__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--afer-border);
+  border-radius: 8px;
+  background: var(--afer-background);
+  color: var(--afer-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &--expanded {
+    background: var(--afer-primary-absolute);
+    border-color: var(--afer-primary-absolute);
+    color: white;
+  }
+}
+
+.tree-node__chevron {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+
+  .tree-node__toggle--expanded & {
+    transform: rotate(90deg);
+  }
+}
+
+// ─── Children container ───────────────────────────────────────────────────────
+.tree-children {
+  padding-left: 1.5rem;
+}
+
+// ─── Mobile Optimizations ────────────────────────────────────────
+@media (max-width: 768px) {
+  .tree-item {
+    padding-left: 1rem; // Sangría reducida ligeramente
+    
+    &::before {
+      top: 2.25rem;
+      width: 1rem; // Que toque exactamente el borde
+    }
+    
+    &.tree-item--last::after {
+      height: 3rem;
+    }
+  }
+
+  .tree-node {
+    min-height: 88px;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .tree-node__name {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .tree-item {
+    padding-left: 1.1rem; // Aumentado ligeramente para mayor claridad
+    
+    &::before {
+      top: 2.25rem;
+      width: 1.1rem; // Que toque exactamente el borde de la card
+    }
+
+    &.tree-item--last::after {
+      height: 3rem;
+    }
+  }
+
+  .tree-children {
+    padding-left: 0.35rem; // Un poco más de espacio interno
+  }
+
+  .tree-node {
+    min-height: 88px;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .tree-node__image-wrapper {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .tree-node__header {
+    flex-direction: column; // Nombre arriba, Destacado abajo
+    align-items: flex-start;
+    gap: 1px;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .tree-node__name {
+    font-size: 0.75rem;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tree-node__description {
+    display: -webkit-box !important;
+    font-size: 0.65rem;
+    -webkit-line-clamp: 2; // Permitir 2 líneas
+    line-height: 1.2;
+    margin-top: 2px;
+  }
+
+  .tree-node__badge {
+    font-size: 0.5rem;
+    padding: 1px 5px;
+  }
+
+  .tree-node__actions {
+    min-width: 85px;
+    gap: 0.3rem;
+  }
+
+  .btn-view-products {
+    padding: 4px 8px;
+    font-size: 0.6rem;
+  }
+
+  .tree-node__toggle {
+    width: 26px;
+    height: 26px;
+  }
+
+  .tree-node__children-count {
+    font-size: 0.55rem;
+    .tree-node__label {
+      font-size: 0.45rem;
+    }
+  }
+}

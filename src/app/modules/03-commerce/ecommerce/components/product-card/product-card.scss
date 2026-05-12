@@ -6,40 +6,15 @@
   border-radius: clamp(12px, 1.5vw, 16px);
   overflow: hidden;
 
-  // Premium smart gradient that respects themes (Light/Dark mode safe)
-  background: linear-gradient(
-    180deg,
-    var(--afer-surface) 0%,
-    color-mix(in srgb, var(--afer-text-primary), var(--afer-surface) 96%) 100%
-  );
+  background: var(--afer-surface);
 
   border: 1px solid rgba(128, 128, 128, 0.15);
   transition:
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0; // Eliminado para permitir contenido de canto a canto
-  gap: 0; // Controlamos el gap internamente
-
-  // Premium top glow accent just like the footer
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60%;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      color-mix(in srgb, var(--afer-primary), transparent 60%) 50%,
-      transparent
-    );
-    filter: blur(1px);
-    z-index: 2;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s ease;
+  padding: 0;
+  gap: 0;
 
   &:hover {
     border-color: var(--afer-secondary);
@@ -102,17 +77,7 @@
     width: 100%;
     aspect-ratio: 1.2 / 1;
     overflow: hidden;
-    background: var(--afer-surface-variant, #f5f5f5); // Fondo neutro claro
-
-    // Gradiente sutil solo para legibilidad, no negro sólido
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.2) 0%, transparent 30%);
-      pointer-events: none;
-      z-index: 1;
-    }
+    background: var(--afer-surface-variant, #f5f5f5);
   }
 
   &__image {
@@ -162,7 +127,7 @@
       border-radius: 12px;
       cursor: pointer;
       text-decoration: none;
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
       border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 80%);
 
       &:hover {
@@ -277,7 +242,7 @@
     justify-content: center;
     padding: 6px;
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
 
     svg {
       width: clamp(18px, 2.5vw, 22px); // Un poco más pequeño

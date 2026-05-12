@@ -6,15 +6,10 @@
   border-radius: clamp(12px, 1.5vw, 16px);
   overflow: hidden;
   border: 1px solid rgba(128, 128, 128, 0.15);
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   padding: 0;
   
-  // Fondo igual que en ProductCard
-  background: linear-gradient(
-    180deg,
-    var(--afer-surface) 0%,
-    color-mix(in srgb, var(--afer-text-primary), var(--afer-surface) 96%) 100%
-  );
+  background: var(--afer-surface);
 
   &:hover {
     border-color: var(--afer-secondary);

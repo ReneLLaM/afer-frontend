@@ -1,0 +1,223 @@
+/* ── Host ──────────────────────────────────────────────────────────────────── */
+
+:host {
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  margin-top: 1rem;
+}
+
+/* ── Wrapper card ──────────────────────────────────────────────────────────── */
+
+.list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 26rem;
+  background: var(--afer-surface);
+  border: 1px solid var(--afer-text-muted);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px var(--afer-shadow);
+}
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.1rem 0.75rem;
+}
+
+.list-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--afer-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.count-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--afer-secondary);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  line-height: 1.4;
+}
+
+/* ── Filter input ──────────────────────────────────────────────────────────── */
+
+.filter-row {
+  position: relative;
+  padding: 0 0.85rem 0.75rem;
+}
+
+.filter-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 2.2rem 0.6rem 0.75rem;
+  font-size: 0.84rem;
+  font-family: inherit;
+  color: var(--afer-text-primary);
+  background: var(--afer-background);
+  border: 1px solid var(--afer-text-muted);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s ease;
+
+  &::placeholder {
+    color: var(--afer-text-muted);
+    opacity: 0.8;
+  }
+
+  &:focus {
+    border-color: var(--afer-secondary);
+  }
+}
+
+.filter-clear {
+  position: absolute;
+  right: 1.25rem;
+  top: 40%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--afer-secondary);
+  color: #ffffff;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+/* ── List body ─────────────────────────────────────────────────────────────── */
+
+.list-body {
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--afer-text-muted);
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+/* ── List node row ─────────────────────────────────────────────────────────── */
+
+.list-node {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--afer-hover);
+  }
+}
+
+/* ── Checkbox ──────────────────────────────────────────────────────────────── */
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 4px;
+  border: 2px solid var(--afer-text-muted);
+  background: var(--afer-surface);
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  &.is-checked {
+    background-color: var(--afer-secondary);
+    border-color: var(--afer-secondary);
+    color: #ffffff; 
+    
+    path {
+      stroke: #ffffff;
+    }
+  }
+
+  &:hover {
+    border-color: var(--afer-secondary);
+  }
+}
+
+/* ── Node label ────────────────────────────────────────────────────────────── */
+
+.node-label {
+  flex: 1;
+  font-size: 0.88rem;
+  color: var(--afer-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Empty state ───────────────────────────────────────────────────────────── */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  color: var(--afer-text-muted);
+  text-align: center;
+  gap: 0.5rem;
+
+  svg { opacity: 0.6; }
+  span { font-size: 0.85rem; }
+  em {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--afer-text-primary);
+  }
+}
+
+.empty-clear {
+  margin-top: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--afer-primary-absolute);
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ── Scrollbar (webkit) ────────────────────────────────────────────────────── */
+
+.list-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.list-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.list-body::-webkit-scrollbar-thumb {
+  background: var(--afer-text-muted);
+  border-radius: 10px;
+}
+
+.list-body::-webkit-scrollbar-thumb:hover {
+  background: var(--afer-text-secondary);
+}

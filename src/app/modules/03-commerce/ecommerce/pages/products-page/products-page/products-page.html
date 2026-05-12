@@ -1,28 +1,109 @@
-<div class="products-grid">
-  @if (isLoading()) {
-    <!-- Skeleton mientras carga -->
-    <skeleton-card [count]="10" />
-  } @else {
-    @for (product of products(); track product.id) {
-      <product-card
-        [product]="product"
-        (favoriteToggle)="handleFavorite($event)"
-        (addToCart)="handleAddToCart($event)"
-      />
-    } @empty {
-      <div class="products-empty">
-        <h2>No hay productos disponibles</h2>
-        <p>Intenta ajustar los filtros de búsqueda</p>
-      </div>
-    }
-  }
-</div>
-
-@if (meta(); as metaData) {
-  @if (metaData.totalPages > 1) {
-    <app-pagination 
-      [meta]="metaData" 
-      (pageChange)="handlePageChange($event)"
+<div class="page-container">
+  <aside class="sidebar">
+    <tree-filter 
+      [data]="categories()" 
+      title="Categorías"
+      [selectedIds]="category() ? category()!.split(',') : []"
+      (selectionChange)="handleSelectionChange($event)"
     />
-  }
-}
+
+    <list-filter
+      [data]="brands()"
+      title="Marcas"
+      [selectedIds]="brand() ? brand()!.split(',') : []"
+      (selectionChange)="handleBrandSelectionChange($event)"
+    />
+  </aside>
+
+  <main class="main-content">
+    <!-- ── Filter Bar ─────────────────────────────────────────────────── -->
+    <header class="products-filter-bar">
+      <div class="filter-group">
+        <label>Ordenar por</label>
+        <div class="select-box">
+          <select [ngModel]="sortBy()" (ngModelChange)="handleSortChange($event)">
+            <option [ngValue]="null">Relevancia</option>
+            <option value="title">Nombre</option>
+            <option value="price">Precio</option>
+            <option value="brand">Marca</option>
+            <option value="category">Categoría</option>
+          </select>
+          <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"></path>
+          </svg>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Dirección</label>
+        <div class="select-box">
+          <select [ngModel]="order() || 'ASC'" (ngModelChange)="handleOrderChange($event)">
+            <option value="ASC">Ascendente</option>
+            <option value="DESC">Descendente</option>
+          </select>
+          <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"></path>
+          </svg>
+        </div>
+      </div>
+
+      <div class="filter-flags">
+        <label class="radio-chip" [class.is-active]="isFeatured()">
+          <input type="checkbox" [ngModel]="isFeatured()" (ngModelChange)="toggleFlag('isFeatured', $event)">
+          <span class="radio-visual"></span>
+          <span class="label-text">Destacados</span>
+        </label>
+
+        <label class="radio-chip" [class.is-active]="isTrending()">
+          <input type="checkbox" [ngModel]="isTrending()" (ngModelChange)="toggleFlag('isTrending', $event)">
+          <span class="radio-visual"></span>
+          <span class="label-text">Tendencia</span>
+        </label>
+
+        <label class="radio-chip" [class.is-active]="isNew()">
+          <input type="checkbox" [ngModel]="isNew()" (ngModelChange)="toggleFlag('isNew', $event)">
+          <span class="radio-visual"></span>
+          <span class="label-text">Nuevos</span>
+        </label>
+      </div>
+
+      @if (isAnyFilterApplied()) {
+        <button class="reset-btn" (click)="resetFilters()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"></path>
+          </svg>
+          Limpiar
+        </button>
+      }
+    </header>
+
+    <div class="products-grid">
+      @if (isLoading()) {
+        <!-- Skeleton mientras carga -->
+        <skeleton-card [count]="10" />
+      } @else {
+        @for (product of products(); track product.id) {
+          <product-card
+            [product]="product"
+            (favoriteToggle)="handleFavorite($event)"
+            (addToCart)="handleAddToCart($event)"
+          />
+        } @empty {
+          <div class="products-empty">
+            <h2>No hay productos disponibles</h2>
+            <p>Intenta ajustar los filtros de búsqueda</p>
+          </div>
+        }
+      }
+    </div>
+
+    @if (meta(); as metaData) {
+      @if (metaData.totalPages > 1) {
+        <app-pagination 
+          [meta]="metaData" 
+          (pageChange)="handlePageChange($event)"
+        />
+      }
+    }
+  </main>
+</div>

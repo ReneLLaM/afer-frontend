@@ -4,6 +4,8 @@ import { ProductsResponse } from '../pages/products-page/interfaces/products-res
 import { Observable, of, tap } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { ProductResponse } from '../pages/products-page/interfaces/product-response.interface';
+import { CategoriesResponse } from '../pages/categories-page/interfaces/categories-response.interface';
+import { BrandsResponse } from '../pages/brands-page/interfaces/brands-response.interface';
 
 const baseUrl = environment.baseUrl;
 
@@ -19,9 +21,9 @@ interface Options {
   offset?: number;
   categoryIds?: string[];
   brandIds?: string[];
-  // isFeatured?: boolean;
-  // isTrending?: boolean;
-  // isNew?: boolean;
+  isFeatured?: boolean;
+  isTrending?: boolean;
+  isNew?: boolean;
   order?: 'ASC' | 'DESC';
   sortBy?: SortByProductsPublic;
 }
@@ -54,6 +56,9 @@ export class ProductsService {
       offset = 0,
       categoryIds,
       brandIds,
+      isFeatured,
+      isTrending,
+      isNew,
       order = 'ASC',
       sortBy = 'title',
     } = options;
@@ -63,6 +68,10 @@ export class ProductsService {
       .set('offset', offset.toString())
       .set('order', order)
       .set('sortBy', sortBy);
+
+    if (isFeatured !== undefined) params = params.set('isFeatured', isFeatured.toString());
+    if (isTrending !== undefined) params = params.set('isTrending', isTrending.toString());
+    if (isNew !== undefined) params = params.set('isNew', isNew.toString());
 
     if (categoryIds && categoryIds.length > 0) {
       categoryIds.forEach(id => {
@@ -88,6 +97,30 @@ export class ProductsService {
   getProductById(slugOrId: string): Observable<ProductResponse> {
     return this.http
       .get<ProductResponse>(`${baseUrl}/products/public/${slugOrId}`)
+      .pipe(tap((response) => console.log(response)));
+  }
+
+  getTreeCategories(): Observable<CategoriesResponse> {
+    return this.http
+      .get<CategoriesResponse>(`${baseUrl}/categories/tree`)
+      .pipe(tap((response) => console.log(response)));
+  }
+
+  getBrands(): Observable<BrandsResponse> {
+    return this.http
+      .get<BrandsResponse>(`${baseUrl}/brands/public`)
+      .pipe(tap((response) => console.log(response)));
+  }
+
+  getBrandsByCategories(categoryIds: string[]): Observable<BrandsResponse> {
+    let params = new HttpParams();
+    if (categoryIds && categoryIds.length > 0) {
+      categoryIds.forEach((id) => {
+        params = params.append('categoryIds', id);
+      });
+    }
+    return this.http
+      .get<BrandsResponse>(`${baseUrl}/brands/categories-public`, { params })
       .pipe(tap((response) => console.log(response)));
   }
 }

@@ -11,8 +11,17 @@ export class ThemeService {
   constructor() {
     effect(() => {
       const theme = this.isDarkMode() ? 'dark' : 'light';
+      
+      // Añadir clase para desactivar transiciones temporalmente
+      this.document.body.classList.add('no-transition');
+      
       this.document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('user-theme', theme);
+      
+      // Eliminar la clase después de un pequeño delay
+      setTimeout(() => {
+        this.document.body.classList.remove('no-transition');
+      }, 0);
     });
   }
 
