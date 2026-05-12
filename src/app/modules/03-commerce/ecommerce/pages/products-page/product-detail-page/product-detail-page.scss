@@ -1,3 +1,6 @@
+/* ============================================================
+   LOADING / ERROR STATES
+   ============================================================ */
 .product-loading,
 .product-error {
   display: flex;
@@ -44,10 +47,9 @@
   }
 }
 
-/* ==================================================== */
-/* PRODUCT DETAIL PREMIUM STYLES                        */
-/* ==================================================== */
-
+/* ============================================================
+      PRODUCT DETAIL LAYOUT
+      ============================================================ */
 .product-detail {
   padding: 1rem 2rem;
   margin: 0 auto;
@@ -55,7 +57,7 @@
   flex-direction: column;
   gap: 1.5rem;
   width: 100%;
-  max-width: 100%;
+  max-width: 1400px;
   box-sizing: border-box;
 
   @media (max-width: 768px) {
@@ -65,7 +67,6 @@
 
   &__top {
     display: grid;
-    // minmax(0, 1fr) evita que el contenido interno ensanche la página (scroll horizontal).
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 1.5rem;
     width: 100%;
@@ -79,67 +80,87 @@
   }
 }
 
-/* --- Gallery --- */
+/* ============================================================
+      PRODUCT GALLERY
+      Thumbs horizontales abajo · flechas circulares superpuestas
+      ============================================================ */
 .product-gallery {
+  --g-hero-h: clamp(280px, min(54dvh, 50vw), 540px);
+  --g-thumb-size: 72px;
+  --g-thumb-gap: 0.45rem;
+  --g-radius: 20px;
+  --g-nav-size: 42px;
+  --g-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --g-dur: 0.22s;
+
+  @media (min-width: 901px) {
+    --g-hero-h: clamp(320px, min(52dvh, 44vw), 580px);
+    --g-thumb-size: 76px;
+  }
+  @media (max-width: 600px) {
+    --g-hero-h: clamp(230px, min(46dvh, 90vw), 390px);
+    --g-thumb-size: 58px;
+    --g-nav-size: 36px;
+  }
+
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.65rem;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
 
-  @media (max-width: 600px) {
-    flex-direction: column-reverse;
-    gap: 0.75rem;
-  }
-
+  /* ---- Thumbnail strip — horizontal, al fondo ---- */
   &__thumbnails {
+    order: 2;
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 80px;
-    flex-shrink: 0;
-    box-sizing: border-box;
+    flex-direction: row;
+    gap: var(--g-thumb-gap);
+    padding: 0.5rem;
+    border-radius: 14px;
+    border: 1px solid var(--afer-hover);
+    background: color-mix(in srgb, var(--afer-surface), var(--afer-background) 40%);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
 
-    @media (max-width: 600px) {
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-content: flex-start;
-      width: 100%;
-      max-width: 100%;
-      gap: 0.45rem;
-      padding-bottom: 0;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    :host-context([data-theme='dark']) & {
+      background: color-mix(in srgb, var(--afer-surface), #000 38%);
+      border-color: color-mix(in srgb, var(--afer-hover), transparent 30%);
     }
 
     .thumbnail {
-      width: 100%;
-      aspect-ratio: 1;
-      border: 2px solid var(--afer-hover);
-      border-radius: 12px;
+      flex: 0 0 auto;
+      width: var(--g-thumb-size);
+      height: var(--g-thumb-size);
+      border: 2px solid transparent;
+      border-radius: 10px;
       overflow: hidden;
       cursor: pointer;
-      opacity: 0.6;
-      transition:
-        opacity 0.3s ease,
-        border-color 0.3s ease,
-        box-shadow 0.3s ease;
-      background: var(--afer-surface);
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
       padding: 0;
       margin: 0;
-      font: inherit;
-      color: inherit;
-      appearance: none;
-      box-sizing: border-box;
+      background: var(--afer-surface);
+      transition:
+        border-color var(--g-dur) var(--g-easing),
+        box-shadow var(--g-dur) var(--g-easing),
+        transform var(--g-dur) var(--g-easing);
+      scroll-snap-align: start;
       -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
 
-      @media (max-width: 600px) {
-        width: 56px;
-        height: 56px;
-        flex: 0 0 auto;
+      &:hover {
+        transform: translateY(-2px);
       }
 
       &:focus-visible {
@@ -147,96 +168,101 @@
         outline-offset: 2px;
       }
 
-      &.active,
-      &:hover {
-        opacity: 1;
+      &.active {
         border-color: var(--afer-primary);
-        box-shadow: 0 2px 8px var(--afer-shadow);
+        transform: translateY(-2px);
+        box-shadow:
+          0 0 0 3px color-mix(in srgb, var(--afer-primary), transparent 72%),
+          0 4px 14px color-mix(in srgb, var(--afer-primary), transparent 78%);
       }
 
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        pointer-events: none;
       }
     }
   }
 
+  /* ---- Main image area ---- */
   &__main {
+    order: 1;
     flex: 1 1 0%;
     display: flex;
     align-items: stretch;
     justify-content: center;
     min-width: 0;
     max-width: 100%;
-    position: relative;
-    background: transparent;
     box-sizing: border-box;
   }
 
-  &__main-inner {
+  /* ---- Stage: card exterior ---- */
+  &__stage {
     flex: 1 1 0%;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    background: transparent;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  /* ---- Inner: position:relative para flechas absolutas ---- */
+  &__main-inner {
+    position: relative;
+    width: 100%;
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 0.35rem;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-
-    @media (min-width: 901px) {
-      gap: 0.5rem;
-    }
-
-    @media (max-width: 600px) {
-      gap: 0.2rem;
-    }
   }
 
+  /* ---- Viewport ---- */
   &__viewport {
     flex: 1 1 0%;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    min-width: 0;
-    max-width: 100%;
-    border-radius: 16px;
-    background: color-mix(in srgb, var(--afer-surface, #f5f5f5), transparent 40%);
+    border-radius: 14px;
+    background: transparent;
     outline: none;
     touch-action: pan-y pinch-zoom;
     user-select: none;
     -webkit-user-drag: none;
     box-sizing: border-box;
+    width: 100%;
 
     &:focus-visible {
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--afer-primary), transparent 55%);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--afer-primary), transparent 50%);
     }
   }
 
-  /* Tamaño fijo del “hueco” de la foto: al cambiar de imagen no se mueve el layout. */
   &__viewport-slot {
     position: relative;
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
-    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: clamp(280px, 38vw, 440px);
+    height: var(--g-hero-h);
+    min-height: var(--g-hero-h);
+    max-height: var(--g-hero-h);
+    padding: 0.5rem;
 
-    @media (max-width: 900px) {
-      height: clamp(260px, 58vw, 380px);
-    }
+    &--openable {
+      cursor: zoom-in;
+      border-radius: 12px;
+      outline: none;
 
-    @media (max-width: 600px) {
-      height: clamp(220px, 68vw, 300px);
+      &:focus-visible {
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--afer-primary), transparent 42%);
+      }
     }
   }
 
+  /* ---- Hero image ---- */
   &__hero-img {
     display: block;
     max-width: 100%;
@@ -245,93 +271,498 @@
     height: auto;
     object-fit: contain;
     object-position: center;
-    transition: opacity 0.18s ease;
+    pointer-events: none;
+    transition:
+      opacity var(--g-dur) ease,
+      transform var(--g-dur) ease;
+    filter: drop-shadow(0 4px 18px rgb(0 0 0 / 0.1));
+
+    :host-context([data-theme='dark']) & {
+      filter: drop-shadow(0 8px 26px rgb(0 0 0 / 0.5));
+    }
   }
 
+  &__hero-img--dim {
+    opacity: 0;
+    transform: scale(0.972);
+  }
+
+  /* ---- Navigation arrows: absolutas sobre la imagen ---- */
   .gallery-nav {
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
+    position: absolute;
+    top: 50%;
+    z-index: 4;
+    width: var(--g-nav-size);
+    height: var(--g-nav-size);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: none;
+    border-radius: 50%;
+    border: 1.5px solid rgb(255 255 255 / 0.22);
+    cursor: pointer;
+    color: var(--afer-text-primary);
+    background: color-mix(in srgb, var(--afer-background), transparent 8%);
+    backdrop-filter: blur(10px) saturate(1.4);
+    -webkit-backdrop-filter: blur(10px) saturate(1.4);
+    box-shadow:
+      0 2px 14px rgb(0 0 0 / 0.14),
+      0 1px 0 rgb(255 255 255 / 0.12) inset;
+    transition:
+      background var(--g-dur) var(--g-easing),
+      color var(--g-dur) var(--g-easing),
+      box-shadow var(--g-dur) var(--g-easing),
+      transform 0.18s var(--g-easing);
+    -webkit-tap-highlight-color: transparent;
+
+    :host-context([data-theme='dark']) & {
+      background: rgb(12 14 20 / 0.72);
+      border-color: rgb(255 255 255 / 0.14);
+      color: rgb(230 230 230 / 0.9);
+    }
+
+    &--prev {
+      left: 10px;
+      transform: translateY(-50%);
+      &:active {
+        transform: translateY(-50%) scale(0.92);
+      }
+    }
+
+    &--next {
+      right: 10px;
+      transform: translateY(-50%);
+      &:active {
+        transform: translateY(-50%) scale(0.92);
+      }
+    }
+
+    &:hover {
+      background: var(--afer-primary);
+      color: #fff;
+      border-color: var(--afer-primary);
+      box-shadow:
+        0 6px 22px color-mix(in srgb, var(--afer-primary), transparent 68%),
+        0 1px 0 rgb(255 255 255 / 0.18) inset;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--afer-primary);
+      outline-offset: 2px;
+    }
+
+    .gallery-nav__icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 380px) {
+      &--prev {
+        left: 6px;
+      }
+      &--next {
+        right: 6px;
+      }
+    }
+  }
+
+  /* ---- Counter badge ---- */
+  .gallery-counter {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 0.22rem 0.54rem;
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--afer-text-primary);
+    background: color-mix(in srgb, var(--afer-surface), transparent 10%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--afer-hover);
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    pointer-events: none;
+
+    :host-context([data-theme='dark']) & {
+      background: rgb(0 0 0 / 0.48);
+      color: rgb(238 238 238 / 0.95);
+      border-color: rgb(255 255 255 / 0.1);
+    }
+  }
+}
+
+/* ============================================================
+      LIGHTBOX — imagen siempre dentro de la pantalla
+      ============================================================
+      Cadena de contención flex (cada nivel necesita min-height:0):
+   
+        .product-lightbox          → fixed, 100dvh, display:flex
+          └── &__inner             → height:100%, flex-col, overflow:hidden
+                ├── &__close       → absolute (no ocupa espacio en flujo)
+                ├── &__row         → flex:1 1 0%, min-height:0   ← CLAVE
+                │     ├── .gallery-nav  → flex-shrink:0, align-self:center
+                │     └── &__stage → flex:1 1 0%, min-height:0, overflow:hidden ← CLAVE
+                │           └── &__img → max-width:100%, max-height:100%
+                └── &__thumbs      → flex-shrink:0 (tamaño fijo, no encoge)
+   
+      Sin min-height:0 en __row y __stage, flex usa min-height:auto
+      y el contenido desborda en lugar de encoger.
+      ============================================================ */
+@keyframes lb-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lb-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.978);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.product-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10500;
+
+  /* Contenedor alineado al centro horizontal,
+        pero &__inner se estira en el eje vertical */
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: zoom-out;
+
+  /* Fondo sólido — nada de transparencia rara */
+  background: rgb(4 6 11 / 0.97);
+  backdrop-filter: blur(18px) saturate(0.45);
+  -webkit-backdrop-filter: blur(18px) saturate(0.45);
+
+  animation: lb-fade-in 0.2s ease both;
+
+  /* ----------------------------------------------------------
+        __inner: columna principal, altura = 100% del overlay
+        padding top deja espacio al botón X
+        padding bottom respeta safe-area en notch/home bar
+     ---------------------------------------------------------- */
+  &__inner {
+    position: relative;
+    cursor: default;
+
+    /* Anchura máxima cómoda; en móvil ocupa el 100% */
+    width: 100%;
+    max-width: min(1200px, 100%);
+
+    /*
+        * HEIGHT explícito: esto es lo que cierra el desborde.
+        * Con height:100% + overflow:hidden, ningún hijo puede
+        * salirse verticalmente del overlay.
+        */
+    height: 100%;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+
+    padding: max(56px, calc(env(safe-area-inset-top) + 52px)) max(14px, env(safe-area-inset-right))
+      max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+
+    box-sizing: border-box;
+    animation: lb-slide-up 0.26s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  /* ----------------------------------------------------------
+        Botón cerrar — absolute, no afecta al flujo flex
+     ---------------------------------------------------------- */
+  &__close {
+    position: absolute;
+    top: max(10px, env(safe-area-inset-top));
+    right: max(10px, env(safe-area-inset-right));
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgb(255 255 255 / 0.18);
     border-radius: 50%;
     cursor: pointer;
-    color: var(--afer-text-primary, #1a1a1a);
-    background: color-mix(in srgb, var(--afer-surface, #fff), transparent 8%);
-    box-shadow:
-      0 1px 2px rgb(0 0 0 / 0.06),
-      0 4px 14px rgb(0 0 0 / 0.08);
+    color: rgb(215 215 222 / 0.85);
+    background: rgb(255 255 255 / 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     transition:
-      transform 0.15s ease,
-      background 0.15s ease,
-      box-shadow 0.15s ease,
-      opacity 0.15s ease;
+      background 0.18s ease,
+      color 0.18s ease,
+      border-color 0.18s ease,
+      transform 0.2s ease;
     -webkit-tap-highlight-color: transparent;
 
     svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover {
+      background: rgb(255 255 255 / 0.18);
+      border-color: rgb(255 255 255 / 0.4);
+      color: #fff;
+      transform: scale(1.08) rotate(90deg);
+    }
+
+    &:active {
+      transform: scale(0.93);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--afer-primary);
+      outline-offset: 3px;
+    }
+  }
+
+  /* ----------------------------------------------------------
+        __row: flechas laterales + stage de imagen
+        flex:1 1 0%  → ocupa todo el espacio vertical disponible
+        min-height:0 → permite encoger (sin esto: desborde)
+     ---------------------------------------------------------- */
+  &__row {
+    flex: 1 1 0%;
+    min-height: 0; /* ← imprescindible */
+    display: flex;
+    flex-direction: row;
+    align-items: stretch; /* flechas y stage misma altura que la fila */
+    justify-content: center;
+    gap: 0.45rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* ----------------------------------------------------------
+        __stage: zona que contiene la imagen ampliada
+        flex:1 1 0%  → llena el ancho disponible
+        min-height:0 → puede encoger sin desborde (ESENCIAL)
+        overflow:hidden → barrera física: nada sale de aquí
+     ---------------------------------------------------------- */
+  &__stage {
+    position: relative;
+    flex: 1 1 0%;
+    min-width: 0;
+    min-height: 0; /* ← imprescindible */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Borde sutil para demarcar el área */
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+
+  /* ----------------------------------------------------------
+        __img: imagen ampliada
+        max-width / max-height:100% → nunca desborda el __stage
+        object-fit:contain           → escala proporcional siempre
+     ---------------------------------------------------------- */
+  &__img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 8px;
+    transition:
+      opacity 0.22s ease,
+      transform 0.22s ease;
+    filter: drop-shadow(0 10px 36px rgb(0 0 0 / 0.55));
+
+    &.product-gallery__hero-img--dim {
+      opacity: 0;
+      transform: scale(0.972);
+    }
+  }
+
+  /* ---- Counter badge del lightbox ---- */
+  &__counter {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 2;
+    padding: 0.22rem 0.54rem;
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgb(228 228 235 / 0.9);
+    background: rgb(0 0 0 / 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 999px;
+    pointer-events: none;
+  }
+
+  /* ---- Flechas de navegación del lightbox ---- */
+  .gallery-nav {
+    flex-shrink: 0;
+    align-self: center; /* centradas verticalmente en la fila */
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1.5px solid rgb(255 255 255 / 0.18);
+    cursor: pointer;
+    color: rgb(215 215 228 / 0.85);
+    background: rgb(255 255 255 / 0.07);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.4);
+    transition:
+      background 0.18s ease,
+      color 0.18s ease,
+      border-color 0.18s ease,
+      box-shadow 0.18s ease,
+      transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+
+    .gallery-nav__icon {
       width: 22px;
       height: 22px;
       display: block;
+      flex-shrink: 0;
     }
 
-    &:hover:not(:disabled) {
-      background: color-mix(in srgb, var(--afer-primary), transparent 88%);
+    &:hover {
+      background: var(--afer-primary);
+      color: #fff;
+      border-color: var(--afer-primary);
       box-shadow:
-        0 2px 6px rgb(0 0 0 / 0.08),
-        0 8px 20px rgb(0 0 0 / 0.1);
-      transform: scale(1.04);
+        0 6px 22px color-mix(in srgb, var(--afer-primary), transparent 65%),
+        0 4px 20px rgb(0 0 0 / 0.3);
     }
 
-    &:active:not(:disabled) {
-      transform: scale(0.96);
+    &:active {
+      transform: scale(0.92);
     }
 
-    &:disabled {
-      opacity: 0.32;
-      cursor: not-allowed;
-      box-shadow: none;
+    &:focus-visible {
+      outline: 2px solid var(--afer-primary);
+      outline-offset: 2px;
     }
 
     @media (max-width: 600px) {
       width: 38px;
       height: 38px;
-
-      svg {
-        width: 19px;
-        height: 19px;
-      }
-    }
-
-    @media (max-width: 380px) {
-      width: 34px;
-      height: 34px;
-
-      svg {
+      min-width: 38px;
+      .gallery-nav__icon {
         width: 18px;
         height: 18px;
       }
     }
   }
 
-  .gallery-counter {
-    position: absolute;
-    bottom: 10px;
-    right: 12px;
-    padding: 0.28rem 0.55rem;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: var(--afer-text-primary, #1a1a1a);
-    background: color-mix(in srgb, var(--afer-surface, #fff), transparent 12%);
-    border-radius: 999px;
-    box-shadow: 0 1px 4px rgb(0 0 0 / 0.08);
-    pointer-events: none;
+  /* ---- Thumbnail strip del lightbox ---- */
+  &__thumbs {
+    flex-shrink: 0; /* tamaño fijo, nunca encoge */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+    padding: 0.42rem 0.52rem;
+    border-radius: 12px;
+    background: rgb(255 255 255 / 0.06);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    box-sizing: border-box;
+  }
+
+  &__thumb {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    margin: 0;
+    border: 2px solid transparent;
+    border-radius: 9px;
+    overflow: hidden;
+    cursor: pointer;
+    background: rgb(255 255 255 / 0.08);
+    box-sizing: border-box;
+    scroll-snap-align: start;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &.active {
+      border-color: var(--afer-primary);
+      transform: translateY(-2px);
+      box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--afer-primary), transparent 70%),
+        0 4px 14px color-mix(in srgb, var(--afer-primary), transparent 75%);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--afer-primary);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 480px) {
+      width: 44px;
+      height: 44px;
+    }
   }
 }
 
-/* --- Info Section --- */
+/* ============================================================
+      PRODUCT INFO
+      ============================================================ */
 .product-info {
   display: flex;
   flex-direction: column;
@@ -369,7 +800,6 @@
         transform: translateY(-1px);
         border-color: var(--afer-secondary);
         background: color-mix(in srgb, var(--afer-secondary), transparent 95%);
-
         .brand-name {
           color: var(--afer-secondary);
         }
@@ -414,7 +844,6 @@
           transform: translateY(-1px);
           border-color: var(--afer-secondary);
           background: color-mix(in srgb, var(--afer-secondary), transparent 95%);
-
           .category-name {
             color: var(--afer-secondary);
           }
@@ -476,7 +905,7 @@
     color: var(--afer-text-primary);
     line-height: 1.2;
     margin: 0;
-    overflow-wrap: break-word; // Evitar que títulos largos rompan el layout
+    overflow-wrap: break-word;
     word-break: break-word;
   }
 
@@ -536,8 +965,7 @@
     margin-top: 0.5rem;
 
     .warranty-icon {
-      margin-top: 2px; // Alinea el ícono con la primera línea de texto
-
+      margin-top: 2px;
       svg {
         width: 20px;
         height: 20px;
@@ -581,7 +1009,7 @@
       display: flex;
       align-items: center;
       background: color-mix(in srgb, var(--afer-secondary), transparent 95%);
-      border-radius: 0 clamp(10px, 1.5vw, 14px); // Asymmetrical matching favorite
+      border-radius: 0 clamp(10px, 1.5vw, 14px);
       padding: 0.35rem;
       border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 85%);
       transition: none;
@@ -600,7 +1028,7 @@
       .quantity-btn {
         width: 40px;
         height: 40px;
-        
+
         @media (max-width: 480px) {
           width: 32px;
           height: 32px;
@@ -649,12 +1077,9 @@
       align-items: center;
       justify-content: center;
       gap: 0.75rem;
-
-      // MODO CLARO: Sólido por defecto
       background: var(--afer-secondary-absolute);
       color: #ffffff;
       border: 1px solid transparent;
-
       border-radius: clamp(10px, 1.5vw, 14px) 0;
       padding: 0 1.5rem;
       font-size: 1.1rem;
@@ -682,13 +1107,11 @@
         transform: translateY(-3px);
         box-shadow: 0 8px 20px color-mix(in srgb, var(--afer-secondary-absolute), transparent 80%);
         filter: brightness(1.1);
-
         svg {
           transform: rotate(-10deg) scale(1.1);
         }
       }
 
-      // MODO OSCURO: Estilo "Facebook" (Vidrio/Transparente)
       :host-context([data-theme='dark']) & {
         background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 90%);
         color: var(--afer-secondary-absolute);
@@ -710,11 +1133,12 @@
     .btn-favorite {
       width: 52px;
       height: 52px;
-      
+
       @media (max-width: 480px) {
         width: 44px;
         height: 44px;
       }
+
       background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
       border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 80%);
       color: var(--afer-secondary);
@@ -722,7 +1146,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 0 clamp(10px, 1.5vw, 14px); // Equilibrio con quantity-selector y btn-add-cart
+      border-radius: 0 clamp(10px, 1.5vw, 14px);
       transition: none;
       flex-shrink: 0;
 
@@ -738,7 +1162,6 @@
         border-color: transparent;
         transform: translateY(-3px);
         box-shadow: 0 8px 20px color-mix(in srgb, var(--afer-secondary), transparent 80%);
-
         svg {
           transform: scale(1.15);
         }
@@ -756,7 +1179,9 @@
   }
 }
 
-/* --- Bottom Tabs (CSS ONLY) --- */
+/* ============================================================
+      BOTTOM TABS (CSS ONLY)
+      ============================================================ */
 .product-detail__bottom {
   padding-top: 1rem;
   width: 100%;
@@ -764,7 +1189,6 @@
   min-width: 0;
   box-sizing: border-box;
 
-  // Ocultar los inputs reales
   .tab-input {
     display: none;
   }
@@ -772,54 +1196,96 @@
   .product-tabs {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
-    border-bottom: 2px solid var(--afer-hover);
-    margin-bottom: 1.5rem;
+    gap: 3rem;
+    border-bottom: 1px solid var(--afer-hover);
+    margin-bottom: 2.5rem;
+    padding: 0 1rem;
 
     @media (max-width: 600px) {
       gap: 1.5rem;
+      justify-content: space-around;
     }
 
     .tab-btn {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
       background: none;
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 600;
       color: var(--afer-text-secondary);
-      padding: 1rem 0;
+      padding: 1.25rem 0.5rem;
       cursor: pointer;
       position: relative;
-      transition: color 0.3s ease;
+      // Solo transicionamos transform y opacidad, NO color/background para cambio de tema instantáneo
+      transition:
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s ease;
+      letter-spacing: 0.01em;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
 
       @media (max-width: 600px) {
-        font-size: 1.25rem;
+        font-size: 1.1rem;
+        padding: 1rem 0;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--afer-primary);
+        opacity: 0;
+        border-radius: 8px;
+        transform: scale(0.9);
+        transition:
+          transform 0.25s ease,
+          opacity 0.25s ease;
+        z-index: -1;
       }
 
       &:hover {
         color: var(--afer-text-primary);
+        &::before {
+          opacity: 0.06;
+          transform: scale(1);
+        }
+      }
+
+      // El indicador activo
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background: var(--afer-primary);
+        border-radius: 4px 4px 0 0;
+        transition:
+          width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          left 0.3s ease;
+        transform: translateX(-50%);
+        box-shadow: 0 -2px 10px color-mix(in srgb, var(--afer-primary), transparent 60%);
       }
     }
   }
 
-  // Lógica CSS para el estilo de la pestaña activa
+  // Estados Checkeados
   #tab-desc:checked ~ .product-tabs [for='tab-desc'],
   #tab-specs:checked ~ .product-tabs [for='tab-specs'] {
     color: var(--afer-primary);
 
     &::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
       width: 100%;
-      height: 3px;
-      background: var(--afer-primary);
-      border-radius: 3px 3px 0 0;
+    }
+
+    &::before {
+      opacity: 0.08;
+      transform: scale(1);
     }
   }
 
-  // Lógica CSS para mostrar/ocultar paneles
   #tab-desc:checked ~ .product-tab-content #panel-desc,
   #tab-specs:checked ~ .product-tab-content #panel-specs {
     display: block;
@@ -838,14 +1304,15 @@
 
   .product-tab-content {
     .tab-panel {
-      display: none; // Oculto por defecto
+      display: none;
       animation: fadeInTab 0.3s ease;
     }
+
     .description-content {
       color: var(--afer-text-primary);
       line-height: 1.8;
       font-size: 1.1rem;
-      white-space: pre-line; // Detecta saltos de línea (\n) automáticamente
+      white-space: pre-line;
     }
 
     .features-box {
@@ -858,9 +1325,9 @@
 
       ul {
         margin-left: 1.5rem;
-        li {
-          margin-bottom: 0.5rem;
-        }
+      }
+      li {
+        margin-bottom: 0.5rem;
       }
     }
 
@@ -868,67 +1335,101 @@
       max-width: min(900px, 100%);
       margin: 0 auto;
       min-width: 0;
+      border: 1px solid var(--afer-hover);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--afer-surface);
 
       .specs-table {
         width: 100%;
-        max-width: 100%;
-        table-layout: fixed;
         border-collapse: collapse;
+        table-layout: fixed;
+
+        tr {
+          transition: background-color 0.2s ease;
+          &:hover {
+            background-color: color-mix(in srgb, var(--afer-primary), transparent 97%);
+          }
+        }
 
         td {
-          padding: 1rem;
+          padding: 1.25rem 1.5rem;
           border-bottom: 1px solid var(--afer-hover);
           color: var(--afer-text-primary);
+          font-size: 0.95rem;
+          line-height: 1.5;
           word-break: break-word;
           overflow-wrap: anywhere;
         }
 
         .spec-group {
           font-weight: 600;
-          width: 30%;
-          background: var(--afer-background);
-          border-right: 1px solid var(--afer-hover);
+          width: 35%;
+          color: var(--afer-text-secondary);
+          background: color-mix(in srgb, var(--afer-hover), transparent 70%);
+          letter-spacing: 0.01em;
+          text-transform: uppercase;
+          font-size: 0.8rem;
+          vertical-align: middle;
         }
 
         tr:last-child td {
           border-bottom: none;
         }
       }
+
+      @media (max-width: 600px) {
+        .specs-table {
+          .spec-group {
+            width: 40%;
+            padding: 1rem;
+          }
+          td {
+            padding: 1rem;
+            font-size: 0.9rem;
+          }
+        }
+      }
     }
   }
 }
 
-/* --- Videos --- */
-.product-videos {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
+/* ============================================================
+      VIDEOS (TikToks)
+      ============================================================ */
+/* ============================================================
+      DETALLES FINALES (VIDEOS / RELACIONADOS)
+      ============================================================ */
+.product-detail-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
   border-top: 2px solid var(--afer-hover);
   width: 100%;
   max-width: 100%;
-  min-width: 0;
   box-sizing: border-box;
 
-  .videos-title {
-    font-size: 1.75rem;
+  .section-title {
+    // ESTANDARIZADO: Igual que .carousel__title
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    font-weight: 700;
     color: var(--afer-text-primary);
-    margin-bottom: 2rem;
-    text-align: center;
+    margin: 0 0 1.25rem 0;
+    padding: 0;
+    letter-spacing: -0.02em;
+    text-align: left;
   }
 
   .videos-grid {
     display: flex;
-    flex-wrap: wrap; // Se reordenan solos cuando no caben uno al lado del otro
+    flex-wrap: wrap;
     gap: 1.5rem;
     padding-bottom: 1rem;
     justify-content: center;
 
     .video-container {
       flex-shrink: 0;
-
-      // ::ng-deep es necesario porque el blockquote viene de innerHTML
-      // y no recibe el atributo de encapsulación de Angular
       ::ng-deep .tiktok-embed {
-        margin: 0;
+        margin: 0 !important;
       }
     }
   }

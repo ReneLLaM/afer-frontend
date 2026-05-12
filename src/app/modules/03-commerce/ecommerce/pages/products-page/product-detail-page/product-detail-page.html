@@ -28,57 +28,66 @@
           }
         </div>
         <div class="product-gallery__main">
-          <div class="product-gallery__main-inner">
-            @if (hasMultipleImages()) {
-              <button
-                type="button"
-                class="gallery-nav gallery-nav--prev"
-                (click)="prevImage()"
-                [disabled]="!canGoPrev()"
-                aria-label="Imagen anterior"
+          <div class="product-gallery__stage">
+            <div class="product-gallery__main-inner">
+              @if (hasMultipleImages()) {
+                <button
+                  type="button"
+                  class="gallery-nav gallery-nav--prev"
+                  (click)="prevImage()"
+                  aria-label="Imagen anterior"
+                >
+                  <svg class="gallery-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" />
+                  </svg>
+                </button>
+              }
+              <div
+                class="product-gallery__viewport"
+                tabindex="0"
+                role="group"
+                [attr.aria-label]="'Galería de ' + product()?.title"
+                (keydown)="onGalleryKeydown($event)"
+                (touchstart)="onTouchStart($event)"
+                (touchend)="onTouchEnd($event)"
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" aria-hidden="true">
-                  <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </button>
-            }
-            <div
-              class="product-gallery__viewport"
-              tabindex="0"
-              role="group"
-              [attr.aria-label]="'Galería de ' + product()?.title"
-              (keydown)="onGalleryKeydown($event)"
-              (touchstart)="onTouchStart($event)"
-              (touchend)="onTouchEnd($event)"
-            >
-              <div class="product-gallery__viewport-slot">
-                <img
-                  class="product-gallery__hero-img"
-                  [src]="currentMainImageUrl()"
-                  [alt]="product()?.title + ' — imagen ' + (activeImageIndex() + 1)"
-                  draggable="false"
-                  decoding="async"
-                />
-                @if (hasMultipleImages()) {
-                  <span class="gallery-counter" aria-live="polite">
-                    {{ activeImageIndex() + 1 }} / {{ imageCount() }}
-                  </span>
-                }
+                <div
+                  class="product-gallery__viewport-slot product-gallery__viewport-slot--openable"
+                  role="button"
+                  tabindex="0"
+                  aria-haspopup="dialog"
+                  [attr.aria-label]="'Ampliar imagen ' + (activeImageIndex() + 1) + ' de ' + imageCount()"
+                  (click)="openLightbox()"
+                  (keydown)="onViewportSlotKeydown($event)"
+                >
+                  <img
+                    class="product-gallery__hero-img"
+                    [class.product-gallery__hero-img--dim]="imageFaded()"
+                    [src]="currentMainImageUrl()"
+                    [alt]="product()?.title + ' — imagen ' + (activeImageIndex() + 1)"
+                    draggable="false"
+                    decoding="async"
+                  />
+                  @if (hasMultipleImages()) {
+                    <span class="gallery-counter" aria-live="polite">
+                      {{ activeImageIndex() + 1 }} / {{ imageCount() }}
+                    </span>
+                  }
+                </div>
               </div>
+              @if (hasMultipleImages()) {
+                <button
+                  type="button"
+                  class="gallery-nav gallery-nav--next"
+                  (click)="nextImage()"
+                  aria-label="Imagen siguiente"
+                >
+                  <svg class="gallery-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z" />
+                  </svg>
+                </button>
+              }
             </div>
-            @if (hasMultipleImages()) {
-              <button
-                type="button"
-                class="gallery-nav gallery-nav--next"
-                (click)="nextImage()"
-                [disabled]="!canGoNext()"
-                aria-label="Imagen siguiente"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" aria-hidden="true">
-                  <path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </button>
-            }
           </div>
         </div>
       </div>
@@ -280,12 +289,107 @@
     </div>
 
     <!-- Videos al final (TikToks) -->
+    <!-- Videos al final (TikToks) -->
     @if (product()?.videos?.length) {
-      <div class="product-videos">
-        <h3 class="videos-title">Videos del Producto</h3>
+      <div class="product-detail-section">
+        <h3 class="section-title">Videos del Producto</h3>
         <div class="videos-grid">
           @for (vid of product()?.videos; track $index) {
             <div class="video-container" [innerHTML]="vid | safeHtml"></div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Productos Relacionados -->
+    @if (relatedProducts().length > 0) {
+      <div class="product-detail-section">
+        <app-carousel
+          [items]="relatedProducts()"
+          [title]="'También te podría interesar'"
+          [numVisible]="4"
+          [numScroll]="1"
+          [showIndicators]="true"
+        >
+          <ng-template #carouselItem let-rel>
+            <product-card [product]="rel"></product-card>
+          </ng-template>
+        </app-carousel>
+      </div>
+    }
+
+    @if (lightboxOpen()) {
+      <div
+        class="product-lightbox"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-label]="'Vista ampliada: ' + product()?.title"
+        (click)="onLightboxBackdropClick($event)"
+      >
+        <div class="product-lightbox__inner" (click)="$event.stopPropagation()">
+          <button
+            #lightboxClose
+            type="button"
+            class="product-lightbox__close"
+            (click)="closeLightbox()"
+            aria-label="Cerrar vista ampliada"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" />
+            </svg>
+          </button>
+
+          <div class="product-lightbox__row">
+            @if (hasMultipleImages()) {
+              <button type="button" class="gallery-nav gallery-nav--prev" (click)="prevImage()" aria-label="Imagen anterior">
+                <svg class="gallery-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" />
+                </svg>
+              </button>
+            }
+            <div
+              class="product-lightbox__stage"
+              (touchstart)="onTouchStart($event)"
+              (touchend)="onTouchEnd($event)"
+            >
+              <img
+                class="product-lightbox__img"
+                [class.product-gallery__hero-img--dim]="imageFaded()"
+                [src]="currentMainImageUrl()"
+                [alt]="product()?.title + ' — imagen ' + (activeImageIndex() + 1)"
+                draggable="false"
+                decoding="async"
+              />
+              @if (hasMultipleImages()) {
+                <span class="gallery-counter product-lightbox__counter" aria-live="polite">
+                  {{ activeImageIndex() + 1 }} / {{ imageCount() }}
+                </span>
+              }
+            </div>
+            @if (hasMultipleImages()) {
+              <button type="button" class="gallery-nav gallery-nav--next" (click)="nextImage()" aria-label="Imagen siguiente">
+                <svg class="gallery-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z" />
+                </svg>
+              </button>
+            }
+          </div>
+
+          @if (hasMultipleImages()) {
+            <div class="product-lightbox__thumbs" role="group" aria-label="Miniaturas">
+              @for (img of product()?.images; track $index) {
+                <button
+                  type="button"
+                  class="product-lightbox__thumb"
+                  [class.active]="$index === activeImageIndex()"
+                  (click)="selectImage($index)"
+                  [attr.aria-label]="'Imagen ' + ($index + 1)"
+                  [attr.aria-current]="$index === activeImageIndex() ? 'true' : null"
+                >
+                  <img [src]="img" [alt]="'Miniatura ' + ($index + 1)" />
+                </button>
+              }
+            </div>
           }
         </div>
       </div>

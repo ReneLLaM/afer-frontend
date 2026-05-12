@@ -1,0 +1,74 @@
+@if (title()) {
+  <h3 class="carousel__title">{{ title() }}</h3>
+}
+
+<div
+  class="carousel"
+  (touchstart)="onTouchStart($event)"
+  (touchend)="onTouchEnd($event)"
+>
+  <!-- Flecha Izquierda -->
+  @if (totalPages() > 1) {
+    <button
+      type="button"
+      class="carousel__nav carousel__nav--prev"
+      [class.carousel__nav--disabled]="isFirst() && !circular()"
+      (click)="prev()"
+      [disabled]="isFirst() && !circular()"
+      aria-label="Anterior"
+    >
+      <svg class="carousel__nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" />
+      </svg>
+    </button>
+  }
+
+  <!-- Viewport -->
+  <div class="carousel__viewport">
+    <div
+      #track
+      class="carousel__track"
+      [style.transform]="getTrackTransform()"
+    >
+      @for (item of items(); track $index) {
+        <div class="carousel__slide" [style.width]="getItemWidth()">
+          <ng-container
+            [ngTemplateOutlet]="itemTemplate"
+            [ngTemplateOutletContext]="{ $implicit: item, index: $index }"
+          ></ng-container>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Flecha Derecha -->
+  @if (totalPages() > 1) {
+    <button
+      type="button"
+      class="carousel__nav carousel__nav--next"
+      [class.carousel__nav--disabled]="isLast() && !circular()"
+      (click)="next()"
+      [disabled]="isLast() && !circular()"
+      aria-label="Siguiente"
+    >
+      <svg class="carousel__nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z" />
+      </svg>
+    </button>
+  }
+</div>
+
+<!-- Indicadores (dots) -->
+@if (showIndicators() && totalPages() > 1) {
+  <div class="carousel__indicators">
+    @for (page of pages(); track page) {
+      <button
+        type="button"
+        class="carousel__dot"
+        [class.carousel__dot--active]="page === currentPage()"
+        (click)="goToPage(page)"
+        [attr.aria-label]="'Página ' + (page + 1)"
+      ></button>
+    }
+  </div>
+}

@@ -49,8 +49,8 @@ export class ProductsPage {
       return this.productsService.getProducts({ 
         limit, 
         offset,
-        categoryId: params.category || undefined, // El backend debe aceptar slug como ID o mapearlo
-        brandId: params.brand || undefined,
+        categoryIds: params.category ? [params.category] : undefined, // El backend debe aceptar slug como ID o mapearlo
+        brandIds: params.brand ? [params.brand] : undefined,
         sortBy: (params.sortBy as any) || undefined,
         order: (params.order as any) || undefined
       });

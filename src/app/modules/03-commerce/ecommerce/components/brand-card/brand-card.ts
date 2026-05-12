@@ -13,6 +13,6 @@ export class BrandCard {
   brand = input.required<Brand>();
 
   getBrandUrl() {
-    return `/commerce/products?brandId=${this.brand().id}`;
+    return `/productos?brand=${this.brand().slug || this.brand().id}`;
   }
 }

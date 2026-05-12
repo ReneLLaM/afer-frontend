@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ProductsResponse } from '../pages/products-page/interfaces/products-response.interface';
 import { Observable, of, tap } from 'rxjs';
@@ -17,8 +17,8 @@ enum SortByProductsPublic {
 interface Options {
   limit?: number;
   offset?: number;
-  categoryId?: string;
-  brandId?: string;
+  categoryIds?: string[];
+  brandIds?: string[];
   // isFeatured?: boolean;
   // isTrending?: boolean;
   // isNew?: boolean;
@@ -52,21 +52,28 @@ export class ProductsService {
     const {
       limit = 10,
       offset = 0,
-      categoryId,
-      brandId,
+      categoryIds,
+      brandIds,
       order = 'ASC',
       sortBy = 'title',
     } = options;
 
-    let params: Record<string, string | number> = {
-      limit,
-      offset,
-      order,
-      sortBy,
-    };
+    let params = new HttpParams()
+      .set('limit', limit.toString())
+      .set('offset', offset.toString())
+      .set('order', order)
+      .set('sortBy', sortBy);
 
-    if (categoryId) params['categoryId'] = categoryId;
-    if (brandId) params['brandId'] = brandId;
+    if (categoryIds && categoryIds.length > 0) {
+      categoryIds.forEach(id => {
+        params = params.append('categoryIds', id);
+      });
+    }
+    if (brandIds && brandIds.length > 0) {
+      brandIds.forEach(id => {
+        params = params.append('brandIds', id);
+      });
+    }
 
     return this.http
       .get<ProductsResponse>(`${baseUrl}/products/public`, { params })

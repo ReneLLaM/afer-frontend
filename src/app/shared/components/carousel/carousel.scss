@@ -1,0 +1,198 @@
+/* ============================================================
+   CAROUSEL — Componente reutilizable estilo PrimeNG
+   Sin transiciones al cambiar de tema (light ↔ dark)
+   ============================================================ */
+
+.carousel__title {
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-weight: 700;
+  color: var(--afer-text-primary);
+  margin: 0 0 1.25rem 0;
+  padding: 0;
+  letter-spacing: -0.02em;
+}
+
+.carousel {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  box-sizing: border-box;
+
+  /* ── Viewport ─────────────────────────────────────────────── */
+  &__viewport {
+    flex: 1 1 0%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /* ── Track (la tira que se desplaza) ──────────────────────── */
+  &__track {
+    display: flex;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    will-change: transform;
+  }
+
+  /* ── Slide individual ────────────────────────────────────── */
+  &__slide {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    padding: 0 6px;
+    display: flex;
+
+    // Cada card hija ocupa todo el ancho del slide
+    > * {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+
+  /* ── Flechas de navegación ───────────────────────────────── */
+  &__nav {
+    flex-shrink: 0;
+    align-self: center;
+    z-index: 4;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1.5px solid var(--afer-hover);
+    cursor: pointer;
+    color: var(--afer-text-primary);
+    background: var(--afer-surface);
+    box-shadow:
+      0 2px 12px rgb(0 0 0 / 0.08),
+      0 1px 0 rgb(255 255 255 / 0.06) inset;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.15s ease,
+      opacity 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+
+    &--prev {
+      margin-right: 0.5rem;
+    }
+
+    &--next {
+      margin-left: 0.5rem;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--afer-primary);
+      color: #fff;
+      border-color: var(--afer-primary);
+      box-shadow:
+        0 6px 22px color-mix(in srgb, var(--afer-primary), transparent 68%),
+        0 1px 0 rgb(255 255 255 / 0.18) inset;
+    }
+
+    &:active:not(:disabled) {
+      opacity: 0.8;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--afer-primary);
+      outline-offset: 2px;
+    }
+
+    &--disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+
+  &__nav-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+  }
+}
+
+/* ── Indicadores (dots) ──────────────────────────────────── */
+.carousel__indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.35rem 0;
+}
+
+.carousel__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  background: var(--afer-hover);
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    background: color-mix(in srgb, var(--afer-primary), transparent 50%);
+    transform: scale(1.2);
+  }
+
+  &--active {
+    background: var(--afer-primary);
+    transform: scale(1.25);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--afer-primary), transparent 75%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--afer-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* ── Responsive: móvil ─────────────────────────────────────── */
+@media (max-width: 767px) {
+  .carousel {
+    // Flechas overlay sobre el contenido en móvil
+    &__nav {
+      position: absolute;
+      top: 50%;
+      z-index: 5;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      background: color-mix(in srgb, var(--afer-surface), transparent 10%);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 2px 14px rgb(0 0 0 / 0.15);
+
+      &--prev {
+        left: 0;
+        margin-right: 0;
+      }
+
+      &--next {
+        right: 0;
+        margin-left: 0;
+      }
+    }
+
+    &__nav-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    &__slide {
+      padding: 0 4px;
+    }
+  }
+}
