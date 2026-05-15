@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 
 export interface PaginationMeta {
   total: number;
@@ -9,23 +9,24 @@ export interface PaginationMeta {
 
 @Component({
   selector: 'app-pagination',
+  standalone: true,
   imports: [],
   templateUrl: './pagination.html',
   styleUrl: './pagination.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginationComponent {
   meta = input.required<PaginationMeta>();
   pageChange = output<number>();
 
-  pages = computed(() => {
+  pages = computed((): (number | string)[] => {
     const total = this.meta().totalPages;
     const current = this.meta().page;
-    const range = 2; // Cantidad de páginas a mostrar a los lados de la actual
-    
+    const range = 2;
+
     let start = Math.max(1, current - range);
     let end = Math.min(total, current + range);
 
-    // Ajustar si estamos cerca del inicio o fin
     if (current <= range) {
       end = Math.min(total, range * 2 + 1);
     }
@@ -34,7 +35,7 @@ export class PaginationComponent {
     }
 
     const pagesArray: (number | string)[] = [];
-    
+
     if (start > 1) {
       pagesArray.push(1);
       if (start > 2) pagesArray.push('...');
@@ -52,22 +53,20 @@ export class PaginationComponent {
     return pagesArray;
   });
 
-  onPageClick(page: number | string) {
+  onPageClick(page: number | string): void {
     if (typeof page === 'number' && page !== this.meta().page) {
       this.pageChange.emit(page);
-      
-      // Scroll suave hacia arriba al cambiar de página
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
-  onPrev() {
+  onPrev(): void {
     if (this.meta().page > 1) {
       this.onPageClick(this.meta().page - 1);
     }
   }
 
-  onNext() {
+  onNext(): void {
     if (this.meta().page < this.meta().totalPages) {
       this.onPageClick(this.meta().page + 1);
     }

@@ -53,11 +53,12 @@ export class ProductsService {
       isFeatured,
       isTrending,
       isNew,
-      order = 'ASC',
-      sortBy = 'title',
       search,
       productIds,
     } = options;
+
+    const order = options.order || 'ASC';
+    const sortBy = options.sortBy || SortByProductsPublic.title;
 
     let params = new HttpParams()
       .set('limit', limit.toString())

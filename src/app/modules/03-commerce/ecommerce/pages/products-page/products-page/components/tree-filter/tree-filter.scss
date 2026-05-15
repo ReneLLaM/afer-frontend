@@ -5,7 +5,74 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
 }
 
-/* ── Wrapper card ──────────────────────────────────────────────────────────── */
+/* ── Cuando está dentro del drawer mobile ─────────────────────────────────── */
+
+:host-context(mobile-filter-drawer) {
+  .tree-wrapper {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    max-width: none;
+  }
+
+  .tree-header {
+    display: none;
+  }
+
+  .filter-row {
+    padding: 0 0 12px;
+  }
+
+  .tree-body {
+    border-top: none;
+    max-height: none;
+    overflow-y: visible;
+    padding: 0;
+  }
+
+  .filter-input {
+    background: var(--afer-background);
+    border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 60%);
+    border-radius: 10px;
+    padding: 10px 36px 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .filter-clear {
+    right: 14px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .tree-node {
+    padding: 10px 4px;
+    border-radius: 8px;
+    gap: 10px;
+
+    &:hover {
+      background: color-mix(in srgb, var(--afer-text-muted), transparent 90%);
+    }
+  }
+
+  .checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border-width: 2px;
+  }
+
+  .node-label {
+    font-size: 0.88rem;
+  }
+
+  .toggle-btn {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* ── Wrapper card (desktop sidebar) ───────────────────────────────────────── */
 
 .tree-wrapper {
   display: flex;
@@ -14,10 +81,10 @@
   width: 100%;
   max-width: 26rem;
   background: var(--afer-surface);
-  border: 1px solid var(--afer-text-muted);
-  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 65%);
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 20px var(--afer-shadow);
+  box-shadow: 0 1px 6px var(--afer-shadow);
 }
 
 /* ── Header ────────────────────────────────────────────────────────────────── */
@@ -26,49 +93,49 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.1rem 0.75rem;
+  padding: 0.7rem 0.9rem 0.55rem;
 }
 
 .tree-title {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--afer-text-primary);
   letter-spacing: -0.01em;
 }
 
 .count-badge {
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: #ffffff;
-  background: var(--afer-secondary); // Azul en claro, Naranja en oscuro
+  background: var(--afer-secondary);
   border-radius: 999px;
-  padding: 0.2rem 0.7rem;
-  line-height: 1.4;
+  padding: 0.15rem 0.55rem;
+  line-height: 1.3;
 }
 
 /* ── Filter input ──────────────────────────────────────────────────────────── */
 
 .filter-row {
   position: relative;
-  padding: 0 0.85rem 0.75rem;
+  padding: 0 0.7rem 0.55rem;
 }
 
 .filter-input {
   width: 100%;
   box-sizing: border-box;
-  padding: 0.6rem 2.2rem 0.6rem 0.75rem;
-  font-size: 0.84rem;
+  padding: 0.5rem 2rem 0.5rem 0.65rem;
+  font-size: 0.78rem;
   font-family: inherit;
   color: var(--afer-text-primary);
   background: var(--afer-background);
-  border: 1px solid var(--afer-text-muted);
-  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 50%);
+  border-radius: 7px;
   outline: none;
   transition: border-color 0.2s ease;
 
   &::placeholder {
     color: var(--afer-text-muted);
-    opacity: 0.8;
+    opacity: 0.7;
   }
 
   &:focus {
@@ -78,14 +145,14 @@
 
 .filter-clear {
   position: absolute;
-  right: 1.25rem;
+  right: 1rem;
   top: 40%;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1rem;
+  height: 1rem;
   padding: 0;
   border: none;
   border-radius: 50%;
@@ -103,10 +170,10 @@
 /* ── Tree body ─────────────────────────────────────────────────────────────── */
 
 .tree-body {
-  padding: 0.5rem 0;
-  border-top: 1px solid var(--afer-text-muted);
+  padding: 0.35rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 70%);
   overflow-y: auto;
-  max-height: 400px;
+  max-height: 350px;
 }
 
 /* ── Tree node row ─────────────────────────────────────────────────────────── */
@@ -114,9 +181,9 @@
 .tree-node {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.85rem;
-  padding-left: calc(0.5rem + var(--depth, 0) * 1.2rem);
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  padding-left: calc(0.4rem + var(--depth, 0) * 1rem);
   cursor: pointer;
   transition: background 0.2s ease;
 
@@ -142,7 +209,7 @@
   svg {
     width: 14px;
     height: 14px;
-    stroke-width: 2px; // Un poco más grueso para que se vea mejor
+    stroke-width: 2px;
   }
 
   &.is-expanded svg {

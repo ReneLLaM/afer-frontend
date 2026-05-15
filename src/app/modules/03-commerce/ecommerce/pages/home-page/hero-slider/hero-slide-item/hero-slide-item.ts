@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Slide } from '../slide.model';
@@ -12,6 +12,6 @@ import { Slide } from '../slide.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroSlideItem {
-  @Input({ required: true }) slide!: Slide;
-  @Input() isActive = false;
+  slide = input.required<Slide>();
+  isActive = input<boolean>(false);
 }

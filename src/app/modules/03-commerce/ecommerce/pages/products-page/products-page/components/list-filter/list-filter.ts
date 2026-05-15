@@ -41,7 +41,7 @@ export class ListFilterComponent {
     effect(() => {
       const external = this.selectedIdsInput();
       this.checkedIds.set(new Set(external));
-    }, { allowSignalWrites: true });
+    });
   }
 
   // ── Derived state ───────────────────────────────────────────────────────────

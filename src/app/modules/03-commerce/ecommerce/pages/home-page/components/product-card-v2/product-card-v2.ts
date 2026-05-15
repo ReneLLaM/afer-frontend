@@ -1,4 +1,4 @@
-import { Component, input, output, inject } from '@angular/core';
+import { Component, input, output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Datum } from '../../../../pages/products-page/interfaces/products-response.interface';
@@ -10,6 +10,7 @@ import { ProductImagePipe } from '../../../../pipes/product-image.pipe';
   imports: [CommonModule, RouterModule, ProductImagePipe],
   templateUrl: './product-card-v2.html',
   styleUrl: './product-card-v2.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductCardV2 {
   private router = inject(Router);
@@ -18,13 +19,13 @@ export class ProductCardV2 {
   addToCart = output<string>();
   favoriteToggle = output<string>();
 
-  onAddToCart(event: Event) {
+  onAddToCart(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
     this.addToCart.emit(this.product().id);
   }
 
-  onFavoriteClick(event: Event) {
+  onFavoriteClick(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
     this.favoriteToggle.emit(this.product().id);
@@ -33,8 +34,9 @@ export class ProductCardV2 {
   onBrandClick(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    if (this.product().brand?.slug) {
-      this.router.navigate(['/productos'], { queryParams: { brand: this.product().brand.slug } });
+    const brandSlug = this.product().brand?.slug;
+    if (brandSlug) {
+      this.router.navigate(['/productos'], { queryParams: { brand: brandSlug } });
     }
   }
 

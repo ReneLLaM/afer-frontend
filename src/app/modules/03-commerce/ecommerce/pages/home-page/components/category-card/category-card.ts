@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FeaturedCategory } from '../../../../services/home.service';
 
@@ -8,6 +8,7 @@ import { FeaturedCategory } from '../../../../services/home.service';
   imports: [CommonModule],
   templateUrl: './category-card.html',
   styleUrl: './category-card.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryCard {
   category = input.required<FeaturedCategory>();

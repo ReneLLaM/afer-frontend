@@ -1,41 +1,50 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BrandsService } from '../../../../services/brands.service';
+import { RouterModule } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BrandsService, SortByBrandsPublic } from '../../../../services/brands.service';
 import { BrandCard } from '../../../../components/brand-card/brand-card';
-import { RouterLink } from '@angular/router';
-import { catchError, of, tap } from 'rxjs';
+import { catchError, of } from 'rxjs';
+import { Datum as BrandDatum, BrandsResponse } from '../../../brands-page/interfaces/brands-response.interface';
+
+const EMPTY_RESPONSE: BrandsResponse = { data: [], meta: { total: 0, limit: 0, offset: 0, page: 0, totalPages: 0 } };
 
 @Component({
   selector: 'app-brand-section',
   standalone: true,
-  imports: [CommonModule, BrandCard, RouterLink],
+  imports: [CommonModule, RouterModule, BrandCard],
   templateUrl: './brand-section.html',
   styleUrl: './brand-section.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BrandSection implements OnInit {
+export class BrandSection {
   private brandsService = inject(BrandsService);
+  private destroyRef = inject(DestroyRef);
 
-  brands = signal<any[]>([]);
+  brands = signal<BrandDatum[]>([]);
   isLoading = signal(true);
 
-  ngOnInit() {
+  constructor() {
     this.loadBrands();
   }
 
-  private loadBrands() {
+  private loadBrands(): void {
     this.isLoading.set(true);
-    this.brandsService.getBrands({ 
-      limit: 12,
-      isFeatured: true // Solo marcas destacadas para la home
-    }).pipe(
-      tap(() => this.isLoading.set(false)),
-      catchError(() => {
-        this.isLoading.set(false);
-        return of({ data: [] });
+
+    this.brandsService
+      .getBrands({
+        limit: 12,
+        isFeatured: true,
+        order: 'ASC',
+        sortBy: SortByBrandsPublic.order,
       })
-    ).subscribe(response => {
-      // Filtrar marcas que tengan imagen para mostrar en la home
-      this.brands.set(response.data.filter((b: any) => b.imageUrl || b.image));
-    });
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        catchError(() => of(EMPTY_RESPONSE))
+      )
+      .subscribe((response) => {
+        this.brands.set(response.data.filter((b) => b.image));
+        this.isLoading.set(false);
+      });
   }
 }

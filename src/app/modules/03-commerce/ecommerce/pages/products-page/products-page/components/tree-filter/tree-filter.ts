@@ -58,7 +58,7 @@ export class TreeFilterComponent {
     effect(() => {
       const external = this.selectedIdsInput();
       this.checkedLeafIds.set(new Set(external));
-    }, { allowSignalWrites: true });
+    });
   }
 
   // ── Derived state ───────────────────────────────────────────────────────────

@@ -90,6 +90,7 @@
 .col-brand {
   .brand-logo {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 10px;
     margin-bottom: 8px;

@@ -1,21 +1,23 @@
-import { Component, inject } from '@angular/core';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { ToastService, Toast } from './toast.service';
 
 @Component({
   selector: 'toast',
   standalone: true,
-  imports: [NgClass, AsyncPipe],
+  imports: [NgClass],
   templateUrl: './toast.html',
   styleUrl: './toast.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastComponent {
   private toastService = inject(ToastService);
 
-  // Exponemos el observable directamente al template con async pipe
-  toasts$ = this.toastService.toasts$;
+  get toasts(): readonly Toast[] {
+    return this.toastService.allToasts;
+  }
 
-  removeToast(id: number) {
+  removeToast(id: number): void {
     this.toastService.removeToast(id);
   }
 }

@@ -234,6 +234,10 @@
 }
 
 @media (min-width: 1024px) {
+  .icon-logo {
+    display: none;
+  }
+
   .icon-afer-txt {
     display: block;
     width: 100%;

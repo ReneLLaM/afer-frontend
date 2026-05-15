@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
 
 export interface Toast {
   id: number;
@@ -12,15 +11,17 @@ export interface Toast {
   providedIn: 'root',
 })
 export class ToastService {
-  private toastSubject = new BehaviorSubject<Toast[]>([]);
-  toasts$ = this.toastSubject.asObservable();
+  private toasts = signal<Toast[]>([]);
 
-  private show(title: string, message: string, type: Toast['type']) {
+  get allToasts() {
+    return this.toasts();
+  }
+
+  private show(title: string, message: string, type: Toast['type']): number {
     const id = Date.now();
     const toast: Toast = { id, title, message, type };
 
-    // Creamos un nuevo array (inmutabilidad) para que Angular detecte el cambio
-    this.toastSubject.next([...this.toastSubject.value, toast]);
+    this.toasts.update(current => [...current, toast]);
 
     setTimeout(() => {
       this.removeToast(id);
@@ -29,13 +30,12 @@ export class ToastService {
     return id;
   }
 
-  removeToast(id: number) {
-    const current = this.toastSubject.value.filter(t => t.id !== id);
-    this.toastSubject.next(current);
+  removeToast(id: number): void {
+    this.toasts.update(current => current.filter(t => t.id !== id));
   }
 
-  success(title: string, message: string) { return this.show(title, message, 'success'); }
-  error(title: string, message: string)   { return this.show(title, message, 'error'); }
-  info(title: string, message: string)    { return this.show(title, message, 'info'); }
-  warning(title: string, message: string) { return this.show(title, message, 'warning'); }
+  success(title: string, message: string): number { return this.show(title, message, 'success'); }
+  error(title: string, message: string): number { return this.show(title, message, 'error'); }
+  info(title: string, message: string): number { return this.show(title, message, 'info'); }
+  warning(title: string, message: string): number { return this.show(title, message, 'warning'); }
 }

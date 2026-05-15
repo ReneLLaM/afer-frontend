@@ -3,7 +3,7 @@
 
   &__header {
     text-align: center;
-    padding: 10px;
+    padding: 8px 1rem;
     background: var(--afer-surface);
     border-bottom: 1px solid rgba(128, 128, 128, 0.1);
     margin-bottom: 0;
@@ -15,7 +15,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
 
     @media (min-width: 768px) {
       padding: 0 2rem;
@@ -24,7 +24,7 @@
 
   &__filters {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: flex-end;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -38,13 +38,13 @@
     background: none;
     border: 1px solid rgba(128, 128, 128, 0.2);
     color: var(--afer-text-muted);
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.75rem;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.72rem;
     font-weight: 600;
     cursor: pointer;
     transition: none;
-    height: 34px; // Match select height
+    height: 30px;
 
     &:hover {
       background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
@@ -57,10 +57,10 @@
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 130px;
-  flex: 1; // Crece en móvil
-  max-width: 200px;
+  gap: 3px;
+  min-width: 120px;
+  flex: 1;
+  max-width: 180px;
   text-align: left;
   transition: none;
 
@@ -69,7 +69,7 @@
   }
 
   label {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -179,12 +179,12 @@
 
   select {
     width: 100%;
-    padding: 8px 30px 8px 12px;
-    border-radius: 8px;
+    padding: 6px 28px 6px 10px;
+    border-radius: 7px;
     border: 1px solid rgba(128, 128, 128, 0.2);
     background: var(--afer-surface);
     color: var(--afer-text-primary);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 600;
     cursor: pointer;
     appearance: none;
@@ -193,7 +193,7 @@
     &:focus {
       outline: none;
       border-color: var(--afer-secondary);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--afer-secondary), transparent 85%);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--afer-secondary), transparent 85%);
     }
 
     option {
@@ -204,9 +204,9 @@
 
   .select-icon {
     position: absolute;
-    right: 10px;
-    width: 14px;
-    height: 14px;
+    right: 8px;
+    width: 12px;
+    height: 12px;
     color: var(--afer-text-muted);
     pointer-events: none;
   }
@@ -214,25 +214,25 @@
 
 .brands-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); // 2 columnas en móvil
-  gap: 12px;
-  padding: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 0.75rem;
   width: 100%;
 
   @media (min-width: 640px) {
     grid-template-columns: repeat(3, 1fr);
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
   @media (min-width: 768px) {
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    padding: 2rem;
+    gap: 14px;
+    padding: 1.25rem;
   }
 
   @media (min-width: 1024px) {
     grid-template-columns: repeat(6, 1fr);
-    gap: 20px;
+    gap: 16px;
   }
 
   @media (min-width: 1280px) {

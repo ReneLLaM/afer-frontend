@@ -1,20 +1,18 @@
 <div class="toast-container">
-  @if (toasts$ | async; as toasts) {
-    @for (toast of toasts; track toast.id) {
-      <div class="toast" [ngClass]="toast.type">
-        <div class="toast-icon">
-          <div class="toast-icon-mask"
-               [style.mask-image]="'url(assets/icons/toasts/' + toast.type + '.svg)'"
-               [style.-webkit-mask-image]="'url(assets/icons/toasts/' + toast.type + '.svg)'">
-          </div>
+  @for (toast of toasts; track toast.id) {
+    <div class="toast" [ngClass]="toast.type">
+      <div class="toast-icon">
+        <div class="toast-icon-mask"
+             [style.mask-image]="'url(assets/icons/toasts/' + toast.type + '.svg)'"
+             [style.-webkit-mask-image]="'url(assets/icons/toasts/' + toast.type + '.svg)'">
         </div>
-        <div class="toast-content">
-          <div class="toast-title">{{ toast.title }}</div>
-          <div class="toast-message">{{ toast.message }}</div>
-        </div>
-        <button class="toast-close" (click)="removeToast(toast.id)" aria-label="Cerrar">&#x2715;</button>
-        <div class="toast-loader"></div>
       </div>
-    }
+      <div class="toast-content">
+        <div class="toast-title">{{ toast.title }}</div>
+        <div class="toast-message">{{ toast.message }}</div>
+      </div>
+      <button class="toast-close" (click)="removeToast(toast.id)" aria-label="Cerrar">&#x2715;</button>
+      <div class="toast-loader"></div>
+    </div>
   }
 </div>

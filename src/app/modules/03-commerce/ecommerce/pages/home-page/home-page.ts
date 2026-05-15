@@ -27,10 +27,7 @@ export class HomePage {
   private homeService = inject(HomeService);
 
   showModal = signal(this.shouldShowGiftCardModal());
-  featuredCategories = toSignal<FeaturedCategory[]>(
-    this.homeService.getFeaturedCategories(),
-    { initialValue: [] }
-  );
+  featuredCategories = toSignal(this.homeService.getFeaturedCategories(), { initialValue: [] as FeaturedCategory[] });
   selectedCategory = signal<FeaturedCategory | null>(null);
 
   constructor() {
@@ -51,7 +48,7 @@ export class HomePage {
     return false;
   }
 
-  onCategorySelected(category: FeaturedCategory) {
+  onCategorySelected(category: FeaturedCategory): void {
     this.selectedCategory.set(category);
   }
 }

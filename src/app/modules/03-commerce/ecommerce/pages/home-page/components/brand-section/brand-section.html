@@ -4,7 +4,7 @@
       <h2 class="brand-section__title">Marcas Destacadas</h2>
       <div class="brand-section__accent"></div>
     </div>
-    <a routerLink="/marcas" class="brand-section__view-all">Ver todas las marcas &rarr;</a>
+    <a [routerLink]="['/marcas']" [queryParams]="{ isFeatured: 'true' }" class="brand-section__view-all">Ver todas las marcas &rarr;</a>
   </div>
 
   <div class="brand-section__carousel">
@@ -22,6 +22,6 @@
   </div>
 
   <div class="brand-section__footer">
-    <a routerLink="/marcas" class="brand-section__view-all brand-section__view-all--mobile">Ver todas las marcas &rarr;</a>
+    <a [routerLink]="['/marcas']" [queryParams]="{ isFeatured: 'true' }" class="brand-section__view-all brand-section__view-all--mobile">Ver todas las marcas &rarr;</a>
   </div>
 </section>

@@ -84,6 +84,13 @@
       // Removed transition for faster theme switching
       color: var(--afer-primary);
 
+      .icons-inicio {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
       &:hover, &.active {
         background: color-mix(in srgb, var(--afer-primary-absolute), transparent 92%);
         color: var(--afer-primary-absolute);

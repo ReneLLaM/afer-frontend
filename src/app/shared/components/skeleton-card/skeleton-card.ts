@@ -1,14 +1,15 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'skeleton-card',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './skeleton-card.html',
   styleUrl: './skeleton-card.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SkeletonCard {
-  /** Cuántas cards skeleton mostrar en el grid */
   count = input<number>(10);
 
   get items(): number[] {

@@ -1,4 +1,5 @@
 <div class="page-container">
+  <!-- Desktop sidebar (visible >= 1024px) -->
   <aside class="sidebar">
     <tree-filter 
       [data]="categories()" 
@@ -15,75 +16,127 @@
     />
   </aside>
 
+  <!-- Mobile filter drawer -->
+  <mobile-filter-drawer
+    [isOpen]="mobileDrawerOpen()"
+    [selectionCount]="activeFilterChips().length"
+    [categoryCount]="category() ? category()!.split(',').length : 0"
+    [brandCount]="brand() ? brand()!.split(',').length : 0"
+    (closed)="closeMobileDrawer()"
+    (applied)="closeMobileDrawer()"
+    (clearedAll)="handleClearAllFilters()"
+  >
+    <div tab-categories>
+      <tree-filter 
+        [data]="categories()" 
+        title="Categorías"
+        [selectedIds]="category() ? category()!.split(',') : []"
+        (selectionChange)="handleSelectionChange($event)"
+      />
+    </div>
+    <div tab-brands>
+      <list-filter
+        [data]="brands()"
+        title="Marcas"
+        [selectedIds]="brand() ? brand()!.split(',') : []"
+        (selectionChange)="handleBrandSelectionChange($event)"
+      />
+    </div>
+  </mobile-filter-drawer>
+
   <main class="main-content">
     <!-- ── Filter Bar ─────────────────────────────────────────────────── -->
     <header class="products-filter-bar">
-      <div class="filter-group">
-        <label>Ordenar por</label>
-        <div class="select-box">
-          <select [ngModel]="sortBy()" (ngModelChange)="handleSortChange($event)">
-            <option [ngValue]="null">Relevancia</option>
-            <option value="title">Nombre</option>
-            <option value="price">Precio</option>
-            <option value="brand">Marca</option>
-            <option value="category">Categoría</option>
-          </select>
-          <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M6 9l6 6 6-6"></path>
+      <div class="filter-bar-row">
+        <button class="mobile-filter-btn" type="button" (click)="toggleMobileDrawer()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="4" y1="6" x2="20" y2="6"/>
+            <line x1="8" y1="12" x2="20" y2="12"/>
+            <line x1="12" y1="18" x2="20" y2="18"/>
+            <circle cx="6" cy="12" r="2" fill="currentColor"/>
+            <circle cx="6" cy="18" r="2" fill="currentColor"/>
           </svg>
-        </div>
-      </div>
-
-      <div class="filter-group">
-        <label>Dirección</label>
-        <div class="select-box">
-          <select [ngModel]="order() || 'ASC'" (ngModelChange)="handleOrderChange($event)">
-            <option value="ASC">Ascendente</option>
-            <option value="DESC">Descendente</option>
-          </select>
-          <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M6 9l6 6 6-6"></path>
-          </svg>
-        </div>
-      </div>
-
-      <div class="filter-flags">
-        <label class="radio-chip" [class.is-active]="isFeatured()">
-          <input type="checkbox" [ngModel]="isFeatured()" (ngModelChange)="toggleFlag('isFeatured', $event)">
-          <span class="radio-visual"></span>
-          <span class="label-text">Destacados</span>
-        </label>
-
-        <label class="radio-chip" [class.is-active]="isTrending()">
-          <input type="checkbox" [ngModel]="isTrending()" (ngModelChange)="toggleFlag('isTrending', $event)">
-          <span class="radio-visual"></span>
-          <span class="label-text">Tendencia</span>
-        </label>
-
-        <label class="radio-chip" [class.is-active]="isNew()">
-          <input type="checkbox" [ngModel]="isNew()" (ngModelChange)="toggleFlag('isNew', $event)">
-          <span class="radio-visual"></span>
-          <span class="label-text">Nuevos</span>
-        </label>
-      </div>
-
-      @if (isAnyFilterApplied()) {
-        <div class="active-filters-info">
-          @if (search()) {
-            <span class="search-tag">
-              Buscando: "{{ search() }}"
-              <button (click)="navegar({ search: null, page: 1 })">×</button>
-            </span>
+          Filtros
+          @if (activeFilterChips().length > 0) {
+            <span class="filter-count">{{ activeFilterChips().length }}</span>
           }
-        </div>
-        
-        <button class="reset-btn" (click)="resetFilters()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 6L6 18M6 6l12 12"></path>
-          </svg>
-          Limpiar
         </button>
-      }
+
+        <div class="filter-group">
+          <label>Ordenar por</label>
+          <div class="select-box">
+            <select [ngModel]="sortBy()" (ngModelChange)="handleSortChange($event)">
+              <option [ngValue]="null">Relevancia</option>
+              <option value="title">Nombre</option>
+              <option value="price">Precio</option>
+              <option value="brand">Marca</option>
+              <option value="category">Categoría</option>
+            </select>
+            <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label>Dirección</label>
+          <div class="select-box">
+            <select [ngModel]="order() || 'ASC'" (ngModelChange)="handleOrderChange($event)">
+              <option value="ASC">Ascendente</option>
+              <option value="DESC">Descendente</option>
+            </select>
+            <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div class="filter-divider"></div>
+
+        <div class="filter-flags">
+          <label class="radio-chip" [class.is-active]="isFeatured()">
+            <input type="checkbox" [ngModel]="isFeatured()" (ngModelChange)="toggleFlag('isFeatured', $event)">
+            <span class="radio-visual"></span>
+            <span class="label-text">Destacados</span>
+          </label>
+
+          <label class="radio-chip" [class.is-active]="isTrending()">
+            <input type="checkbox" [ngModel]="isTrending()" (ngModelChange)="toggleFlag('isTrending', $event)">
+            <span class="radio-visual"></span>
+            <span class="label-text">Tendencia</span>
+          </label>
+
+          <label class="radio-chip" [class.is-active]="isNew()">
+            <input type="checkbox" [ngModel]="isNew()" (ngModelChange)="toggleFlag('isNew', $event)">
+            <span class="radio-visual"></span>
+            <span class="label-text">Nuevos</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="filter-bar-bottom">
+        <active-filter-chips
+          [filters]="activeFilterChips()"
+          (remove)="handleRemoveFilter($event)"
+          (clearAll)="handleClearAllFilters()"
+        />
+
+        @if (search()) {
+          <span class="search-tag">
+            Buscando: "{{ search() }}"
+            <button (click)="navegar({ search: null, page: 1 })">×</button>
+          </span>
+        }
+        
+        @if (isAnyFilterApplied() && activeFilterChips().length === 0 && !search()) {
+          <button class="reset-btn" (click)="resetFilters()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"></path>
+            </svg>
+            Limpiar
+          </button>
+        }
+      </div>
     </header>
 
     <div class="products-grid">

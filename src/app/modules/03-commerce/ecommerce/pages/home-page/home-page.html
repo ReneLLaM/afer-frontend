@@ -10,17 +10,6 @@
     [category]="selectedCategory()"
   />
 
-  @if (selectedCategory()) {
-    <app-product-section 
-      [title]="'Productos de ' + selectedCategory()!.name" 
-      [category]="selectedCategory()"
-      [limit]="6"
-      layout="grid"
-      cardStyle="v2"
-      [viewAllLink]="'/productos?category=' + selectedCategory()!.slug"
-    />
-  }
-
   <!-- Global Product Sections -->
   <app-product-section 
     title="Productos Destacados" 

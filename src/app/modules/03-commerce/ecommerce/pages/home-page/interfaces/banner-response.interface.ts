@@ -11,4 +11,7 @@ export interface BannerResponse {
   categories:  string[];
   products:    string[];
   brands:      string[];
+  isFeatured?: boolean;
+  isTrending?: boolean;
+  isNew?:      boolean;
 }

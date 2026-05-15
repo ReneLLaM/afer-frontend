@@ -9,6 +9,7 @@ import {
   Injector,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -21,41 +22,43 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 import { ProductCard } from '../../../components/product-card/product-card';
 import { Carousel } from '../../../../../../shared/components/carousel/carousel';
+import { ProductResponse } from '../interfaces/product-response.interface';
+import { Datum } from '../interfaces/products-response.interface';
 
 @Component({
   selector: 'product-detail-page',
+  standalone: true,
   imports: [RouterLink, SafeHtmlPipe, ProductCard, Carousel],
   templateUrl: './product-detail-page.html',
   styleUrl: './product-detail-page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductDetailPage {
   private readonly doc = inject(DOCUMENT);
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
-  activatedRoute = inject(ActivatedRoute);
-  productService = inject(ProductsService);
-  breadcrumbService = inject(BreadcrumbService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly productService = inject(ProductsService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
 
   lightboxCloseBtn = viewChild<ElementRef<HTMLButtonElement>>('lightboxClose');
 
-  /** Slug reactivo: se actualiza cuando el usuario navega a otro producto. */
-  productSlug = toSignal(
-    this.activatedRoute.paramMap.pipe(map((pm) => pm.get('slug'))),
+  productSlug = toSignal<string | null>(
+    this.activatedRoute.paramMap.pipe(map(pm => pm.get('slug'))),
   );
 
   productResource = rxResource({
     params: () => ({ slug: this.productSlug() }),
     stream: ({ params }) => {
-      if (!params.slug) return of(null);
-      return this.productService.getProductById(params.slug).pipe(
-        catchError(() => of(null)),
+      if (!params.slug) return of(null as ProductResponse | null);
+      return this.productService.getProductBySlug(params.slug).pipe(
+        catchError(() => of(null as ProductResponse | null)),
       );
     },
   });
 
   product = computed(() => this.productResource.value());
   isLoading = computed(() => this.productResource.isLoading());
-  // Si terminó de cargar y no hay producto, asumimos que es un error (404)
   isError = computed(() => !this.isLoading() && this.product() === null);
 
   relatedProductsResource = rxResource({
@@ -65,24 +68,21 @@ export class ProductDetailPage {
       if (!p || !p.categories || p.categories.length === 0) {
         return of(null);
       }
-      const categorySlugs = p.categories.map((c: any) => c.slug);
+      const categorySlugs = p.categories.map(c => c.slug);
       return this.productService.getProducts({ limit: 10, categories: categorySlugs }).pipe(
         catchError(() => of(null))
       );
     },
   });
 
-  relatedProducts = computed(() => {
+  relatedProducts = computed((): Datum[] => {
     const data = this.relatedProductsResource.value()?.data || [];
     const currentId = this.product()?.id;
-    return data.filter((p: any) => p.id !== currentId).slice(0, 4);
+    return data.filter(p => p.id !== currentId).slice(0, 4);
   });
 
-  /** Índice de la imagen grande (miniaturas y flechas sincronizadas). */
   activeImageIndex = signal(0);
-
   imageCount = computed(() => this.product()?.images?.length ?? 0);
-
   hasMultipleImages = computed(() => this.imageCount() > 1);
 
   currentMainImageUrl = computed(() => {
@@ -91,9 +91,7 @@ export class ProductDetailPage {
     return p?.images?.[i] ?? '';
   });
 
-  /** Transición suave al cambiar de imagen (galería y lightbox). */
   imageFaded = signal(false);
-
   lightboxOpen = signal(false);
 
   private touchStartX = 0;
@@ -209,7 +207,7 @@ export class ProductDetailPage {
 
     fromEvent<KeyboardEvent>(this.doc, 'keydown')
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((ev) => {
+      .subscribe(ev => {
         if (ev.key === 'Escape' && this.lightboxOpen()) {
           ev.preventDefault();
           this.closeLightbox();
@@ -225,26 +223,18 @@ export class ProductDetailPage {
         }
       });
 
-    // Escuchamos cuando el producto se carga y reemplazamos el UUID por su nombre
     effect(() => {
       const data = this.product();
-      // Si la API es lenta o estamos usando any, asegúrate de acceder a los campos correctos.
-      // Como tu observable devuelve ProductResponse directamente, 'data' es el producto.
       if (data && data.title) {
-        // La URL actual es /productos/SLUG
         const currentUrl = `/productos/${this.productSlug()}`;
         this.breadcrumbService.setDynamicLabel(currentUrl, data.title);
 
-        // Scroll al inicio al cambiar de producto
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // Si tiene videos de TikTok, cargamos el script oficial para que calcule alturas y evite redirecciones
         if (data.videos && data.videos.length > 0) {
           setTimeout(() => {
             const oldScript = document.getElementById('tiktok-embed-script');
-            if (oldScript) {
-              oldScript.remove();
-            }
+            if (oldScript) oldScript.remove();
             const script = document.createElement('script');
             script.id = 'tiktok-embed-script';
             script.src = 'https://www.tiktok.com/embed.js';

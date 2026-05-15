@@ -1,12 +1,13 @@
 import {
   Component,
-  OnDestroy,
-  OnInit,
   signal,
   computed,
+  output,
+  ChangeDetectionStrategy,
+  DestroyRef,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EventEmitter, Output } from '@angular/core';
 
 interface GifCard {
   key: string;
@@ -21,33 +22,41 @@ interface GifCard {
   imports: [CommonModule],
   templateUrl: './modal.html',
   styleUrls: ['./modal.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GiftCardModalComponent implements OnInit, OnDestroy {
+export class GiftCardModalComponent {
+  private destroyRef = inject(DestroyRef);
 
   readonly cards: GifCard[] = [
     { key: 'orange', label: 'Naranja', theme: 'theme-orange', image: '/assets/gif-cart/naranja.png' },
-    { key: 'green',  label: 'Verde',   theme: 'theme-green',  image: '/assets/gif-cart/verde.png'   },
-    { key: 'blue',   label: 'Azul',    theme: 'theme-blue',   image: '/assets/gif-cart/azul.png'    },
-    { key: 'red',    label: 'Rojo',    theme: 'theme-red',    image: '/assets/gif-cart/rojo.png'    },
+    { key: 'green', label: 'Verde', theme: 'theme-green', image: '/assets/gif-cart/verde.png' },
+    { key: 'blue', label: 'Azul', theme: 'theme-blue', image: '/assets/gif-cart/azul.png' },
+    { key: 'red', label: 'Rojo', theme: 'theme-red', image: '/assets/gif-cart/rojo.png' },
   ];
 
   readonly selectedIndex = signal(0);
-  readonly swapping      = signal(false);
-  readonly closing       = signal(false);
-  readonly paused        = signal(false);
+  readonly swapping = signal(false);
+  readonly closing = signal(false);
+  readonly paused = signal(false);
 
   readonly selected = computed(() => this.cards[this.selectedIndex()]);
 
-  private timer:   ReturnType<typeof setInterval> | null = null;
-  private swapJob: ReturnType<typeof setTimeout>  | null = null;
+  closed = output<void>();
+
+  private timer: ReturnType<typeof setInterval> | null = null;
+  private swapJob: ReturnType<typeof setTimeout> | null = null;
   private closeJob: ReturnType<typeof setTimeout> | null = null;
 
-  @Output() closed = new EventEmitter<void>();
+  constructor() {
+    this.startTimer();
+    this.destroyRef.onDestroy(() => {
+      this.stopTimer();
+      this.cancelSwap();
+      this.cancelClose();
+    });
+  }
 
-  ngOnInit()    { this.startTimer(); }
-  ngOnDestroy() { this.stopTimer(); this.cancelSwap(); this.cancelClose(); }
-
-  selectCard(index: number) {
+  selectCard(index: number): void {
     if (index === this.selectedIndex()) return;
     this.paused.set(true);
     this.stopTimer();
@@ -55,7 +64,7 @@ export class GiftCardModalComponent implements OnInit, OnDestroy {
     this.doSwap(index);
   }
 
-  closeModal() {
+  closeModal(): void {
     if (this.closing()) return;
     this.closing.set(true);
     this.stopTimer();
@@ -68,7 +77,7 @@ export class GiftCardModalComponent implements OnInit, OnDestroy {
     }, 180);
   }
 
-  private doSwap(nextIndex: number) {
+  private doSwap(nextIndex: number): void {
     this.swapping.set(true);
     this.swapJob = setTimeout(() => {
       this.swapJob = null;
@@ -77,7 +86,7 @@ export class GiftCardModalComponent implements OnInit, OnDestroy {
     }, 200);
   }
 
-  private startTimer() {
+  private startTimer(): void {
     if (this.paused()) return;
     this.timer = setInterval(() => {
       if (this.swapping()) return;
@@ -86,16 +95,16 @@ export class GiftCardModalComponent implements OnInit, OnDestroy {
     }, 3000);
   }
 
-  private stopTimer() {
+  private stopTimer(): void {
     if (this.timer) { clearInterval(this.timer); this.timer = null; }
   }
 
-  private cancelSwap() {
+  private cancelSwap(): void {
     if (this.swapJob) { clearTimeout(this.swapJob); this.swapJob = null; }
     this.swapping.set(false);
   }
 
-  private cancelClose() {
+  private cancelClose(): void {
     if (this.closeJob) { clearTimeout(this.closeJob); this.closeJob = null; }
   }
 }

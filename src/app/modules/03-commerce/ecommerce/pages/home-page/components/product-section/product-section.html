@@ -4,7 +4,7 @@
       <h2 class="product-section__title">{{ title() }}</h2>
       <div class="product-section__accent"></div>
     </div>
-    <a [routerLink]="viewAllLink()" class="product-section__link product-section__link--desktop">
+    <a [routerLink]="viewAllPath()" [queryParams]="viewAllQueryParams()" class="product-section__link product-section__link--desktop">
       Ver todos <span class="arrow">&rarr;</span>
     </a>
   </div>
@@ -41,7 +41,7 @@
   </div>
 
   <div class="product-section__footer">
-    <a [routerLink]="viewAllLink()" class="product-section__link product-section__link--mobile">
+    <a [routerLink]="viewAllPath()" [queryParams]="viewAllQueryParams()" class="product-section__link product-section__link--mobile">
       Ver todos los {{ title() | lowercase }} <span class="arrow">&rarr;</span>
     </a>
   </div>

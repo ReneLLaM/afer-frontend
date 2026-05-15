@@ -5,8 +5,8 @@
         <h2 class="featured-grid__title">{{ category()?.name }}</h2>
         <div class="featured-grid__accent"></div>
       </div>
-      <a [href]="'/productos?category=' + category()?.slug" class="featured-grid__link featured-grid__link--desktop">
-        Ver productos
+      <a [routerLink]="['/productos']" [queryParams]="{ category: category()?.slug }" class="featured-grid__link featured-grid__link--desktop">
+        Ver productos <span class="arrow">&rarr;</span>
       </a>
     </div>
   }
@@ -28,8 +28,8 @@
     </div>
 
     <div class="featured-grid__footer">
-      <a [href]="'/productos?category=' + category()?.slug" class="featured-grid__link featured-grid__link--mobile">
-        Ver todos los productos de {{ category()?.name }} &rarr;
+      <a [routerLink]="['/productos']" [queryParams]="{ category: category()?.slug }" class="featured-grid__link featured-grid__link--mobile">
+        Ver todos los productos de {{ category()?.name }} <span class="arrow">&rarr;</span>
       </a>
     </div>
   }

@@ -1,8 +1,8 @@
-<div class="slide" [class.slide--active]="isActive">
+<div class="slide" [class.slide--active]="isActive()">
 
   <div
     class="slide__bg"
-    [style.backgroundImage]="'url(' + slide.image + ')'"
+    [style.backgroundImage]="'url(' + slide().image + ')'"
   ></div>
 
   <div class="slide__overlay-left"></div>
@@ -10,17 +10,17 @@
 
   <div class="slide__content">
     <div class="slide__text">
-      <h2 class="slide__title">{{ slide.title }}</h2>
+      <h2 class="slide__title">{{ slide().title }}</h2>
     </div>
 
     <div class="slide__bottom">
-      @if (slide.description) {
-        <p class="slide__subtitle">{{ slide.description }}</p>
+      @if (slide().description) {
+        <p class="slide__subtitle">{{ slide().description }}</p>
       }
-      
-      @if (slide.ctaLabel) {
-        <a [routerLink]="slide.ctaLink" [queryParams]="slide.queryParams" class="slide__cta">
-          {{ slide.ctaLabel }} <span class="slide__cta-icon">&raquo;</span>
+
+      @if (slide().ctaLabel) {
+        <a [routerLink]="slide().ctaLink" [queryParams]="slide().queryParams" class="slide__cta">
+          {{ slide().ctaLabel }} <span class="slide__cta-icon">&raquo;</span>
         </a>
       }
     </div>
