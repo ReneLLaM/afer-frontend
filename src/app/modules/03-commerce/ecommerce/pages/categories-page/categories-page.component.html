@@ -11,7 +11,7 @@
     </div>
   } @else {
     <div class="categories-tree">
-      @for (root of categories(); track root.id) {
+      @for (root of categories(); track root.slug) {
         <app-category-tree-node [node]="root" [level]="0" />
       } @empty {
         <div class="empty-state">

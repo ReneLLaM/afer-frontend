@@ -1,1 +1,47 @@
-<p>home works!</p>
+<app-hero-slider />
+
+<div class="home-main-container">
+  <app-category-carousel 
+    [selectedId]="selectedCategory()?.slug || null" 
+    (categorySelected)="onCategorySelected($event)"
+  />
+
+  <app-featured-product-grid 
+    [category]="selectedCategory()"
+  />
+
+  <!-- Global Product Sections -->
+  <app-product-section 
+    title="Productos Destacados" 
+    [isFeatured]="true" 
+    [limit]="20"
+    layout="carousel"
+    cardStyle="mini"
+    viewAllLink="/productos?isFeatured=true"
+  />
+
+  <app-product-section 
+    title="Tendencias" 
+    [isTrending]="true" 
+    [limit]="8"
+    layout="grid"
+    cardStyle="v2"
+    viewAllLink="/productos?isTrending=true"
+  />
+
+  <app-product-section 
+    title="Novedades" 
+    [isNew]="true" 
+    [limit]="8"
+    layout="original"
+    cardStyle="original"
+    viewAllLink="/productos?isNew=true"
+  />
+
+  <!-- Brands Section -->
+  <app-brand-section />
+</div>
+
+@if (showModal()) {
+  <app-modal (closed)="showModal.set(false)" />
+}

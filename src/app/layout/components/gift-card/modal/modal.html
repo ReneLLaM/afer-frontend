@@ -1,0 +1,66 @@
+<div
+  class="modal-overlay"
+  [class.is-closing]="closing()"
+  (click)="closeModal()"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <div class="bg-icons" aria-hidden="true">
+      <img src="/assets/gif-cart/lavadora.svg" class="bi i1" />
+      <img src="/assets/gif-cart/tv.svg"       class="bi i2" />
+      <img src="/assets/gif-cart/cocina.svg"   class="bi i3" />
+      <img src="/assets/gif-cart/plancha.svg"  class="bi i4" />
+      <img src="/assets/gif-cart/limpieza.svg" class="bi i5" />
+      <img src="/assets/gif-cart/lavadora.svg" class="bi i6" />
+      <img src="/assets/gif-cart/tv.svg"       class="bi i7" />
+      <img src="/assets/gif-cart/cocina.svg"   class="bi i8" />
+      <img src="/assets/gif-cart/plancha.svg"  class="bi i9" />
+      <img src="/assets/gif-cart/limpieza.svg" class="bi i10"/>
+      <img src="/assets/gif-cart/tv.svg"       class="bi i11"/>
+      <img src="/assets/gif-cart/lavadora.svg" class="bi i12"/>
+      <img src="/assets/gif-cart/limpieza.svg" class="bi i13"/>
+      <img src="/assets/gif-cart/cocina.svg"   class="bi i14"/>
+      <img src="/assets/gif-cart/plancha.svg"  class="bi i15"/>
+    </div>
+
+    <button class="modal-close" (click)="closeModal()" aria-label="Cerrar">×</button>
+
+    <div class="modal-body">
+      <div class="card-wrap">
+        <img
+          [src]="selected().image"
+          [alt]="selected().label"
+          class="card-img"
+          [class.swapping]="swapping()"
+        />
+      </div>
+      <div class="modal-text">
+        <p class="modal-title">
+          Regala <strong>felicidad</strong> en<br>
+          cada hogar con nuestra<br>
+          <strong>Gif Card</strong>
+        </p>
+        <a href="#" class="modal-cta">Ver más</a>
+      </div>
+    </div>
+
+    <div class="modal-colors">
+      <span class="colors-label">Personaliza tu tarjeta:</span>
+      <div class="colors-list">
+        @for (card of cards; track card.key; let i = $index) {
+          <button
+            class="color-btn"
+            [ngClass]="card.theme"
+            [class.active]="selectedIndex() === i"
+            (click)="selectCard(i)"
+          >
+            <span class="afer-logo">afer</span>
+          </button>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>

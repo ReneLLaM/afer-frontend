@@ -43,7 +43,7 @@ export class TreeFilterComponent {
   // ── Inputs / Outputs ────────────────────────────────────────────────────────
 
   data = input<TreeNode[]>([]);
-  title = input<string>('Categories');
+  title = input<string>('Categorías');
   selectedIdsInput = input<string[]>([], { alias: 'selectedIds' });
   selectionChange = output<string[]>();
 

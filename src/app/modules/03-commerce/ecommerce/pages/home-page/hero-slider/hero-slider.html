@@ -1,0 +1,39 @@
+@if (isLoading()) {
+  <div class="slider-skeleton">
+    <div class="slider-skeleton__shimmer"></div>
+  </div>
+}
+
+@if (!isLoading() && slides().length) {
+  <div class="slider-wrapper">
+    <div 
+       #sliderTrack
+       class="slider-track"
+       [class.slider-track--dragging]="isDragging()"
+       [class.slider-track--to-left]="direction() === 'left'"
+       [class.slider-track--to-right]="direction() === 'right'"
+    >
+      @for (item of visibleSlides(); track item.position) {
+        <div
+          class="slider-track__item slider-track__item--{{ item.position }}"
+          [ngStyle]="getDynamicStyles(item.position)"
+          (click)="handleItemClick(item.position)"
+        >
+          <app-hero-slide-item [slide]="item.slide" [isActive]="item.position === 'active'" />
+        </div>
+      }
+    </div>
+
+    <div class="slider-dots" role="tablist">
+      @for (slide of slides(); track $index; let i = $index) {
+        <button
+          class="slider-dots__dot"
+          [class.slider-dots__dot--active]="i === currentIndex()"
+          (click)="goTo(i)"
+          [attr.aria-label]="'Diapositiva ' + (i + 1)"
+          role="tab"
+        ></button>
+      }
+    </div>
+  </div>
+}

@@ -19,13 +19,15 @@ enum SortByProductsPublic {
 interface Options {
   limit?: number;
   offset?: number;
-  categoryIds?: string[];
-  brandIds?: string[];
+  categories?: string[];
+  brands?: string[];
   isFeatured?: boolean;
   isTrending?: boolean;
   isNew?: boolean;
   order?: 'ASC' | 'DESC';
   sortBy?: SortByProductsPublic;
+  search?: string;
+  productIds?: string[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -54,13 +56,15 @@ export class ProductsService {
     const {
       limit = 10,
       offset = 0,
-      categoryIds,
-      brandIds,
+      categories,
+      brands,
       isFeatured,
       isTrending,
       isNew,
       order = 'ASC',
       sortBy = 'title',
+      search,
+      productIds,
     } = options;
 
     let params = new HttpParams()
@@ -69,18 +73,24 @@ export class ProductsService {
       .set('order', order)
       .set('sortBy', sortBy);
 
+    if (search) params = params.set('search', search);
     if (isFeatured !== undefined) params = params.set('isFeatured', isFeatured.toString());
     if (isTrending !== undefined) params = params.set('isTrending', isTrending.toString());
     if (isNew !== undefined) params = params.set('isNew', isNew.toString());
 
-    if (categoryIds && categoryIds.length > 0) {
-      categoryIds.forEach(id => {
-        params = params.append('categoryIds', id);
+    if (categories && categories.length > 0) {
+      categories.forEach(slug => {
+        params = params.append('categories', slug);
       });
     }
-    if (brandIds && brandIds.length > 0) {
-      brandIds.forEach(id => {
-        params = params.append('brandIds', id);
+    if (brands && brands.length > 0) {
+      brands.forEach(slug => {
+        params = params.append('brands', slug);
+      });
+    }
+    if (productIds && productIds.length > 0) {
+      productIds.forEach(id => {
+        params = params.append('productIds', id);
       });
     }
 
@@ -112,12 +122,15 @@ export class ProductsService {
       .pipe(tap((response) => console.log(response)));
   }
 
-  getBrandsByCategories(categoryIds: string[]): Observable<BrandsResponse> {
+  getBrandsByCategories(categories: string[], search?: string): Observable<BrandsResponse> {
     let params = new HttpParams();
-    if (categoryIds && categoryIds.length > 0) {
-      categoryIds.forEach((id) => {
-        params = params.append('categoryIds', id);
+    if (categories && categories.length > 0) {
+      categories.forEach((slug) => {
+        params = params.append('categories', slug);
       });
+    }
+    if (search) {
+      params = params.set('search', search);
     }
     return this.http
       .get<BrandsResponse>(`${baseUrl}/brands/categories-public`, { params })

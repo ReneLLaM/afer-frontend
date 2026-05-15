@@ -1,0 +1,128 @@
+
+.brand-section {
+  width: 100%;
+  padding: 4rem 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 80%);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }
+
+  &__title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: 900;
+    color: var(--afer-text-primary);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  &__subtitle {
+    font-size: 1rem;
+    color: var(--afer-text-secondary);
+    margin: 4px 0 0 0;
+  }
+
+  &__view-all {
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--afer-secondary);
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--afer-primary);
+      transform: translateX(4px);
+    }
+
+    @media (max-width: 768px) {
+      display: none;
+      &--mobile {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        padding: 1rem;
+        background: color-mix(in srgb, var(--afer-secondary), transparent 95%);
+        border-radius: 12px;
+      }
+    }
+  }
+
+  &__carousel {
+    width: 100%;
+    overflow-x: auto;
+    padding: 1rem 0.5rem;
+    cursor: grab;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+    &:active { cursor: grabbing; }
+  }
+
+  &__track {
+    display: flex;
+    gap: 2rem;
+    width: max-content;
+    padding: 0 1rem;
+    align-items: center;
+  }
+
+  &__footer {
+    display: none;
+    @media (max-width: 768px) {
+      display: block;
+      margin-top: 1rem;
+    }
+  }
+}
+
+.brand-item {
+  flex: 0 0 auto;
+  width: 180px;
+  transition: transform 0.3s ease;
+  &:hover { transform: translateY(-5px); }
+  @media (max-width: 768px) { width: 140px; }
+}
+
+.brand-skeleton {
+  width: 180px;
+  height: 100px;
+  background: var(--afer-hover);
+  border-radius: 12px;
+  animation: pulse 1.5s infinite ease-in-out;
+  @media (max-width: 768px) { width: 140px; height: 80px; }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+:host-context([data-theme='dark']) {
+  .brand-section {
+    &__view-all--mobile {
+      background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
+    }
+  }
+}
+
+/* Ocultar badge destacado en la home por CSS */
+:host ::ng-deep .brand-card__badge {
+  display: none !important;
+}

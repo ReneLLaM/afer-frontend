@@ -1,0 +1,33 @@
+<section class="featured-grid" [hidden]="products().length === 0 && !isLoading()">
+  @if (products().length > 0 || isLoading()) {
+    <div class="featured-grid__header">
+      <h2 class="featured-grid__title">{{ category()?.name }}</h2>
+      <a [href]="'/productos?category=' + category()?.slug" class="featured-grid__link featured-grid__link--desktop">
+        Ver productos
+      </a>
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="featured-grid__grid">
+      <skeleton-card [count]="6" />
+    </div>
+  } @else {
+    <div class="featured-grid__grid">
+      @for (product of products(); track product.id; let i = $index) {
+        <app-product-card-v2 
+          [class.hide-mobile]="i >= 3"
+          [product]="product" 
+          (addToCart)="handleAddToCart($event)"
+          (favoriteToggle)="handleFavorite($event)"
+        />
+      }
+    </div>
+
+    <div class="featured-grid__footer">
+      <a [href]="'/productos?category=' + category()?.slug" class="featured-grid__link featured-grid__link--mobile">
+        Ver todos los productos de {{ category()?.name }} &rarr;
+      </a>
+    </div>
+  }
+</section>

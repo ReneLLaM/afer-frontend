@@ -1,5 +1,5 @@
 <article class="brand-card">
-  <a [routerLink]="getBrandUrl()" class="brand-card__link">
+  <a [routerLink]="getBrandUrl()" [queryParams]="getBrandParams()" class="brand-card__link">
     <div 
       class="brand-card__visual"
       [style.background-color]="brand().backgroundColor || '#ffffff'"

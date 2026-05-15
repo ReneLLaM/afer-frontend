@@ -1,0 +1,48 @@
+<section class="product-section" [hidden]="products().length === 0 && !isLoading()">
+  <div class="product-section__header">
+    <div class="product-section__title-wrapper">
+      <h2 class="product-section__title">{{ title() }}</h2>
+      <div class="product-section__accent"></div>
+    </div>
+    <a [routerLink]="viewAllLink()" class="product-section__link product-section__link--desktop">
+      Ver todos <span class="arrow">&rarr;</span>
+    </a>
+  </div>
+
+  <div class="product-section__container" [class.product-section__container--carousel]="layout() === 'carousel'">
+    <div class="product-section__content" [ngClass]="'product-section__content--' + layout()">
+      @if (isLoading()) {
+        <skeleton-card [count]="layout() === 'carousel' ? 6 : 4" />
+      } @else {
+        @for (product of products(); track product.id; let i = $index) {
+          <div class="product-item" [class.hide-mobile]="layout() === 'grid' && i >= 3">
+            @if (cardStyle() === 'v2') {
+              <app-product-card-v2 
+                [product]="product" 
+                (addToCart)="handleAddToCart($event)"
+                (favoriteToggle)="handleFavorite($event)"
+              />
+            } @else if (cardStyle() === 'mini') {
+              <app-product-card-mini
+                [product]="product"
+                (addToCart)="handleAddToCart($event)"
+              />
+            } @else {
+              <product-card
+                [product]="product"
+                (addToCart)="handleAddToCart($event)"
+                (favoriteToggle)="handleFavorite($event)"
+              />
+            }
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="product-section__footer">
+    <a [routerLink]="viewAllLink()" class="product-section__link product-section__link--mobile">
+      Ver todos los {{ title() | lowercase }} <span class="arrow">&rarr;</span>
+    </a>
+  </div>
+</section>

@@ -27,7 +27,7 @@ export class ListFilterComponent {
   // ── Inputs / Outputs ────────────────────────────────────────────────────────
 
   data = input<FilterItem[]>([]);
-  title = input<string>('Filter');
+  title = input<string>('Filtro');
   selectedIdsInput = input<string[]>([], { alias: 'selectedIds' });
   selectionChange = output<string[]>();
 

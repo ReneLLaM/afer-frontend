@@ -1,0 +1,144 @@
+.featured-grid {
+  width: 100%;
+  margin: 0;
+  padding: 20px 20px 40px 20px;
+  background: var(--afer-surface);
+  border-radius: 0 0 30px 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(128, 128, 128, 0.05);
+  border-top: none;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 10px 12px 30px 12px;
+    border-radius: 0 0 20px 20px;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 0 10px;
+  }
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--afer-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+
+  &__link {
+    font-size: 0.85rem;
+    color: var(--afer-secondary);
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    padding: 8px 16px;
+    background: color-mix(in srgb, var(--afer-secondary), transparent 92%);
+    border-radius: 10px;
+
+    &:hover {
+      background: var(--afer-secondary);
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    &--mobile {
+      display: none;
+    }
+  }
+
+  &__footer {
+    display: none;
+    justify-content: center;
+    margin-top: 24px;
+    width: 100%;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    align-items: stretch;
+
+    @media (max-width: 1100px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 650px) {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+
+  &__empty {
+    display: none;
+  }
+}
+
+.hide-mobile {
+  @media (max-width: 768px) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .featured-grid {
+    &__grid {
+      grid-template-columns: repeat(3, 1fr); // 3 columns on small desktop
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .featured-grid {
+    &__grid {
+      grid-template-columns: repeat(2, 1fr); // 2 columns on tablet
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .featured-grid {
+    padding: 15px 12px 30px 12px;
+    border-radius: 0 0 20px 20px;
+
+    &__grid {
+      grid-template-columns: 1fr; // 1 column on mobile (horizontal style preserved in card)
+      gap: 12px;
+      padding-top: 10px;
+    }
+
+    &__header {
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+
+    &__link--desktop {
+      display: none;
+    }
+
+    &__footer {
+      display: flex;
+    }
+
+    &__link--mobile {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--afer-surface);
+      border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 80%);
+      padding: 12px;
+      font-size: 0.9rem;
+    }
+
+    &__title {
+      font-size: 1.1rem;
+    }
+  }
+}

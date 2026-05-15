@@ -1,0 +1,34 @@
+<section class="category-carousel">
+  <div class="category-carousel__header">
+    <h2 class="category-carousel__title">Principales categorías</h2>
+    <a href="/categorias" class="category-carousel__link">Ver todas las categorías &rarr;</a>
+  </div>
+
+  <div class="category-carousel__track-container">
+    <button 
+      class="category-carousel__btn category-carousel__btn--prev" 
+      (click)="scroll('left')"
+      aria-label="Anterior"
+    >
+      &lsaquo;
+    </button>
+
+    <div class="category-carousel__track" #scrollContainer>
+      @for (cat of categories(); track cat.slug) {
+        <app-category-card 
+          [category]="cat" 
+          [isActive]="selectedSlug() === cat.slug"
+          (selected)="onCategorySelect($event)"
+        />
+      }
+    </div>
+
+    <button 
+      class="category-carousel__btn category-carousel__btn--next" 
+      (click)="scroll('right')"
+      aria-label="Siguiente"
+    >
+      &rsaquo;
+    </button>
+  </div>
+</section>

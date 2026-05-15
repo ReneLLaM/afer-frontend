@@ -1,0 +1,420 @@
+.product-card {
+  position: relative;
+  display: flex;
+  height: 220px;
+  border-radius: clamp(12px, 1.5vw, 16px);
+  overflow: hidden;
+  background: var(--afer-surface);
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  padding: 12px;
+  gap: 16px;
+  transition: 
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--afer-secondary);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    
+    .product-card__img {
+      transform: scale(1.08);
+    }
+  }
+
+  /* LADO IZQUIERDO: Imagen */
+  &__left {
+    position: relative;
+    width: 160px;
+    min-width: 160px;
+    height: 100%;
+    background: var(--afer-background);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(128, 128, 128, 0.05);
+    transition: transform 0.3s ease;
+  }
+
+  &__badges-top {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    z-index: 2;
+  }
+
+  .badge-pill--brand {
+    color: var(--afer-secondary);
+    background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border-radius: 12px;
+    border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 80%);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--afer-secondary);
+      color: #ffffff;
+    }
+  }
+
+  .badge-sku {
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--afer-text-muted);
+    background: var(--afer-background);
+    padding: 1px 4px;
+    border-radius: 3px;
+    border: 1px solid rgba(128, 128, 128, 0.05);
+  }
+
+  &__img-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+  }
+
+  /* LADO DERECHO: Información */
+  &__right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4px 0;
+    min-width: 0;
+  }
+
+  &__info-top {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__status-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+
+  .status-badge {
+    font-size: 7px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: white;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    backdrop-filter: blur(4px);
+
+    &--trending { 
+      background: color-mix(in srgb, var(--afer-secondary), transparent 20%); 
+    }
+    &--featured { 
+      background: color-mix(in srgb, var(--afer-accent-absolute), transparent 20%);
+    }
+    &--new {
+      background: rgba(16, 185, 129, 0.8);
+    }
+  }
+
+  .product-card__category {
+    margin-bottom: 2px;
+  }
+
+  .cat-pill {
+    display: inline-block;
+    color: var(--afer-secondary);
+    background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border-radius: 12px;
+    border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 80%);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--afer-secondary);
+      color: #ffffff;
+    }
+  }
+
+  &__title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 4px 0;
+    color: var(--afer-text-primary);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 3.6em; // Consistent 3 lines height
+  }
+
+  &__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__price-wrapper {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+
+    .currency {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--afer-secondary);
+    }
+
+    .amount {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--afer-text-primary);
+      letter-spacing: -0.5px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-add {
+    height: 38px;
+    padding: 0 15px;
+    background: var(--afer-secondary);
+    color: white;
+    border: none;
+    border-radius: 12px 0;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--afer-secondary), transparent 80%);
+
+    &:hover {
+      background: color-mix(in srgb, var(--afer-secondary), black 10%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px color-mix(in srgb, var(--afer-secondary), transparent 70%);
+    }
+
+    &__icon {
+      width: 18px;
+      height: 18px;
+      color: white;
+      transition: filter 0.3s ease;
+    }
+
+    // MODO OSCURO: Estilo Glass (Copiado de product-card)
+    :host-context([data-theme='dark']) & {
+      background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 90%);
+      color: var(--afer-secondary-absolute);
+      border: 1px solid color-mix(in srgb, var(--afer-secondary-absolute), transparent 75%);
+      box-shadow: none;
+
+      .btn-add__icon {
+        color: var(--afer-secondary-absolute);
+      }
+
+      &:hover {
+        background: var(--afer-secondary-absolute);
+        color: #ffffff;
+        box-shadow: 0 8px 20px color-mix(in srgb, var(--afer-secondary-absolute), transparent 80%);
+        
+        .btn-add__icon {
+          color: #ffffff;
+        }
+      }
+    }
+  }
+
+  .btn-fav {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    border: 1px solid rgba(128, 128, 128, 0.1);
+    background: var(--afer-surface);
+    color: var(--afer-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      background: #fff1f2;
+      color: #f43f5e;
+      border-color: #fecdd3;
+      transform: translateY(-2px);
+    }
+
+    &--active {
+      color: #f43f5e;
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+  .product-card {
+    height: auto;
+    min-height: 200px;
+    &__left {
+      width: 140px;
+      min-width: 140px;
+      height: 180px;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .product-card {
+    height: auto;
+    min-height: 180px;
+    padding: 10px;
+    gap: 12px;
+    &__left {
+      width: 130px;
+      min-width: 130px;
+      height: 160px;
+    }
+    &__title {
+      font-size: 0.9rem;
+      -webkit-line-clamp: 3;
+      height: 3.6em;
+    }
+    .amount {
+      font-size: 1.3rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .product-card {
+    height: auto;
+    min-height: 160px;
+    padding: 10px;
+    gap: 12px;
+    border-radius: 16px;
+    &__left {
+      width: 120px;
+      min-width: 120px;
+      height: 140px;
+    }
+    &__title {
+      font-size: 0.85rem;
+      -webkit-line-clamp: 3;
+      height: 3.6em;
+    }
+    .amount {
+      font-size: 1.25rem;
+    }
+    .btn-add {
+      height: 34px;
+      font-size: 10px;
+    }
+    .btn-fav {
+      width: 34px;
+      height: 34px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    height: auto;
+    min-height: 140px;
+    padding: 8px;
+    gap: 10px;
+    border-radius: 12px;
+
+    &__left {
+      width: 100px;
+      min-width: 100px;
+      height: 120px;
+      border-radius: 10px;
+    }
+
+    &__right {
+      padding: 0;
+    }
+
+    &__title {
+      font-size: 0.8rem;
+      line-height: 1.2;
+      margin: 2px 0 4px 0;
+      height: 2.4em; // 2 lines on very small screens to save space
+      -webkit-line-clamp: 2;
+    }
+
+    .amount {
+      font-size: 1.15rem;
+    }
+
+    .currency {
+      font-size: 0.7rem;
+    }
+
+    &__actions {
+      gap: 4px;
+    }
+
+    .btn-add {
+      height: 32px;
+      font-size: 8px;
+      padding: 0 6px;
+      border-radius: 8px 0;
+      
+      &__icon {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    .btn-fav {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+}

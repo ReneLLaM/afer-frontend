@@ -65,8 +65,8 @@ export class ProductDetailPage {
       if (!p || !p.categories || p.categories.length === 0) {
         return of(null);
       }
-      const categoryIds = p.categories.map((c: any) => c.id);
-      return this.productService.getProducts({ limit: 10, categoryIds }).pipe(
+      const categorySlugs = p.categories.map((c: any) => c.slug);
+      return this.productService.getProducts({ limit: 10, categories: categorySlugs }).pipe(
         catchError(() => of(null))
       );
     },

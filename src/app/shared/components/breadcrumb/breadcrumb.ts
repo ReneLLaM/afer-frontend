@@ -21,9 +21,16 @@ export class Breadcrumb implements OnInit {
 
   // Almacena la estructura base (con slugs o labels por defecto)
   routeBreadcrumbs = signal<BreadcrumbItem[]>([]);
+  currentUrl = signal<string>('');
 
   // Computed reactivo: reemplaza los slugs por los nombres reales si existen en el servicio
   displayBreadcrumbs = computed(() => {
+    // Si estamos en el home (ignorando query params o fragments), no mostramos nada
+    const currentPath = this.currentUrl().split(/[?#]/)[0];
+    if (currentPath === '/' || currentPath === '') {
+      return [];
+    }
+
     const dynamicLabels = this.breadcrumbService.dynamicLabels();
     return this.routeBreadcrumbs().map(b => ({
       ...b,
@@ -32,9 +39,12 @@ export class Breadcrumb implements OnInit {
   });
 
   ngOnInit() {
+    this.currentUrl.set(this.router.url);
+
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
+      .subscribe((event: any) => {
+        this.currentUrl.set(event.urlAfterRedirects || event.url);
         this.routeBreadcrumbs.set(this.buildBreadcrumbs(this.activatedRoute.root));
       });
       

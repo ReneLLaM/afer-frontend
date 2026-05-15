@@ -1,0 +1,17 @@
+<div 
+  class="category-card" 
+  [class.category-card--active]="isActive()"
+  (click)="selected.emit(category())"
+>
+  <div class="category-card__icon-wrapper">
+    <img 
+      [src]="category().image || 'assets/images/placeholder.png'" 
+      [alt]="category().name"
+      class="category-card__icon"
+    >
+  </div>
+  <span class="category-card__name">{{ category().name }}</span>
+  @if (isActive()) {
+    <div class="category-card__indicator"></div>
+  }
+</div>

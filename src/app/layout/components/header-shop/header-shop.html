@@ -179,8 +179,21 @@
     </button>
 
     <label class="search-input">
-      <input type="search" placeholder="Buscar productos..." />
-      <button class="search-btn">
+      <input
+         type="search"
+         placeholder="Buscar productos..."
+         [ngModel]="searchTerm()"
+         (ngModelChange)="searchTerm.set($event)"
+         (keydown)="onKeydown($event)"
+       />
+       @if (searchTerm()) {
+         <button class="clear-btn" (click)="clearSearch()" type="button">
+           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+             <path d="M18 6L6 18M6 6l12 12"></path>
+           </svg>
+         </button>
+       }
+       <button class="search-btn" (click)="onSearch()">
         <svg
           class="icon"
           width="32"

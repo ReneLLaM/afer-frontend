@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { switchMap, of } from 'rxjs';
 
 import { ProductCard } from '../../../components/product-card/product-card';
 import { SkeletonCard } from '../../../../../../shared/components/skeleton-card/skeleton-card';
@@ -11,6 +12,7 @@ import { ProductsService } from '../../../services/products.service';
 import { PaginationComponent } from '../../../../../../shared/components/pagination/pagination';
 import { TreeFilterComponent } from './components/tree-filter/tree-filter';
 import { ListFilterComponent } from './components/list-filter/list-filter';
+import { BrandsResponse } from '../../brands-page/interfaces/brands-response.interface';
 
 @Component({
   selector: 'products-page',
@@ -31,21 +33,48 @@ export class ProductsPage {
     stream: () => this.productsService.getTreeCategories(),
   });
 
-  readonly categories = computed(() => this.categoriesResource.value()?.data ?? []);
+  readonly categories = computed(() => {
+    const data = this.categoriesResource.value()?.data ?? [];
+    return this.mapCategoriesToSlugs(data);
+  });
 
   /**
    * CARGA DE MARCAS PARA EL FILTRO DE LISTA:
-   * Depende de las categorías seleccionadas.
+   * Depende de las categorías seleccionadas y del término de búsqueda.
+   * Si no hay resultados para los filtros aplicados, mostramos todas las marcas.
    */
-  readonly brandsResource = rxResource({
-    params: () => ({ categories: this.category() }),
+  readonly brandsResource = rxResource<BrandsResponse, { categories: string | null, search: string | null }>({
+    params: () => ({ 
+      categories: this.category(),
+      search: this.search() 
+    }),
     stream: ({ params }) => {
-      const categoryIds = params.categories ? params.categories.split(',').filter(id => !!id) : [];
-      return this.productsService.getBrandsByCategories(categoryIds);
+      const categorySlugs = params.categories ? params.categories.split(',').filter(s => !!s) : [];
+      
+      return this.productsService.getBrandsByCategories(categorySlugs, params.search || undefined).pipe(
+        switchMap(response => {
+          // Si no hay marcas y hay filtros aplicados, cargar todas las marcas como fallback
+          if (response.data.length === 0 && (params.categories || params.search)) {
+            return this.productsService.getBrandsByCategories([], undefined);
+          }
+          return of(response);
+        })
+      );
     },
   });
 
-  readonly brands = computed(() => this.brandsResource.value()?.data ?? []);
+  readonly brands = computed(() => {
+    const data = this.brandsResource.value()?.data ?? [];
+    return data.map((brand: any) => ({ ...brand, id: brand.slug })); // Usar slug como ID para el filtro
+  });
+
+  private mapCategoriesToSlugs(categories: any[]): any[] {
+    return categories.map(cat => ({
+      ...cat,
+      id: cat.slug, // Usar slug como ID para el filtro
+      children: cat.children ? this.mapCategoriesToSlugs(cat.children) : []
+    }));
+  }
 
   /**
    * LEER PÁGINA DE LA URL:
@@ -59,6 +88,8 @@ export class ProductsPage {
   readonly isFeatured = computed(() => this.urlParams()?.get('isFeatured') === 'true');
   readonly isTrending = computed(() => this.urlParams()?.get('isTrending') === 'true');
   readonly isNew = computed(() => this.urlParams()?.get('isNew') === 'true');
+  readonly search = computed(() => this.urlParams()?.get('search') || null);
+  readonly productIds = computed(() => this.urlParams()?.get('productIds') || null);
 
   constructor() {
     /**
@@ -77,7 +108,7 @@ export class ProductsPage {
         return;
       }
 
-      const availableIds = new Set(availableBrands.map((b) => b.id));
+      const availableIds = new Set(availableBrands.map((b: any) => b.id));
       const currentSelected = this.brand() ? this.brand()!.split(',') : [];
 
       if (currentSelected.length === 0) return;
@@ -106,6 +137,8 @@ export class ProductsPage {
       isFeatured: this.isFeatured(),
       isTrending: this.isTrending(),
       isNew: this.isNew(),
+      search: this.search(),
+      productIds: this.productIds(),
     }),
     stream: ({ params }) => {
       const limit = 12;
@@ -114,13 +147,15 @@ export class ProductsPage {
       return this.productsService.getProducts({ 
         limit, 
         offset,
-        categoryIds: params.category ? params.category.split(',').filter(id => !!id) : undefined,
-        brandIds: params.brand ? params.brand.split(',').filter(id => !!id) : undefined,
+        categories: params.category ? params.category.split(',').filter(id => !!id) : undefined,
+        brands: params.brand ? params.brand.split(',').filter(id => !!id) : undefined,
+        productIds: params.productIds ? params.productIds.split(',').filter(id => !!id) : undefined,
         sortBy: (params.sortBy as any) || undefined,
         order: (params.order as any) || undefined,
         isFeatured: params.isFeatured || undefined,
         isTrending: params.isTrending || undefined,
         isNew: params.isNew || undefined,
+        search: params.search || undefined,
       });
     },
   });
@@ -145,12 +180,12 @@ export class ProductsPage {
     console.log('Carrito:', productId);
   }
 
-  handleSelectionChange(categoryIds: string[]): void {
-    this.navegar({ category: categoryIds.length > 0 ? categoryIds.join(',') : null, page: 1 });
+  handleSelectionChange(categories: string[]): void {
+    this.navegar({ category: categories.length > 0 ? categories.join(',') : null, page: 1 });
   }
 
-  handleBrandSelectionChange(brandIds: string[]): void {
-    this.navegar({ brand: brandIds.length > 0 ? brandIds.join(',') : null, page: 1 });
+  handleBrandSelectionChange(brands: string[]): void {
+    this.navegar({ brand: brands.length > 0 ? brands.join(',') : null, page: 1 });
   }
 
   handleSortChange(sortBy: string | null): void {
@@ -183,11 +218,11 @@ export class ProductsPage {
   }
 
   isAnyFilterApplied = computed(() => {
-    return !!(this.category() || this.brand() || this.sortBy() || this.order() || this.isFeatured() || this.isTrending() || this.isNew());
+    return !!(this.category() || this.brand() || this.sortBy() || this.order() || this.isFeatured() || this.isTrending() || this.isNew() || this.search() || this.productIds());
   });
 
   // Función para cambiar de página en la URL
-  private navegar(params: any) {
+  navegar(params: any) {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,

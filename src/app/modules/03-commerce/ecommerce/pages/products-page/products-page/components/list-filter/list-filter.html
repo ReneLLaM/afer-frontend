@@ -4,7 +4,7 @@
   <div class="list-header">
     <span class="list-title">{{ title() }}</span>
     @if (selectedCount() > 0) {
-      <span class="count-badge">{{ selectedCount() }} selected</span>
+      <span class="count-badge">{{ selectedCount() }} seleccionados</span>
     }
   </div>
 
@@ -15,12 +15,12 @@
       type="text"
       autocomplete="off"
       spellcheck="false"
-      placeholder="Filter by name…"
+      placeholder="Filtrar por nombre…"
       [ngModel]="filterText()"
       (ngModelChange)="filterText.set($event)"
     />
     @if (filterText()) {
-      <button class="filter-clear" type="button" (click)="clearFilter()" aria-label="Clear filter">
+      <button class="filter-clear" type="button" (click)="clearFilter()" aria-label="Limpiar filtro">
         <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
           <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
         </svg>
@@ -38,8 +38,8 @@
           <circle cx="11" cy="11" r="8"/>
           <path d="M21 21l-4.35-4.35"/>
         </svg>
-        <span>No results for <em>"{{ filterText() }}"</em></span>
-        <button type="button" class="empty-clear" (click)="clearFilter()">Clear filter</button>
+        <span>No hay resultados para <em>"{{ filterText() }}"</em></span>
+        <button type="button" class="empty-clear" (click)="clearFilter()">Limpiar filtro</button>
       </div>
 
     } @else {

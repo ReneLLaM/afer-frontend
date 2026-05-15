@@ -1,0 +1,111 @@
+:host {
+  display: block;
+}
+
+.category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 20px 20px 0 0; // Slightly more rounded
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: auto;
+  min-width: 140px;
+  position: relative;
+  border: 1px solid transparent;
+  border-bottom: 4px solid transparent;
+  margin-bottom: -1px; // Ensure it overlaps with the container below
+
+  &:hover {
+    background: color-mix(in srgb, var(--afer-secondary), transparent 96%);
+    .category-card__icon-wrapper {
+      transform: translateY(-4px);
+      background: var(--afer-surface);
+    }
+    .category-card__name {
+      color: var(--afer-secondary);
+    }
+  }
+
+  &--active {
+    background: var(--afer-surface);
+    border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 80%);
+    border-bottom: 4px solid var(--afer-secondary);
+    box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.02);
+
+    .category-card__icon-wrapper {
+      background: var(--afer-background);
+      box-shadow: 0 8px 20px color-mix(in srgb, var(--afer-secondary), transparent 85%);
+      border: 2px solid var(--afer-secondary);
+    }
+
+    .category-card__name {
+      color: var(--afer-secondary);
+      font-weight: 800;
+    }
+  }
+
+  &__icon-wrapper {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--afer-background);
+    border-radius: 50%;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  &__icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  &__name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--afer-text-primary);
+    text-align: center;
+    transition: all 0.3s ease;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  &__indicator {
+    display: none; // Removed in favor of border-bottom
+  }
+}
+
+@media (max-width: 640px) {
+  .category-card {
+    width: 110px;
+    min-width: 110px;
+    padding: 16px 12px;
+
+    &__icon-wrapper {
+      width: 64px;
+      height: 64px;
+    }
+
+    &__icon {
+      width: 36px;
+      height: 36px;
+    }
+
+    &__name {
+      font-size: 0.75rem;
+    }
+  }
+}

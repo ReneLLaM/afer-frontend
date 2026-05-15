@@ -1,6 +1,7 @@
-import { Component, input, signal, HostBinding, forwardRef } from '@angular/core';
+import { Component, input, signal, HostBinding, forwardRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Datum } from '../../pages/categories-page/interfaces/categories-response.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-category-tree-node',
@@ -10,6 +11,7 @@ import { Datum } from '../../pages/categories-page/interfaces/categories-respons
   styleUrl: './category-tree-node.component.scss',
 })
 export class CategoryTreeNodeComponent {
+  private readonly router = inject(Router);
   node = input.required<Datum>();
   level = input<number>(0);
 
@@ -30,7 +32,33 @@ export class CategoryTreeNodeComponent {
     this.isExpanded.update(v => !v);
   }
 
-  trackById(_index: number, item: Datum): string {
-    return item.id;
+  viewProducts(event: Event): void {
+    event.stopPropagation();
+    const node = this.node();
+    
+    // Obtener todos los slugs de la categoría y sus descendientes
+    const allSlugs = this.getAllCategorySlugs(node);
+    
+    // Redirigir a la página de productos con los slugs en la URL
+    this.router.navigate(['/productos'], {
+      queryParams: {
+        category: allSlugs.join(','),
+        page: 1
+      }
+    });
+  }
+
+  private getAllCategorySlugs(node: Datum): string[] {
+    let slugs = [node.slug];
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(child => {
+        slugs = [...slugs, ...this.getAllCategorySlugs(child)];
+      });
+    }
+    return slugs;
+  }
+
+  trackBySlug(_index: number, item: Datum): string {
+    return item.slug;
   }
 }
