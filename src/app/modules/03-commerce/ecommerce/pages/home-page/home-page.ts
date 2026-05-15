@@ -1,4 +1,5 @@
-import { Component, signal, inject, effect } from '@angular/core';
+import { Component, signal, inject, effect, ChangeDetectionStrategy } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { GiftCardModalComponent } from '../../../../../layout/components/gift-card/modal/modal';
 import { HeroSlider } from './hero-slider/hero-slider';
 import { CategoryCarousel } from './components/category-carousel/category-carousel';
@@ -11,36 +12,43 @@ import { HomeService, FeaturedCategory } from '../../services/home.service';
   selector: 'home-page',
   standalone: true,
   imports: [
-    GiftCardModalComponent, 
-    HeroSlider, 
-    CategoryCarousel, 
+    GiftCardModalComponent,
+    HeroSlider,
+    CategoryCarousel,
     FeaturedProductGrid,
     ProductSection,
-    BrandSection
+    BrandSection,
   ],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePage {
   private homeService = inject(HomeService);
-  
-  showModal = signal(false);
+
+  showModal = signal(this.shouldShowGiftCardModal());
+  featuredCategories = toSignal<FeaturedCategory[]>(
+    this.homeService.getFeaturedCategories(),
+    { initialValue: [] }
+  );
   selectedCategory = signal<FeaturedCategory | null>(null);
 
   constructor() {
-    // Verificar si el modal ya se mostró en esta sesión
-    const hasSeenModal = sessionStorage.getItem('hasSeenGiftCardModal');
-    if (!hasSeenModal) {
-      this.showModal.set(true);
-      sessionStorage.setItem('hasSeenGiftCardModal', 'true');
-    }
-
-    // Cargar la primera categoría destacada por defecto cuando estén disponibles
-    this.homeService.getFeaturedCategories().subscribe(categories => {
+    effect(() => {
+      const categories = this.featuredCategories();
       if (categories.length > 0 && !this.selectedCategory()) {
         this.selectedCategory.set(categories[0]);
       }
     });
+  }
+
+  private shouldShowGiftCardModal(): boolean {
+    const hasSeen = sessionStorage.getItem('hasSeenGiftCardModal');
+    if (!hasSeen) {
+      sessionStorage.setItem('hasSeenGiftCardModal', 'true');
+      return true;
+    }
+    return false;
   }
 
   onCategorySelected(category: FeaturedCategory) {

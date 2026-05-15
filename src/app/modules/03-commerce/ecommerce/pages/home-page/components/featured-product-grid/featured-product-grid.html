@@ -1,7 +1,10 @@
 <section class="featured-grid" [hidden]="products().length === 0 && !isLoading()">
   @if (products().length > 0 || isLoading()) {
     <div class="featured-grid__header">
-      <h2 class="featured-grid__title">{{ category()?.name }}</h2>
+      <div class="featured-grid__title-wrapper">
+        <h2 class="featured-grid__title">{{ category()?.name }}</h2>
+        <div class="featured-grid__accent"></div>
+      </div>
       <a [href]="'/productos?category=' + category()?.slug" class="featured-grid__link featured-grid__link--desktop">
         Ver productos
       </a>

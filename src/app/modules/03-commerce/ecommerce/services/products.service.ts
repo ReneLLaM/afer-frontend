@@ -1,22 +1,22 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ProductsResponse } from '../pages/products-page/interfaces/products-response.interface';
 import { Observable, of, tap } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
+import { ProductsResponse } from '../pages/products-page/interfaces/products-response.interface';
 import { ProductResponse } from '../pages/products-page/interfaces/product-response.interface';
 import { CategoriesResponse } from '../pages/categories-page/interfaces/categories-response.interface';
 import { BrandsResponse } from '../pages/brands-page/interfaces/brands-response.interface';
+import { environment } from '../../../../../environments/environment';
 
 const baseUrl = environment.baseUrl;
 
-enum SortByProductsPublic {
+export enum SortByProductsPublic {
   title = 'title',
   price = 'price',
   brand = 'brand',
   category = 'category',
 }
 
-interface Options {
+export interface ProductsQuery {
   limit?: number;
   offset?: number;
   categories?: string[];
@@ -33,25 +33,17 @@ interface Options {
 @Injectable({ providedIn: 'root' })
 export class ProductsService {
   private readonly http = inject(HttpClient);
-  // --- CACHÉ INTELIGENTE ---
-  private cache = new Map<string, { data: ProductsResponse, timestamp: number }>();
+  private cache = new Map<string, { data: ProductsResponse; timestamp: number }>();
+  private readonly TTL = 5 * 60 * 1000; // 5 minutos
 
-  getProducts(options: Options): Observable<ProductsResponse> {
+  getProducts(options: ProductsQuery): Observable<ProductsResponse> {
     const cacheKey = JSON.stringify(options);
-    const ahora = Date.now();
-    const CINCO_MINUTOS = 5 * 60 * 1000;
+    const now = Date.now();
+    const cached = this.cache.get(cacheKey);
 
-    // 1. Buscamos en el caché
-    const guardado = this.cache.get(cacheKey);
-
-    // 2. Si existe Y no han pasado más de 5 minutos, lo devolvemos
-    if (guardado && (ahora - guardado.timestamp < CINCO_MINUTOS)) {
-      console.log('📦 Products: Cargando desde CACHÉ (Vigente)');
-      return of(guardado.data);
+    if (cached && (now - cached.timestamp < this.TTL)) {
+      return of(cached.data);
     }
-
-    // 3. Si no existe o ya caducó, pedimos al servidor
-    console.log('🌐 Products: Pidiendo al SERVIDOR (Caché vacío o caducado)');
 
     const {
       limit = 10,
@@ -79,61 +71,44 @@ export class ProductsService {
     if (isNew !== undefined) params = params.set('isNew', isNew.toString());
 
     if (categories && categories.length > 0) {
-      categories.forEach(slug => {
-        params = params.append('categories', slug);
-      });
+      categories.forEach(slug => { params = params.append('categories', slug); });
     }
     if (brands && brands.length > 0) {
-      brands.forEach(slug => {
-        params = params.append('brands', slug);
-      });
+      brands.forEach(slug => { params = params.append('brands', slug); });
     }
     if (productIds && productIds.length > 0) {
-      productIds.forEach(id => {
-        params = params.append('productIds', id);
-      });
+      productIds.forEach(id => { params = params.append('productIds', id); });
     }
 
     return this.http
       .get<ProductsResponse>(`${baseUrl}/products/public`, { params })
       .pipe(
-        tap((response) => {
-          console.log('✅ Products: Guardado en caché (Vence en 5 min)');
-          this.cache.set(cacheKey, { data: response, timestamp: ahora });
-        })
+        tap(response => this.cache.set(cacheKey, { data: response, timestamp: now }))
       );
   }
 
-  getProductById(slugOrId: string): Observable<ProductResponse> {
-    return this.http
-      .get<ProductResponse>(`${baseUrl}/products/public/${slugOrId}`)
-      .pipe(tap((response) => console.log(response)));
+  getProductBySlug(slug: string): Observable<ProductResponse> {
+    return this.http.get<ProductResponse>(`${baseUrl}/products/public/${slug}`);
   }
 
   getTreeCategories(): Observable<CategoriesResponse> {
-    return this.http
-      .get<CategoriesResponse>(`${baseUrl}/categories/tree`)
-      .pipe(tap((response) => console.log(response)));
+    return this.http.get<CategoriesResponse>(`${baseUrl}/categories/tree`);
   }
 
   getBrands(): Observable<BrandsResponse> {
-    return this.http
-      .get<BrandsResponse>(`${baseUrl}/brands/public`)
-      .pipe(tap((response) => console.log(response)));
+    return this.http.get<BrandsResponse>(`${baseUrl}/brands/public`);
   }
 
   getBrandsByCategories(categories: string[], search?: string): Observable<BrandsResponse> {
     let params = new HttpParams();
     if (categories && categories.length > 0) {
-      categories.forEach((slug) => {
-        params = params.append('categories', slug);
-      });
+      categories.forEach(slug => { params = params.append('categories', slug); });
     }
-    if (search) {
-      params = params.set('search', search);
-    }
-    return this.http
-      .get<BrandsResponse>(`${baseUrl}/brands/categories-public`, { params })
-      .pipe(tap((response) => console.log(response)));
+    if (search) params = params.set('search', search);
+    return this.http.get<BrandsResponse>(`${baseUrl}/brands/categories-public`, { params });
+  }
+
+  invalidateCache(): void {
+    this.cache.clear();
   }
 }
