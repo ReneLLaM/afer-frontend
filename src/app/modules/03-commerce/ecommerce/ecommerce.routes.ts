@@ -5,21 +5,31 @@ export const ecommerceRoutes: Routes = [
   {
     path: '',
     component: ShopLayout,
+    data: { breadcrumb: 'Inicio' },
     children: [
       {
         path: '',
         loadComponent: () => import('./pages/home-page/home-page').then((m) => m.HomePage),
-        data: { breadcrumb: 'Inicio' },
+        pathMatch: 'full'
+      },
+      {
+        path: '',
+        loadChildren: () => import('../../01-identity/auth/auth.routes').then(m => m.default)
       },
       {
         path: 'productos',
-        loadComponent: () => import('./pages/products-page/products-page/products-page').then((m) => m.ProductsPage),
         data: { breadcrumb: 'Productos' },
-      },
-      {
-        path: 'productos/:slug',
-        loadComponent: () => import('./pages/products-page/product-detail-page/product-detail-page').then((m) => m.ProductDetailPage),
-        data: { breadcrumb: 'Detalle Producto' },
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/products-page/products-page/products-page').then((m) => m.ProductsPage),
+          },
+          {
+            path: ':slug',
+            loadComponent: () => import('./pages/products-page/product-detail-page/product-detail-page').then((m) => m.ProductDetailPage),
+            data: { breadcrumb: 'Detalle Producto' },
+          },
+        ],
       },
       {
         path: 'categorias',
@@ -32,10 +42,6 @@ export const ecommerceRoutes: Routes = [
         data: { breadcrumb: 'Marcas' },
       },
     ],
-  },
-  {
-    path: '**',
-    redirectTo: '',
   },
 ];
 

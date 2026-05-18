@@ -89,6 +89,24 @@
     font-weight: bold;
     color: var(--afer-primary);
   }
+  .icon-chevron {
+    display: none;
+    color: var(--afer-primary);
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--afer-secondary-absolute);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
 }
 
 .header-separator {
@@ -266,6 +284,16 @@
       color: var(--afer-primary);
       margin-left: 8px;
       white-space: nowrap;
+    }
+
+    .icon-chevron {
+      display: block;
+      margin-left: 4px;
+      transition: transform 0.2s ease;
+
+      &--open {
+        transform: rotate(180deg);
+      }
     }
 
     .user-btn {

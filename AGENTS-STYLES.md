@@ -167,6 +167,7 @@ grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 |----------|-------|-----|
 | Tarjetas grandes | `clamp(12px, 1.5vw, 16px)` | Product cards, brand cards |
 | Botones | `clamp(10px, 1.5vw, 14px) 0` | Botón agregar (asimétrico) |
+| Auth inputs/buttons | `10px 0` | Inputs y botones de auth (asimétrico) |
 | Badges / Pills | `12px` | Badges de marca, categoría |
 | Iconos circulares | `50%` | Avatares, iconos de categoría |
 | Inputs / Contenedores | `8px - 12px` | Elementos de formulario |
@@ -395,6 +396,105 @@ padding: 6px;
   background: var(--afer-secondary);
   color: #ffffff;
   border-color: transparent;
+}
+```
+
+---
+
+## 9.4 Auth — Inputs y Botones
+
+### Auth Input
+
+```scss
+width: 100%;
+padding: 0.8rem 1rem;
+border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 80%);
+border-radius: 10px 0; /* top-left y bottom-right redondeados */
+font-size: 0.9rem;
+background: var(--afer-surface);
+color: var(--afer-text-primary);
+box-shadow: 0 2px 4px color-mix(in srgb, var(--afer-shadow), transparent 70%);
+transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+&:focus {
+  outline: none;
+  border-color: var(--afer-primary);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--afer-primary-absolute), transparent 80%);
+}
+```
+
+**Dark mode**:
+```scss
+:host-context([data-theme='dark']) & {
+  background: color-mix(in srgb, var(--afer-surface), #000 15%);
+  border-color: color-mix(in srgb, var(--afer-hover), transparent 50%);
+  box-shadow: none;
+
+  &:focus {
+    border-color: var(--afer-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+```
+
+### Auth Submit Button
+
+```scss
+padding: 0.9rem 1.5rem;
+background: var(--afer-primary-absolute);
+color: #ffffff;
+border: 1px solid transparent;
+border-radius: 10px 0; /* top-left y bottom-right redondeados */
+font-size: 0.95rem;
+font-weight: 700;
+letter-spacing: 0.3px;
+box-shadow: 0 4px 12px color-mix(in srgb, var(--afer-primary-absolute), transparent 70%);
+transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+
+&:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--afer-primary-absolute), transparent 65%);
+  filter: brightness(1.08);
+}
+
+&:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+```
+
+**Dark mode (glass effect)**:
+```scss
+:host-context([data-theme='dark']) & {
+  background: color-mix(in srgb, var(--afer-primary-absolute), transparent 88%);
+  color: var(--afer-primary-absolute);
+  border: 1px solid color-mix(in srgb, var(--afer-primary-absolute), transparent 72%);
+  box-shadow: none;
+
+  &:hover:not(:disabled) {
+    background: var(--afer-primary-absolute);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--afer-primary-absolute), transparent 60%);
+  }
+}
+```
+
+### Auth Google Button
+
+```scss
+padding: 0.8rem 1.25rem;
+background: var(--afer-surface);
+border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 75%);
+border-radius: 10px;
+font-size: 0.9rem;
+font-weight: 600;
+box-shadow: 0 2px 4px color-mix(in srgb, var(--afer-shadow), transparent 70%);
+transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+
+&:hover {
+  border-color: var(--afer-text-muted);
+  background: var(--afer-hover);
+  box-shadow: 0 4px 8px color-mix(in srgb, var(--afer-shadow), transparent 60%);
 }
 ```
 
@@ -694,6 +794,16 @@ animation: shimmer 1.5s infinite;
 - ❌ No duplicar estilos que ya existen en variables
 - ✅ Reutilizar patrones existentes
 
+### 17.5 Diseño visual
+- ❌ No usar degradados (`linear-gradient`, `radial-gradient`, etc.) salvo en el logo/brand
+- ❌ No usar círculos decorativos, formas abstractas o elementos "flotantes" de relleno
+- ❌ No usar `backdrop-filter` salvo en labels sobre imágenes
+- ❌ No usar sombras con color de marca (`color-mix` en `box-shadow`) salvo en botones de acción
+- ❌ No usar pseudo-elementos `::before`/`::after` decorativos (círculos, líneas, etc.)
+- ❌ No usar animaciones de entrada elaboradas (fade + scale + translate combinados)
+- ✅ Diseño limpio, funcional, con colores sólidos y espaciado consistente
+- ✅ Los componentes deben verse profesionales y hechos a mano, no generados por IA
+
 ---
 
 ## 18. Referencia Rápida — Valores Comunes
@@ -705,6 +815,11 @@ animation: shimmer 1.5s infinite;
 | Card radius | `clamp(12px, 1.5vw, 16px)` | Product, brand cards |
 | Badge radius | `12px` | Pills de marca/categoría |
 | Button radius | `clamp(10px, 1.5vw, 14px) 0` | Agregar al carrito |
+| Auth input radius | `10px 0` (asimétrico) | Inputs de login, register, forgot-password |
+| Auth button radius | `10px 0` (asimétrico) | Botones submit de auth |
+| Auth input shadow | `0 2px 4px color-mix(var(--afer-shadow), transparent 70%)` | Inputs de auth |
+| Auth input focus shadow | `0 4px 12px color-mix(var(--afer-primary-absolute), transparent 80%)` | Focus en inputs auth |
+| Auth button shadow | `0 4px 12px color-mix(var(--afer-primary-absolute), transparent 70%)` | Botones submit de auth |
 | Font weight bold | `800 - 900` | Títulos, badges, precios |
 | Font weight normal | `400 - 600` | Body text |
 | Gap estándar | `12px - 16px` | Entre elementos de card |
@@ -712,6 +827,7 @@ animation: shimmer 1.5s infinite;
 | Image aspect | `1.2 / 1` | Product card original |
 | Image aspect | `1 / 1` | Product card mini |
 | Hover transform | `translateY(-3px)` | Elevación estándar |
+| Auth hover transform | `translateY(-2px)` | Elevación botones auth |
 | Hover scale | `scale(1.08)` | Zoom de imagen |
 | Active scale | `scale(0.98)` | Feedback de click |
 

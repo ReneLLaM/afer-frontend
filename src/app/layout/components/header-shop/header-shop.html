@@ -151,27 +151,51 @@
     </button>
 
     <!-- perfil -->
-    <button class="user-btn">
+    <button class="user-btn" (click)="openAuthPopover()">
+      @if (authStore.isAuthenticated()) {
+        <div class="user-avatar">
+          {{ authStore.user()?.fullName?.charAt(0)?.toUpperCase() }}
+        </div>
+      } @else {
+        <svg
+          class="icon"
+          width="35"
+          height="37"
+          viewBox="0 0 35 37"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M32.5 37V30.7265C32.5 27.0392 29.1421 24.05 25 24.05H10C5.85786 24.05 2.5 27.0392 2.5 30.7265V37"
+            stroke="currentColor"
+            stroke-width="3"
+          />
+          <path
+            d="M17.4268 2.5C20.9166 2.50005 23.6883 5.28253 23.6885 8.64453C23.6885 12.0067 20.9167 14.79 17.4268 14.79C13.9368 14.79 11.165 12.0067 11.165 8.64453C11.1652 5.2825 13.9369 2.5 17.4268 2.5Z"
+            stroke="currentColor"
+            stroke-width="3"
+          />
+        </svg>
+      }
+      @if (authStore.isAuthenticated()) {
+        <span class="text-login">{{ authStore.user()?.fullName }}</span>
+      } @else {
+        <span class="text-login">Iniciar Sesión</span>
+      }
       <svg
-        class="icon"
-        width="35"
-        height="37"
-        viewBox="0 0 35 37"
+        class="icon-chevron"
+        [class.icon-chevron--open]="authPopover.isOpen()"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
         fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       >
-        <path
-          d="M32.5 37V30.7265C32.5 27.0392 29.1421 24.05 25 24.05H10C5.85786 24.05 2.5 27.0392 2.5 30.7265V37"
-          stroke="currentColor"
-          stroke-width="3"
-        />
-        <path
-          d="M17.4268 2.5C20.9166 2.50005 23.6883 5.28253 23.6885 8.64453C23.6885 12.0067 20.9167 14.79 17.4268 14.79C13.9368 14.79 11.165 12.0067 11.165 8.64453C11.1652 5.2825 13.9369 2.5 17.4268 2.5Z"
-          stroke="currentColor"
-          stroke-width="3"
-        />
+        <polyline points="6 9 12 15 18 9"></polyline>
       </svg>
-      <span class="text-login">Iniciar Sesión</span>
     </button>
 
     <button class="theme-toggle-btn" (click)="themeService.toggleTheme()">
@@ -265,3 +289,6 @@
 
 <!-- menu mobile -->
 <app-menu-mobile #menuMobile />
+
+<!-- auth popover -->
+<auth-popover #authPopover />

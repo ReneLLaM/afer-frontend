@@ -1,5 +1,4 @@
 :root {
-
   --afer-primary-absolute: #ef7e26;
   --afer-secondary-absolute: #006e9e;
   --afer-corporate-absolute: #d43b00;
@@ -11,28 +10,32 @@
   --afer-text-muted-absolute: #8a9099;
   --afer-surface-light-absolute: #ffffff;
   --afer-surface-dark-absolute: #242a31;
-  
 
   &[data-theme='light'] {
     color-scheme: light;
 
     // --- Colores principales de la marca ---
-    --afer-primary: #ef7e26;          // Color principal (botones, enlaces, elementos destacados)
-    --afer-secondary: #006e9e;        // Color secundario (elementos de soporte, botones secundarios)
-    --afer-corporate: #d43b00;        // Color corporativo (logotipo, detalles institucionales fijos)
+    --afer-primary: #ef7e26; // Color principal (botones, enlaces, elementos destacados)
+    --afer-secondary: #006e9e; // Color secundario (elementos de soporte, botones secundarios)
+    --afer-corporate: #d43b00; // Color corporativo (logotipo, detalles institucionales fijos)
 
     // --- Colores de interfaz y estructura ---
-    --afer-background: #f2f2f2;       // Color de fondo principal (el "lienzo" de la página)
-    --afer-surface: #ffffff;          // Color de superficies (tarjetas, modales, menús desplegables)
-    --afer-accent: #f5d020;           // Color de acento/resalte (alertas, insignias, llamadas a la acción)
+    --afer-background: #f2f2f2; // Color de fondo principal (el "lienzo" de la página)
+    --afer-surface: #ffffff; // Color de superficies (tarjetas, modales, menús desplegables)
+    --afer-accent: #f5d020; // Color de acento/resalte (alertas, insignias, llamadas a la acción)
 
     // --- Colores de tipografía ---
-    --afer-text-primary: #2a2e35;     // Texto principal (títulos, cuerpo de texto con mayor legibilidad)
-    --afer-text-secondary: #5a6169;   // Texto secundario (subtítulos, descripciones, metadatos)
-    --afer-text-muted: #8a9099;       // Texto silenciado (placeholders, estados deshabilitados)
+    --afer-text-primary: #2a2e35; // Texto principal (títulos, cuerpo de texto con mayor legibilidad)
+    --afer-text-secondary: #5a6169; // Texto secundario (subtítulos, descripciones, metadatos)
+    --afer-text-muted: #8a9099; // Texto silenciado (placeholders, estados deshabilitados)
 
     // --- Efectos y sombras ---
-    --afer-shadow: rgba(0, 0, 0, 0.08); // Sombra base para dar profundidad a elementos de superficie
+    --afer-shadow: rgba(
+      0,
+      0,
+      0,
+      0.08
+    ); // Sombra base para dar profundidad a elementos de superficie
     --afer-hover: rgba(0, 0, 0, 0.08); // Efecto hover para elementos de superficie
   }
 
@@ -40,22 +43,27 @@
     color-scheme: dark;
 
     // --- Colores principales de la marca ---
-    --afer-primary: #ffffff;          // Pasa a blanco para máximo contraste (ej. botones en modo oscuro)
-    --afer-secondary: #ef7e26;        // Toma el naranja principal para dar color a elementos secundarios
-    --afer-corporate: #d43b00;        // Se mantiene para coherencia de la identidad corporativa
+    --afer-primary: #ffffff; // Pasa a blanco para máximo contraste (ej. botones en modo oscuro)
+    --afer-secondary: #ef7e26; // Toma el naranja principal para dar color a elementos secundarios
+    --afer-corporate: #d43b00; // Se mantiene para coherencia de la identidad corporativa
 
     // --- Colores de interfaz y estructura ---
-    --afer-background: #1a1f26;       // Fondo oscuro principal para reducir fatiga visual
-    --afer-surface: #242a31;          // Superficies ligeramente más claras para separar niveles (tarjetas)
-    --afer-accent: #f5d020;           // Se mantiene el acento brillante para seguir destacando sobre oscuro
+    --afer-background: #1a1f26; // Fondo oscuro principal para reducir fatiga visual
+    --afer-surface: #242a31; // Superficies ligeramente más claras para separar niveles (tarjetas)
+    --afer-accent: #f5d020; // Se mantiene el acento brillante para seguir destacando sobre oscuro
 
     // --- Colores de tipografía ---
-    --afer-text-primary: #e8eaed;     // Texto principal claro para alto contraste en fondo oscuro
-    --afer-text-secondary: #b8bdc3;   // Texto secundario en un tono gris claro para jerarquía
-    --afer-text-muted: #878d95;       // Texto silenciado para elementos no interactivos o de menor relevancia
+    --afer-text-primary: #e8eaed; // Texto principal claro para alto contraste en fondo oscuro
+    --afer-text-secondary: #b8bdc3; // Texto secundario en un tono gris claro para jerarquía
+    --afer-text-muted: #878d95; // Texto silenciado para elementos no interactivos o de menor relevancia
 
     // --- Efectos y sombras ---
-    --afer-shadow: rgba(0, 0, 0, 0.3); // Sombra más intensa (necesaria en fondos oscuros para notar elevación)
+    --afer-shadow: rgba(
+      0,
+      0,
+      0,
+      0.3
+    ); // Sombra más intensa (necesaria en fondos oscuros para notar elevación)
     --afer-hover: rgba(255, 255, 255, 0.1); // Efecto hover para elementos de superficie
   }
 }

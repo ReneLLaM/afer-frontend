@@ -64,11 +64,6 @@ export class Breadcrumb {
 
     const nextUrl = path ? `${url}/${path}` : url;
 
-    if (route.routeConfig?.path === 'productos/:slug') {
-      if (!breadcrumbs.some(b => b.url === '/productos')) {
-        breadcrumbs.push({ label: 'Productos', url: '/productos' });
-      }
-    }
 
     if (label && !breadcrumbs.some(b => b.label === label)) {
       breadcrumbs = [...breadcrumbs, { label, url: nextUrl }];

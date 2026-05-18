@@ -1,0 +1,98 @@
+<div class="auth-page">
+
+
+  <div class="auth-page__content">
+    <div class="auth-page__form-wrapper">
+      <div class="auth-page__header">
+        <a class="auth-page__logo" routerLink="/">
+          <svg viewBox="0 0 303 304" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M184.145 116.37V251.36H151.575C151.455 248.71 151.325 246.07 151.175 243C150.095 243.24 149.095 243.24 148.345 243.67C122.405 258.43 88.3254 252.46 68.3254 230.58C44.8954 204.96 43.3353 167.96 65.6653 140.58C78.8153 124.46 96.1053 116.66 116.665 116.43C137.605 116.2 158.555 116.38 179.505 116.38H184.145V116.37ZM152.065 150.25C139.895 150.25 128.965 150.43 118.035 150.21C106.515 149.97 97.5253 154.64 90.3853 163.49C79.5854 176.89 82.4654 199.86 95.9954 210.49C103.995 216.78 112.695 218.76 122.655 217.61C135.385 216.14 148.195 205.67 149.685 192.91C151.305 179.05 151.325 165.01 152.065 150.25Z" fill="currentColor"/>
+            <path d="M283.465 224.46C279.885 218.4 276.445 212.96 273.475 207.27C272.805 205.99 273.435 203.7 274.045 202.1C288.585 164.09 287.465 126.56 268.565 90.55C247.555 50.51 214.095 27.08 169.565 19.98C166.615 19.51 164.705 18.52 163.295 15.77C160.715 10.72 157.745 5.88 154.405 0C208.335 3.35 250.045 26.37 278.795 71.42C309.925 120.21 308.015 180.36 283.465 224.46Z" fill="currentColor"/>
+            <path d="M17.1254 222.61C-6.56465 171.17 -6.41466 121.46 22.2053 73.7C49.6053 27.97 91.2353 4.42997 144.955 0.0899658C141.115 6.83997 137.835 12.83 134.265 18.63C133.685 19.57 131.855 19.95 130.525 20.16C73.9853 29.44 30.0753 73.04 20.4153 129.87C16.4153 153.41 18.5753 176.51 27.0653 198.86C28.2353 201.93 27.9653 204.15 26.3153 206.78C23.3053 211.6 20.5954 216.6 17.1254 222.61Z" fill="currentColor"/>
+            <path d="M258.005 231.29C261.385 237.05 264.545 242.45 267.825 248.03C260.515 257.33 252.055 265.38 242.775 272.56C178.895 322.03 86.6154 311.58 35.1254 249.15C32.9854 246.56 32.8853 244.81 34.6953 242.13C37.4853 238 39.8553 233.59 42.5753 228.99C69.6953 264.81 104.965 284.79 149.725 285.26C194.335 285.75 229.945 266.69 258.005 231.29Z" fill="currentColor"/>
+            <path d="M151.735 109.82C149.565 77.2099 191.865 43.2699 225.445 50.3599V83.6999C220.875 84.1699 216.495 84.4099 212.195 85.1099C199.695 87.1499 191.295 94.4399 187.045 106.31C186.005 109.23 184.755 109.93 181.935 109.88C171.855 109.72 161.775 109.82 151.735 109.82Z" fill="currentColor"/>
+            <path d="M216.715 116.07H191.195V149.27H216.715V116.07Z" fill="currentColor"/>
+          </svg>
+        </a>
+        <h1 class="auth-page__title">Iniciar Sesión</h1>
+        <p class="auth-page__subtitle">Ingresa tus datos para continuar</p>
+      </div>
+
+      <button class="auth-page__google-btn" (click)="onGoogleLogin()">
+        <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+          <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+            <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+            <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+            <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+            <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+          </g>
+        </svg>
+        Continuar con Google
+      </button>
+
+      <div class="auth-page__divider">
+        <span>o continúa con email</span>
+      </div>
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="onSubmit()"
+        class="auth-page__form">
+        <div class="auth-page__field">
+          <span class="auth-page__label">Correo electrónico</span>
+          <input
+            type="email"
+            class="auth-page__input"
+            formControlName="email"
+            placeholder="tu@gmail.com"
+          />
+          @if (loginForm.get('email')?.touched && loginForm.get('email')?.errors) {
+            <span class="auth-page__field-error">
+              @if (loginForm.get('email')?.errors?.['required']) { El correo es obligatorio }
+              @if (loginForm.get('email')?.errors?.['email']) { Formato de correo inválido }
+            </span>
+          }
+        </div>
+
+        <div class="auth-page__field">
+          <span class="auth-page__label">Contraseña</span>
+          <div class="auth-page__input-wrapper">
+            <input
+              type="password"
+              class="auth-page__input"
+              formControlName="password"
+              placeholder="Tu contraseña"
+            />
+          </div>
+          @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors) {
+            <span class="auth-page__field-error">
+              @if (loginForm.get('password')?.errors?.['required']) { La contraseña es obligatoria }
+              @if (loginForm.get('password')?.errors?.['minlength']) { Mínimo 6 caracteres }
+            </span>
+          }
+        </div>
+
+
+        <a class="auth-page__forgot" [routerLink]="['/forgot-password']">¿Olvidaste tu contraseña?</a>
+
+        <button
+          type="submit"
+          class="auth-page__submit"
+        >
+          Iniciar Sesión
+        </button>
+
+        @if(hasError()) {
+          <div class="auth-page__error">
+            <span>Email o contraseña incorrectos</span>
+          </div>
+        }
+
+      </form>
+
+      <p class="auth-page__footer">
+        ¿No tienes cuenta?
+        <a class="auth-page__link" [routerLink]="['/register']">Regístrate aquí</a>
+      </p>
+    </div>
+  </div>
+</div>
