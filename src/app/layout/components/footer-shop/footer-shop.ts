@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { SOCIAL_LINKS, CONTACT_INFO } from '../../../core/constants/social-links.constants';
 
 @Component({
   selector: 'footer-shop',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './footer-shop.html',
   styleUrl: './footer-shop.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

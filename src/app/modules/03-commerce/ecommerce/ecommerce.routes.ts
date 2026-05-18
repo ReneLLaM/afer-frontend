@@ -41,6 +41,26 @@ export const ecommerceRoutes: Routes = [
         loadComponent: () => import('./pages/brands-page/brands-page').then((m) => m.BrandsPage),
         data: { breadcrumb: 'Marcas' },
       },
+      {
+        path: 'nuestros-servicios',
+        loadComponent: () => import('./pages/nuestros-servicios-page/nuestros-servicios-page').then((m) => m.NuestrosServiciosPage),
+        data: { breadcrumb: 'Nuestros Servicios' },
+      },
+      {
+        path: 'preguntas-frecuentes',
+        loadComponent: () => import('./pages/preguntas-frecuentes-page/preguntas-frecuentes-page').then((m) => m.PreguntasFrecuentesPage),
+        data: { breadcrumb: 'Preguntas Frecuentes' },
+      },
+      {
+        path: 'gift-card',
+        loadComponent: () => import('./pages/gift-card-page/gift-card-page').then((m) => m.GiftCardPage),
+        data: { breadcrumb: 'Gift Card' },
+      },
+      {
+        path: 'acerca-de-nosotros',
+        loadComponent: () => import('./pages/acerca-de-nosotros-page/acerca-de-nosotros-page').then((m) => m.AcercaDeNosotrosPage),
+        data: { breadcrumb: 'Acerca de Nosotros' },
+      },
     ],
   },
 ];
