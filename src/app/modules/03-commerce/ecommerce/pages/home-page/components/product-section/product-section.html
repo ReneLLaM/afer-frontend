@@ -19,8 +19,6 @@
             @if (cardStyle() === 'v2') {
               <app-product-card-v2 
                 [product]="product" 
-                (addToCart)="handleAddToCart($event)"
-                (favoriteToggle)="handleFavorite($event)"
               />
             } @else if (cardStyle() === 'mini') {
               <app-product-card-mini
@@ -30,8 +28,6 @@
             } @else {
               <product-card
                 [product]="product"
-                (addToCart)="handleAddToCart($event)"
-                (favoriteToggle)="handleFavorite($event)"
               />
             }
           </div>

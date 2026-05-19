@@ -48,6 +48,12 @@ export const authRoutes: Routes = [
     loadComponent: () => import('./pages/profile/profile').then(m => m.ProfilePage),
     data: { breadcrumb: 'Mi Perfil' }
   },
+  {
+    path: 'mis-favoritos',
+    canActivate: [authGuard],
+    loadComponent: () => import('../../03-commerce/ecommerce/pages/mis-favoritos/mis-favoritos').then(m => m.MisFavoritosPage),
+    data: { breadcrumb: 'Mis Favoritos' }
+  },
 
   // --- Redirects for backward compatibility ---
   { path: 'login', redirectTo: 'iniciar-sesion', pathMatch: 'full' },

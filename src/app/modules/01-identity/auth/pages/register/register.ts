@@ -2,7 +2,7 @@ import { Component, inject, signal, ChangeDetectionStrategy, DestroyRef } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthStore } from '../../store/auth.store';
 
@@ -17,6 +17,7 @@ import { AuthStore } from '../../store/auth.store';
 export class RegisterPage {
   private readonly fb         = inject(NonNullableFormBuilder);
   private readonly router     = inject(Router);
+  private readonly route      = inject(ActivatedRoute);
   private readonly authStore  = inject(AuthStore);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -25,6 +26,11 @@ export class RegisterPage {
   isPosting            = signal(false);
   showPassword         = signal(false);
   showConfirmPassword  = signal(false);
+  readonly returnUrl = signal<string | null>(null);
+
+  constructor() {
+    this.returnUrl.set(this.route.snapshot.queryParamMap.get('returnUrl'));
+  }
 
   registerForm = this.fb.group({
     fullName: ['', [Validators.required, Validators.minLength(3)]],
@@ -56,7 +62,8 @@ export class RegisterPage {
       .subscribe({
         next: () => {
           this.isPosting.set(false);
-          this.router.navigate(['/verificar-correo']);
+          const target = this.returnUrl();
+          this.router.navigate(['/verificar-correo'], { queryParams: target ? { returnUrl: target } : {} });
         },
         error: (err: HttpErrorResponse) => {
           this.isPosting.set(false);
@@ -72,6 +79,12 @@ export class RegisterPage {
   }
 
   onGoogleLogin(): void {
+    const target = this.returnUrl();
+    if (target) {
+      sessionStorage.setItem('oauth_return_url', target);
+    } else {
+      sessionStorage.removeItem('oauth_return_url');
+    }
     window.location.href = this.authStore.getGoogleAuthUrl();
   }
 

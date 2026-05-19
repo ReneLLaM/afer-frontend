@@ -109,7 +109,7 @@
 
       <p class="auth-page__footer">
         ¿No tienes cuenta?
-        <a class="auth-page__link" [routerLink]="['/registrarse']">Regístrate aquí</a>
+        <a class="auth-page__link" [routerLink]="['/registrarse']" [queryParams]="{ returnUrl: returnUrl() }">Regístrate aquí</a>
       </p>
     </div>
   </div>

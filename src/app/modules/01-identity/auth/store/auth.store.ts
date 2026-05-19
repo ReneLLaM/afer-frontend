@@ -5,6 +5,7 @@ import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
 import { AuthResponse, LoginCredentials, User } from '../interfaces';
+import { FavoritesStore } from '../../../../core/stores/favorites.store';
 
 // ─── Tipos ───────────────────────────────────────────────
 export type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
@@ -27,8 +28,9 @@ const TOKEN_KEY = 'token';
  */
 @Injectable({ providedIn: 'root' })
 export class AuthStore {
-  private readonly authService = inject(AuthService);
-  private readonly router      = inject(Router);
+  private readonly authService    = inject(AuthService);
+  private readonly router         = inject(Router);
+  private readonly favoritesStore = inject(FavoritesStore);
 
   // ─── Estado privado (writable) ──────────────────────────
   private readonly _authStatus = signal<AuthStatus>('checking');
@@ -127,11 +129,17 @@ export class AuthStore {
    * Incluso si el backend falla, la sesión local se limpia igualmente.
    */
   logout(): void {
+    const currentUrl = this.router.url;
     this.authService.logout().subscribe({
-      complete: () => this._clearSession(),
-      error:    () => this._clearSession(),
+      complete: () => {
+        this._clearSession();
+        this.router.navigateByUrl(currentUrl);
+      },
+      error: () => {
+        this._clearSession();
+        this.router.navigateByUrl(currentUrl);
+      },
     });
-    this.router.navigate(['/']);
   }
 
   /**
@@ -156,8 +164,9 @@ export class AuthStore {
    *   Si hiciéramos un request, obtendríamos otro 401 → loop infinito
    */
   forceLogout(): void {
+    const currentUrl = this.router.url;
     this._clearSession();
-    this.router.navigate(['/iniciar-sesion']);
+    this.router.navigate(['/iniciar-sesion'], { queryParams: { returnUrl: currentUrl } });
   }
 
   // ─── RBAC helpers ───────────────────────────────────────
@@ -210,11 +219,15 @@ export class AuthStore {
     this._user.set(response.user);
     this._token.set(response.accessToken);
     this._authStatus.set('authenticated');
+    // Carga los IDs de favoritos al autenticar (solo una vez)
+    this.favoritesStore.loadIds();
   }
 
   private _clearSession(): void {
     this._user.set(null);
     this._token.set(null);
     this._authStatus.set('not-authenticated');
+    // Limpiar favoritos al cerrar sesión
+    this.favoritesStore.reset();
   }
 }

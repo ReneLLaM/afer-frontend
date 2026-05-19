@@ -225,10 +225,17 @@
               </g>
             </svg>
           </button>
-          <button class="btn-favorite">
+          <button 
+            class="btn-favorite"
+            [class.btn-favorite--active]="isFavorite()"
+            [class.btn-favorite--loading]="isToggling()"
+            (click)="onFavoriteClick($event)"
+            [disabled]="isToggling()"
+            [attr.aria-label]="isFavorite() ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+          >
             <svg
               viewBox="0 0 24 24"
-              fill="none"
+              [attr.fill]="isFavorite() ? 'currentColor' : 'none'"
               stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"

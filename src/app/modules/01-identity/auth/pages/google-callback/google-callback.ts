@@ -125,8 +125,10 @@ export class GoogleCallbackPage implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((success) => {
         if (success) {
+          const returnUrl = sessionStorage.getItem('oauth_return_url') || '/';
+          sessionStorage.removeItem('oauth_return_url');
           // 4. Navegación segura: replaceUrl evita volver a la pantalla de callback al presionar 'Atrás'
-          this.router.navigate(['/'], { replaceUrl: true });
+          this.router.navigateByUrl(returnUrl, { replaceUrl: true });
         } else {
           this.errorMessage.set('El enlace de autenticación ha expirado o es inválido. Intenta nuevamente.');
         }
@@ -134,6 +136,11 @@ export class GoogleCallbackPage implements OnInit {
   }
 
   returnToLogin(): void {
-    this.router.navigate(['/iniciar-sesion'], { replaceUrl: true });
+    const returnUrl = sessionStorage.getItem('oauth_return_url');
+    if (returnUrl) {
+      this.router.navigate(['/iniciar-sesion'], { queryParams: { returnUrl }, replaceUrl: true });
+    } else {
+      this.router.navigate(['/iniciar-sesion'], { replaceUrl: true });
+    }
   }
 }

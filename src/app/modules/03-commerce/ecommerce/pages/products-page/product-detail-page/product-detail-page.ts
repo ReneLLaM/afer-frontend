@@ -24,6 +24,8 @@ import { ProductCard } from '../../../components/product-card/product-card';
 import { Carousel } from '../../../../../../shared/components/carousel/carousel';
 import { ProductResponse } from '../interfaces/product-response.interface';
 import { Datum } from '../interfaces/products-response.interface';
+import { FavoritesStore } from '../../../../../../core/stores/favorites.store';
+import { AuthStore } from '../../../../../01-identity/auth/store/auth.store';
 
 @Component({
   selector: 'product-detail-page',
@@ -40,6 +42,28 @@ export class ProductDetailPage {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly productService = inject(ProductsService);
   private readonly breadcrumbService = inject(BreadcrumbService);
+  readonly favoritesStore = inject(FavoritesStore);
+  readonly authStore = inject(AuthStore);
+
+  readonly isFavorite = computed(() => {
+    const p = this.product() as ProductResponse | null | undefined;
+    return p ? this.favoritesStore.isFavorite(p.id) : false;
+  });
+
+  readonly isToggling = computed(() => {
+    const p = this.product() as ProductResponse | null | undefined;
+    return p ? this.favoritesStore.isToggling(p.id) : false;
+  });
+
+  onFavoriteClick(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const p = this.product() as ProductResponse | null | undefined;
+    if (p) {
+      // Usar 'any' temporalmente porque FavoritesStore requiere un Datum y ProductResponse tiene algunas diferencias tipológicas.
+      this.favoritesStore.toggle(p.id, p as any);
+    }
+  }
 
   lightboxCloseBtn = viewChild<ElementRef<HTMLButtonElement>>('lightboxClose');
 

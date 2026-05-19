@@ -12,7 +12,7 @@ import { AuthStore, AuthStatus } from '../../modules/01-identity/auth/store/auth
  * 2. Si el usuario ESTÁ autenticado → permite acceso (return true)
  * 3. Si el usuario NO está autenticado → redirige a /login
  */
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (route, state) => {
   const authStore = inject(AuthStore);
   const router    = inject(Router);
 
@@ -22,7 +22,7 @@ export const authGuard: CanActivateFn = () => {
       if (status === 'authenticated') {
         return true;
       }
-      router.navigate(['/iniciar-sesion']);
+      router.navigate(['/iniciar-sesion'], { queryParams: { returnUrl: state.url } });
       return false;
     })
   );

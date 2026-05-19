@@ -35,12 +35,14 @@ export class AuthPopover {
 
   navigateToLogin(): void {
     this.close();
-    this.router.navigate(['/iniciar-sesion']);
+    const currentUrl = this.router.url;
+    this.router.navigate(['/iniciar-sesion'], { queryParams: { returnUrl: currentUrl } });
   }
 
   navigateToRegister(): void {
     this.close();
-    this.router.navigate(['/registrarse']);
+    const currentUrl = this.router.url;
+    this.router.navigate(['/registrarse'], { queryParams: { returnUrl: currentUrl } });
   }
 
   navigateToProfile(): void {

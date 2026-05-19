@@ -1139,41 +1139,40 @@
         height: 44px;
       }
 
-      background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
-      border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 80%);
-      color: var(--afer-secondary);
+      background: color-mix(in srgb, var(--afer-surface), var(--afer-background) 30%);
+      border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 85%);
+      color: var(--afer-text-muted);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 0 clamp(10px, 1.5vw, 14px);
-      transition: none;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
       flex-shrink: 0;
 
       svg {
         width: 24px;
         height: 24px;
-        transition: none;
+        transition: transform 0.2s ease;
       }
 
       &:hover {
-        background: var(--afer-secondary);
-        color: #ffffff;
-        border-color: transparent;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px color-mix(in srgb, var(--afer-secondary), transparent 80%);
+        background: color-mix(in srgb, #f43f5e, transparent 92%);
+        color: #f43f5e;
+        border-color: color-mix(in srgb, #f43f5e, transparent 75%);
         svg {
-          transform: scale(1.15);
+          transform: scale(1.1);
         }
       }
 
       &--active {
-        background: var(--afer-secondary);
         color: #ffffff;
-        border-color: transparent;
-        svg {
-          fill: #ffffff;
-        }
+        background: #f43f5e;
+        border-color: #f43f5e;
+      }
+
+      &:active {
+        transform: scale(0.95);
       }
     }
   }

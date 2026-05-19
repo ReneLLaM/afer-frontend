@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthPopover } from '../auth-popover/auth-popover';
 import { AuthStore } from '../../../modules/01-identity/auth/store/auth.store';
+import { FavoritesStore } from '../../../core/stores/favorites.store';
 
 @Component({
   selector: 'header-shop',
@@ -23,6 +24,7 @@ export class HeaderShop {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   readonly authStore = inject(AuthStore);
+  readonly favoritesStore = inject(FavoritesStore);
   searchTerm = signal<string>('');
 
   private readonly queryParams = toSignal(this.route.queryParams);

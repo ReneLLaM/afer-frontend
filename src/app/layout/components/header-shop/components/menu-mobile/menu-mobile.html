@@ -258,7 +258,7 @@
       }
       <!-- favoritos, carrito -->
       <li class="menu-actions">
-        <a href="#">
+        <a routerLink="/mis-favoritos" routerLinkActive="active" (click)="close()">
           <svg
             class="icon"
             width="44"
@@ -284,8 +284,11 @@
               fill="currentColor"
             />
           </svg>
-          <span class="menu-text">Mis favoritos</span><span class="counter">0</span></a
-        >
+          <span class="menu-text">Mis favoritos</span>
+          @if (favoritesStore.count() > 0) {
+            <span class="counter">{{ favoritesStore.count() }}</span>
+          }
+        </a>
       </li>
       <li class="menu-actions">
         <a href="#">
@@ -382,7 +385,7 @@
         </li>
       } @else {
         <li class="menu-actions">
-          <a routerLink="/iniciar-sesion" routerLinkActive="active" (click)="close()">
+          <a [routerLink]="['/iniciar-sesion']" [queryParams]="{ returnUrl: router.url }" routerLinkActive="active" (click)="close()">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -406,7 +409,7 @@
           >
         </li>
         <li class="menu-actions">
-          <a routerLink="/registrarse" routerLinkActive="active" (click)="close()">
+          <a [routerLink]="['/registrarse']" [queryParams]="{ returnUrl: router.url }" routerLinkActive="active" (click)="close()">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"

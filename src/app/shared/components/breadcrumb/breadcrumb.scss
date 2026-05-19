@@ -12,12 +12,14 @@
     padding: 0;
     margin: 0;
     display: inline-flex;
+    flex-wrap: wrap; /* Permitir envoltura de líneas si se desborda */
     align-items: center;
-    gap: 2px;
+    gap: 4px 6px; /* row-gap y column-gap */
     background: color-mix(in srgb, var(--afer-text-muted), transparent 92%);
     border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 80%);
     border-radius: 99px;
-    padding: 4px 6px 4px 10px;
+    padding: 4px 10px;
+    max-width: 100%;
   }
 
   &__item {
@@ -27,7 +29,13 @@
     font-weight: 600;
     color: var(--afer-text-muted);
     letter-spacing: 0.01em;
-    white-space: nowrap;
+    white-space: nowrap; /* Los enlaces individuales se mantienen en una línea */
+
+    &--active {
+      white-space: normal; /* El título actual puede hacer wrap para evitar overflow */
+      min-width: 0;
+      flex: 1 1 auto;
+    }
   }
 
   &__link {
@@ -69,6 +77,9 @@
     font-weight: 700;
     padding: 3px 8px;
     pointer-events: none;
+    white-space: normal; /* Permitir wrap del texto largo del producto actual */
+    word-break: break-word;
+    display: inline-block;
   }
 }
 
@@ -77,8 +88,9 @@
     padding: 0 0.75rem;
     
     &__list {
-      padding: 3px 5px 3px 8px;
-      gap: 1px;
+      padding: 6px 10px;
+      gap: 4px 6px;
+      border-radius: 12px; /* look moderno tipo bloque redondeado cuando hace wrap en móviles */
     }
     
     &__item {

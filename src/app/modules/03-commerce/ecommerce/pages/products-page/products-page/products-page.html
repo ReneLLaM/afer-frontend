@@ -147,8 +147,6 @@
         @for (product of products(); track product.id) {
           <product-card
             [product]="product"
-            (favoriteToggle)="handleFavorite($event)"
-            (addToCart)="handleAddToCart($event)"
           />
         } @empty {
           <div class="products-empty">

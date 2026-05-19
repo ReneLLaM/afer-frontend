@@ -2,8 +2,9 @@ import { Component, inject, HostBinding, HostListener, ChangeDetectionStrategy }
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthStore } from '../../../../../modules/01-identity/auth/store/auth.store';
+import { FavoritesStore } from '../../../../../core/stores/favorites.store';
 
 @Component({
   selector: 'app-menu-mobile',
@@ -14,8 +15,10 @@ import { AuthStore } from '../../../../../modules/01-identity/auth/store/auth.st
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuMobile {
-  themeService = inject(ThemeService);
-  authStore    = inject(AuthStore);
+  themeService   = inject(ThemeService);
+  authStore      = inject(AuthStore);
+  favoritesStore = inject(FavoritesStore);
+  router         = inject(Router);
 
   @HostBinding('class.is-open') isOpen = false;
 

@@ -7,14 +7,18 @@ const imgUrl = environment.imgUrl;
   name: 'productImage',
 })
 export class ProductImagePipe implements PipeTransform {
-  transform(value: string | string[]): string {
+  transform(value: string | string[] | undefined | null): string {
+    if (!value || (Array.isArray(value) && value.length === 0)) {
+      return `assets/images/placeholder.png`;
+    }
+
     if (typeof value === 'string') {
       return `${imgUrl}/${value}`;
     }
 
     const image = value.at(0);
 
-    if (image !== '') {
+    if (image && image !== '') {
       return `${image}`; //todo añadir url de claudinary
     }
 

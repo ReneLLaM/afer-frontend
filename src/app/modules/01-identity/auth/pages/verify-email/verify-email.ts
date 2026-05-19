@@ -2,7 +2,7 @@ import { Component, inject, signal, ChangeDetectionStrategy, OnDestroy, DestroyR
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { AuthStore } from '../../store/auth.store';
@@ -21,6 +21,7 @@ export class VerifyEmailPage implements OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly authStore   = inject(AuthStore);
   private readonly destroyRef  = inject(DestroyRef);
+  public readonly activatedRoute = inject(ActivatedRoute);
 
   isPosting   = signal(false);
   isResending = signal(false);
@@ -65,7 +66,10 @@ export class VerifyEmailPage implements OnDestroy {
           
           this.authStore.checkStatusResource.reload();
           
-          this.redirectTimeout = setTimeout(() => this.router.navigate(['/']), 2000);
+          this.redirectTimeout = setTimeout(() => {
+            const returnUrl = this.activatedRoute.snapshot.queryParamMap.get('returnUrl') || '/';
+            this.router.navigateByUrl(returnUrl);
+          }, 2000);
         },
         error: (err: HttpErrorResponse) => {
           this.isPosting.set(false);

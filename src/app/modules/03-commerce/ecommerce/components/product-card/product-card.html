@@ -63,16 +63,18 @@
 
     <button
       class="product-card__favorite"
-      [class.product-card__favorite--active]="product().isFavorite"
+      [class.product-card__favorite--active]="isFavorite()"
+      [class.product-card__favorite--loading]="isToggling()"
       (click)="onFavoriteClick($event)"
+      [disabled]="isToggling()"
       type="button"
-      aria-label="Favorito"
+      [attr.aria-label]="isFavorite() ? 'Quitar de favoritos' : 'Agregar a favoritos'"
     >
       <svg
         width="24"
         height="24"
         viewBox="0 0 24 24"
-        [attr.fill]="product().isFavorite ? 'currentColor' : 'none'"
+        [attr.fill]="isFavorite() ? 'currentColor' : 'none'"
         stroke="currentColor"
         stroke-width="2"
       >
