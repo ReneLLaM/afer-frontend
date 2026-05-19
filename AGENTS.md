@@ -767,5 +767,21 @@ export class ProductsService {
 
 ---
 
+## 10. Pipes y Utilidades (Especial Ecommerce)
+
+### 10.1 Product Image Pipe
+Para renderizar las imágenes de los productos en plantillas, utilizar obligatoriamente el pipe `productImage`. Este pipe se encarga de transformar de manera segura un array de strings en la URL adecuada:
+```html
+<img [src]="product.images | productImage" />
+```
+
+### 10.2 Slice Pipe para truncamiento preventivo
+Para truncamientos estables directamente en el HTML (por ejemplo, categorías secundarias o textos largos que no se deseen gestionar por CSS `text-overflow`), usar el pipe `slice` estándar de Angular:
+```html
+{{ product.sku.length > 12 ? (product.sku | slice: 0 : 12) + '...' : product.sku }}
+```
+
+---
+
 *Última actualización: Mayo 2026*
 *Angular v21 | Este documento es vivo y debe actualizarse con cada mejora de arquitectura.*

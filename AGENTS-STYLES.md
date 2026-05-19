@@ -1,6 +1,6 @@
 # Afer Bolivia — UI/UX & Design System Agent
 
-> **Propósito**: Guía completa de diseño UI/UX, sistema de estilos, componentes visuales y patrones de interfaz para el frontend de Afer Bolivia. Todo agente o desarrollador debe seguir estas reglas para mantener consistencia visual y calidad en la interfaz.
+> **Propósito**: Guía completa unificada de diseño UI/UX, sistema de estilos, componentes visuales y patrones de interfaz para todo el proyecto frontend de Afer Bolivia. Todo agente o desarrollador debe seguir estas reglas para mantener la consistencia visual y máxima calidad de la interfaz.
 
 ---
 
@@ -70,7 +70,8 @@ Este agente rige **todo el código CSS/SCSS/HTML visual** del proyecto frontend.
 --afer-surface-dark-absolute: #242a31;
 ```
 
-**Regla**: Usa las variables `-absolute` cuando necesites un color que NO cambie con el tema.
+> [!NOTE]
+> Usa las variables `-absolute` cuando necesites un color que NO cambie con el tema. Por ejemplo, el botón de agregar al carrito siempre debe mantener su tono azul de marca en modo claro u oscuro.
 
 ### 2.4 Color mix para transparencias
 
@@ -253,6 +254,7 @@ article.product-card
 - Imagen a la izquierda (160px width)
 - Badges de estado arriba de la imagen
 - Altura fija en desktop, auto en responsive
+- Mismo patrón de botón glass en modo oscuro
 
 ### 7.3 Product Card Mini
 
@@ -275,12 +277,33 @@ article.product-mini
 
 ### 7.4 Brand Card
 
+**Estructura**:
+```
+.brand-card
+├── a.brand-card__link
+│   ├── .brand-card__visual (logo)
+│   │   ├── img.brand-card__image
+│   │   └── .brand-card__badge
+│   └── .brand-card__info
+│       ├── h3.brand-card__name
+│       └── p.brand-card__description
+```
+
 **Características clave**:
 - Aspect ratio de visual: `1.5 / 1`
 - Fondo siempre blanco para logos (`#ffffff`)
 - Mismo border-radius que product-card
 
 ### 7.5 Category Card
+
+**Estructura**:
+```
+.category-card
+├── .category-card__icon-wrapper
+│   └── img.category-card__icon
+├── span.category-card__name
+└── .category-card__indicator (oculto)
+```
 
 **Características clave**:
 - Icono circular de 64px
@@ -296,6 +319,36 @@ article.product-mini
 - Items prev/next: 70% width, opacity 0.5, blur
 - Animaciones: `cubic-bezier(0.2, 0.8, 0.2, 1)`
 - Dots: 10px circle, activo se expande a 26px pill
+
+### 7.7 Product Section (Especial Ecommerce)
+
+**Estructura**:
+```
+section.product-section
+├── .product-section__header
+│   ├── h2.product-section__title
+│   ├── .product-section__accent
+│   └── a.product-section__link
+├── .product-section__container
+│   └── .product-section__content (--grid | --carousel | --original)
+└── .product-section__footer
+```
+
+**Layouts soportados**:
+- `grid`: Grid responsive con auto-fill y espaciado clamp.
+- `carousel`: Flex horizontal interactivo con drag scroll.
+- `original`: Grid compacto de 3 o 4 columnas tradicionales (minmax 250px).
+
+### 7.8 Featured Product Grid (Especial Ecommerce)
+- Fondo de sección: `--afer-surface`
+- Border-radius inferior de la sección completa: `0 0 30px 30px`
+- Utiliza tarjetas `product-card-v2` internamente.
+- Grid estructurado a dos columnas en desktop: `minmax(350px, 1fr)`
+
+### 7.9 Brand Carousel Section (Especial Ecommerce)
+- Todas las tarjetas de marcas en carrusel poseen tamaño fijo rígido: `170x140px` en desktop, y `140x115px` en mobile.
+- Logotipo de marca con `aspect-ratio: 1.5 / 1`, truncado estricto a 1 sola línea del título y descripción del fabricante.
+- Header con patrón accent line sólida al igual que el listado de productos.
 
 ---
 
@@ -399,27 +452,31 @@ padding: 6px;
 }
 ```
 
----
-
-## 9.4 Auth — Inputs y Botones
-
-### Auth Input
+### 9.4 Botón Quick-Add (mini card - Especial Ecommerce)
 
 ```scss
-// Contenedor del formulario
-&__form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+position: absolute;
+bottom: 6px;
+right: 6px;
+width: 26px;
+height: 26px;
+background: var(--afer-secondary);
+border-radius: 6px;
+box-shadow: 0 2px 6px color-mix(in srgb, var(--afer-secondary), transparent 85%);
 
-// Campo individual
-&__field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+&:hover {
+  background: var(--afer-primary);
+  transform: scale(1.1);
 }
+```
 
+---
+
+## 10. Auth — Inputs y Botones
+
+### 10.1 Auth Input
+
+```scss
 // Input
 &__input {
   width: 100%;
@@ -458,7 +515,7 @@ padding: 6px;
 }
 ```
 
-### Auth Submit Button
+### 10.2 Auth Submit Button
 
 ```scss
 padding: 0.9rem 1.5rem;
@@ -500,7 +557,7 @@ transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 ```
 
-### Auth Google Button
+### 10.3 Auth Google Button
 
 ```scss
 padding: 0.8rem 1.25rem;
@@ -519,44 +576,11 @@ transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 ```
 
-### Input Wrapper (para botones de visibilidad de contraseña)
-
-```scss
-&__input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-
-  .input-class {
-    padding-right: 2.5rem;
-  }
-}
-
-&__toggle-password {
-  position: absolute;
-  right: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--afer-text-muted);
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: color 0.15s ease;
-
-  &:hover {
-    color: var(--afer-text-primary);
-  }
-}
-```
-
 ---
 
-## 10. Dark Mode — Reglas y Patrones
+## 11. Dark Mode — Reglas y Patrones
 
-### 10.1 Principio fundamental
+### 11.1 Principio fundamental
 
 **NO hay transiciones al cambiar de tema**. Los cambios de color son instantáneos. Solo se animan interacciones de usuario (hover, click, etc.).
 
@@ -568,7 +592,7 @@ transition: transform 0.3s ease, box-shadow 0.3s ease;
 transition: all 0.3s ease; // Esto animaría el cambio de tema
 ```
 
-### 10.2 Patrón de implementación
+### 11.2 Patrón de implementación
 
 ```scss
 :host-context([data-theme='dark']) .element {
@@ -576,46 +600,20 @@ transition: all 0.3s ease; // Esto animaría el cambio de tema
 }
 ```
 
-### 10.3 Patrones de adaptación
+### 11.3 Patrón de Adaptación en Superficies, Bordes y Sombras
+- **Superficies**: En modo claro usa `var(--afer-surface)`. En modo oscuro incrementa el contraste sutilmente usando `color-mix(in srgb, var(--afer-surface), #000 15%)`.
+- **Bordes**: Reemplaza el borde gris sutil del modo claro por `color-mix(in srgb, var(--afer-hover), transparent 30%)` en modo oscuro.
+- **Sombras**: Las sombras en modo oscuro requieren mayor intensidad y profundidad física: `box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3)`.
 
-#### Superficies
-```scss
-// Modo claro
-background: var(--afer-surface);
-
-// Modo oscuro
-background: color-mix(in srgb, var(--afer-surface), #000 15%);
-```
-
-#### Bordes
-```scss
-// Modo claro
-border: 1px solid rgba(128, 128, 128, 0.15);
-
-// Modo oscuro
-border-color: color-mix(in srgb, var(--afer-hover), transparent 30%);
-```
-
-#### Sombras
-```scss
-// Modo claro
-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-
-// Modo oscuro (más intensas)
-box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-```
-
-### 10.4 Elementos que NO cambian
-- `--afer-corporate`: Siempre `#d43b00`
-- `--afer-accent-absolute`: Siempre `#f5d020`
-- Imágenes de logos: Fondo siempre blanco
-- Badges de estado sobre imagen: Colores fijos con transparencia
+### 11.4 Filtros de Imagen (Especial Ecommerce)
+- **Modo Claro**: `filter: drop-shadow(0 4px 18px rgb(0 0 0 / 0.1))`
+- **Modo Oscuro**: `filter: drop-shadow(0 8px 26px rgb(0 0 0 / 0.5))` para realzar productos transparentes o flotantes sobre el fondo.
 
 ---
 
-## 11. Responsive Design
+## 12. Responsive Design
 
-### 11.1 Breakpoints
+### 12.1 Breakpoints
 
 | Breakpoint | Valor | Uso |
 |------------|-------|-----|
@@ -627,68 +625,50 @@ box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 | Desktop | `1100px` | Grid de 2 columnas |
 | Desktop large | `1200px` | Ajustes de cards horizontales |
 
-### 11.2 Patrones responsive
+### 12.2 Patrones responsive
 
 #### Mobile-first approach
-
 ```scss
 // Estilos base (mobile)
-.product-card {
-  padding: 8px;
-}
+.product-card { padding: 8px; }
 
 // Progressive enhancement
 @media (min-width: 768px) {
-  .product-card {
-    padding: 16px;
-  }
+  .product-card { padding: 16px; }
 }
 ```
 
 #### Clamp para valores fluidos
-
 ```scss
 font-size: clamp(0.9rem, 2vw, 1rem);
 border-radius: clamp(12px, 1.5vw, 16px);
 padding: clamp(8px, 1.5vw, 10px) 16px;
 ```
 
-#### Grid adaptativo
-
+### 12.3 Patrón Mobile para Tarjetas (Especial Ecommerce)
+En pantallas ultra-pequeñas (móvil `<480px`), la estructura interna debe compactarse para maximizar el área visible de venta:
 ```scss
-grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-
-@media (max-width: 1100px) { grid-template-columns: repeat(2, 1fr); }
-@media (max-width: 650px) { grid-template-columns: 1fr; }
-```
-
-### 11.3 Safe areas
-
-```scss
-padding: max(1rem, env(safe-area-inset-left))
-         max(1rem, env(safe-area-inset-top))
-         max(1rem, env(safe-area-inset-bottom))
-         max(1rem, env(safe-area-inset-right));
+@media (max-width: 480px) {
+  &__header { padding: 8px 12px 4px; }
+  &__info { padding: 10px 12px; }
+  &__actions { padding: 4px 12px 10px; }
+  
+  font-size: 0.7rem; // Escala tipográfica adaptada
+  svg { width: 14px; height: 14px; } // Iconos ajustados a 14px
+}
 ```
 
 ---
 
-## 12. Transiciones y Animaciones
+## 13. Transiciones y Animaciones
 
-### 12.1 Easing functions
-
+### 13.1 Easing functions
 ```scss
-// Estándar (la mayoría de interacciones)
-cubic-bezier(0.4, 0, 0.2, 1)
-
-// Slider (más elástica)
-cubic-bezier(0.2, 0.8, 0.2, 1)
-
-// Simple
-ease
+cubic-bezier(0.4, 0, 0.2, 1) // Estándar para micro-interacciones
+cubic-bezier(0.2, 0.8, 0.2, 1) // Slider (curva elástica de desaceleración)
 ```
 
-### 12.2 Duraciones
+### 13.2 Duraciones
 
 | Duración | Uso |
 |----------|-----|
@@ -698,41 +678,33 @@ ease
 | `0.4s - 0.5s` | Image zoom, transformaciones grandes |
 | `0.7s` | Slider transitions |
 
-### 12.3 Patrones de hover
+### 13.3 Patrones de hover
+- **Card Hover**: `border-color: var(--afer-secondary)`. **NO** agregar sombras adicionales que incrementen ruido en grillas densas.
+- **Imagen Hover**: `transform: scale(1.08)` de zoom sutil.
+- **Icono Hover (Especial Ecommerce)**: `transform: rotate(-10deg) scale(1.1)` para aportar dinamismo y juego físico al usuario.
 
-```scss
-// Card hover
-&:hover {
-  border-color: var(--afer-secondary);
-  // NO agregar box-shadow en la card, solo en botones
-}
-
-// Botón hover (elevación)
-&:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px color-mix(in srgb, var(--afer-secondary-absolute), transparent 80%);
-}
-
-// Imagen hover (zoom sutil)
-&:hover .product-card__image {
-  transform: scale(1.08);
-}
-```
-
-### 12.4 Active states
-
+### 13.4 Active states
 ```scss
 &:active {
   transform: translateY(0) scale(0.98);
 }
 ```
 
+### 13.5 Animaciones prohibidas en cambio de tema
+```scss
+// NO HACER: Esto anima el cambio de tema de forma lenta
+transition: all 0.3s ease;
+transition: background 0.3s ease, color 0.3s ease;
+
+// HACER: Solo animar interacciones específicas
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+```
+
 ---
 
-## 13. Accesibilidad
+## 14. Accesibilidad
 
-### 13.1 Focus states
-
+### 14.1 Focus states
 ```scss
 &:focus-visible {
   outline: 2px solid var(--afer-primary);
@@ -740,65 +712,91 @@ ease
 }
 ```
 
-### 13.2 Touch targets
-- Mínimo: `44px` en mobile
-- Estándar: `52px` en desktop
+### 14.2 Touch targets
+- **Mínimo físico**: `44px` en móviles para botones interactivos.
+- **Estándar general**: `52px` en escritorios.
+- **Botones de control de cantidad (Especial Ecommerce)**: `40px` en desktop y un mínimo de `32px` en mobile.
 
-### 13.3 Aria labels
-
+### 14.3 Aria labels
 ```html
 <button aria-label="Agregar a favoritos">...</button>
 <button aria-label="Añadir al carrito">...</button>
 ```
 
----
-
-## 14. Naming Conventions — BEM Modificado
-
-### 14.1 Estructura
-
+### 14.4 Safe areas
 ```scss
-// Bloque
-.product-card { }
-
-// Elemento
-.product-card__header { }
-.product-card__image { }
-
-// Modificador
-.product-card__favorite--active { }
-.label--new { }
-```
-
-### 14.2 Reglas de nombrado
-- **Bloques**: kebab-case, descriptivo (`.product-card`, `.brand-card`)
-- **Elementos**: doble guion bajo (`__element`)
-- **Modificadores**: doble guion (`--modifier`)
-- **Host context**: `:host-context([data-theme='dark'])`
-- **Clases utilitarias**: kebab-case (`.hide-mobile`, `.product-item`)
-
-### 14.3 Estructura de archivos
-
-```
-component-name/
-├── component-name.ts
-├── component-name.html
-├── component-name.scss
-└── component-name.spec.ts
+padding: max(1rem, env(safe-area-inset-left)) 
+         max(1rem, env(safe-area-inset-top))
+         max(1rem, env(safe-area-inset-bottom))
+         max(1rem, env(safe-area-inset-right));
 ```
 
 ---
 
-## 15. Skeleton / Loading States
+## 15. Home Page — Estructura y Flujo (Especial Ecommerce)
 
-### 15.1 Patrón de uso
+### 15.1 Orden Canónico de Secciones
+El layout de la Home Page principal debe respetar estrictamente la jerarquía visual de ventas para optimizar la conversión:
+1. **Hero Slider** (`app-hero-slider`): Banners principales interactivos.
+2. **Category Carousel** (`app-category-carousel`): Iconos circulares de acceso rápido.
+3. **Featured Product Grid** (`app-featured-product-grid`): Ofertas de muy alta relevancia (tarjetas V2).
+4. **Productos Destacados** (`app-product-section`): Carrusel horizontal fluido de tarjetas mini.
+5. **Tendencias** (`app-product-section`): Grilla interactiva de 8 tarjetas V2 horizontales.
+6. **Novedades** (`app-product-section`): Grilla compacta de 8 tarjetas verticales clásicas.
+7. **Brands Section** (`app-brand-section`): Carrusel con logos homologados de fabricantes.
 
+### 15.2 Espaciado de Sección a Sección
+Para evitar saltos visuales incómodos, la separación entre bloques es totalmente limpia:
+- El contenedor principal de la home (`home-main-container`) posee un `gap: 0` estricto.
+- Cada sección independiente añade un padding interno estándar de `2.5rem 1rem` vertical para manejar los espacios homogéneamente.
+
+### 15.3 Card style por sección
+| Sección | Layout | Card Style | Cantidad recomendada |
+|---------|--------|------------|----------------------|
+| Featured Grid | Grid | v2 (horizontal) | 6 |
+| Destacados | Carousel | mini | 20 |
+| Tendencias | Grid | v2 (horizontal) | 8 |
+| Novedades | Grid | original | 8 |
+
+---
+
+## 16. Product Detail — Layout (Especial Ecommerce)
+
+### 16.1 Estructura Visual
+```
+.product-detail
+├── .product-detail__top (grid responsive 2 columnas en desktop)
+│   ├── .product-gallery (Columna Izquierda - Galería)
+│   │   ├── .product-gallery__main (Visualizador principal)
+│   │   └── .product-gallery__thumbnails (Miniaturas alineadas abajo)
+│   └── .product-info (Columna Derecha - Información)
+│       ├── .product-info__header (Categorías, badges de marca)
+│       ├── .product-title (Nombre del producto)
+│       ├── .product-pricing (Precios con peso tipográfico 900)
+│       └── .product-actions (Selector cantidad, agregar carrito, favoritos)
+└── .product-detail__bottom
+    └── .product-detail__tabs (Tabs navegables: Descripción, Especificaciones Técnicas)
+```
+
+### 16.2 Galería
+- Miniaturas posicionadas horizontalmente debajo del visor principal.
+- Visor con flechas circulares de navegación superpuestas.
+- Lightbox a pantalla completa con centrado y safe-area paddings activos en mobile.
+
+### 16.3 Acciones
+- **Controles interactivos**: Selector de cantidad interactivo + botón de agregar al carrito + botón de favoritos en una sola fila.
+- **Patrón responsive**: En móviles, la fila se comporta de forma elástica (`flex-wrap nowrap` con gap reducido y `overflow-x hidden`) para evitar desbordes y colisiones.
+
+---
+
+## 17. Skeleton / Loading States
+
+### 17.1 Patrón de uso
 ```html
 <skeleton-card [count]="6" />
 ```
 
-### 15.2 Shimmer animation
-
+### 17.2 Shimmer animation
 ```scss
 @keyframes shimmer {
   0% { background-position: 200% 0; }
@@ -812,55 +810,30 @@ animation: shimmer 1.5s infinite;
 
 ---
 
-## 16. Z-index — Escala
+## 18. Z-index — Escala
 
 | Valor | Uso |
 |-------|-----|
 | `1` | Elementos base |
-| `2-3` | Labels, overlays |
-| `4-6` | Items de slider prev/next |
-| `10` | Elemento activo, badges importantes |
-| `10500` | Lightbox |
-
-**Regla**: No usar valores arbitrarios de z-index. Seguir la escala.
+| `2-3` | Labels, overlays, decoraciones |
+| `4-6` | Elementos de Slider prev/next tapados |
+| `10` | Badges interactivos destacados, corazones activos, overlays flotantes |
+| `10500` | Modales principales, Lightbox a pantalla completa |
 
 ---
 
-## 17. Anti-patrones (NO HACER)
+## 19. Anti-patrones (NO HACER)
 
-### 17.1 Colores
-- ❌ No usar colores hardcodeados (excepto blancos/negros puros)
-- ❌ No usar `#fff` o `#000` donde existe una variable
-- ✅ Usar siempre las variables CSS `--afer-*`
-
-### 17.2 Transiciones
-- ❌ No usar `transition: all`
-- ❌ No animar `background` o `color` para cambio de tema
-- ✅ Especificar solo las propiedades que se animan
-
-### 17.3 Layout
-- ❌ No usar anchos fijos sin responsive
-- ❌ No usar `!important` excepto en utilitarias como `.hide-mobile`
-- ✅ Usar `clamp()`, `minmax()`, y media queries
-
-### 17.4 Componentes
-- ❌ No mezclar estilos de product-card, product-card-v2, product-card-mini
-- ❌ No duplicar estilos que ya existen en variables
-- ✅ Reutilizar patrones existentes
-
-### 17.5 Diseño visual
-- ❌ No usar degradados (`linear-gradient`, `radial-gradient`, etc.) salvo en el logo/brand
-- ❌ No usar círculos decorativos, formas abstractas o elementos "flotantes" de relleno
-- ❌ No usar `backdrop-filter` salvo en labels sobre imágenes
-- ❌ No usar sombras con color de marca (`color-mix` en `box-shadow`) salvo en botones de acción
-- ❌ No usar pseudo-elementos `::before`/`::after` decorativos (círculos, líneas, etc.)
-- ❌ No usar animaciones de entrada elaboradas (fade + scale + translate combinados)
-- ✅ Diseño limpio, funcional, con colores sólidos y espaciado consistente
-- ✅ Los componentes deben verse profesionales y hechos a mano, no generados por IA
+- ❌ **Colores**: No utilizar colores hardcodeados (excepto blanco/negro puro de contraste). Toda superficie y texto debe heredar de `--afer-*`.
+- ❌ **Transiciones**: Prohibido usar `transition: all` o animar propiedades de color en cambio de tema (provoca parpadeos).
+- ❌ **Pseudo-elementos**: No emplear `::before` o `::after` con fines meramente decorativos abstractos (líneas de adorno flotantes, círculos difuminados de fondo).
+- ❌ **Diseño Visual**: Mantener el diseño limpio y profesional, sin degradados exagerados en fondos ni elementos flotantes de relleno. Debe sentirse hecho a mano y premium.
+- ❌ **Layout**: No usar anchos fijos sin responsive. No utilizar `!important` a menos que sea una clase utilitaria estrictamente global (como `.hide-mobile`).
+- ❌ **Componentes**: No mezclar o duplicar estilos de diferentes cards (ej: intentar forzar estilos de `product-card-mini` en una `product-card` normal).
 
 ---
 
-## 18. Referencia Rápida — Valores Comunes
+## 20. Referencia Rápida — Valores Comunes
 
 | Propiedad | Valor | Contexto |
 |-----------|-------|----------|
@@ -871,9 +844,6 @@ animation: shimmer 1.5s infinite;
 | Button radius | `clamp(10px, 1.5vw, 14px) 0` | Agregar al carrito |
 | Auth input radius | `10px 0` (asimétrico) | Inputs de login, register, forgot-password |
 | Auth button radius | `10px 0` (asimétrico) | Botones submit de auth |
-| Auth input shadow | `0 2px 4px color-mix(var(--afer-shadow), transparent 70%)` | Inputs de auth |
-| Auth input focus shadow | `0 4px 12px color-mix(var(--afer-primary-absolute), transparent 80%)` | Focus en inputs auth |
-| Auth button shadow | `0 4px 12px color-mix(var(--afer-primary-absolute), transparent 70%)` | Botones submit de auth |
 | Font weight bold | `800 - 900` | Títulos, badges, precios |
 | Font weight normal | `400 - 600` | Body text |
 | Gap estándar | `12px - 16px` | Entre elementos de card |
@@ -881,13 +851,12 @@ animation: shimmer 1.5s infinite;
 | Image aspect | `1.2 / 1` | Product card original |
 | Image aspect | `1 / 1` | Product card mini |
 | Hover transform | `translateY(-3px)` | Elevación estándar |
-| Auth hover transform | `translateY(-2px)` | Elevación botones auth |
 | Hover scale | `scale(1.08)` | Zoom de imagen |
 | Active scale | `scale(0.98)` | Feedback de click |
 
 ---
 
-## 19. Checklist de Implementación
+## 21. Checklist de Implementación
 
 ### Antes de crear un nuevo componente visual:
 - [ ] ¿Existe un componente similar que pueda reutilizar?
@@ -906,6 +875,41 @@ animation: shimmer 1.5s infinite;
 - [ ] ¿Se mantiene la funcionalidad en ambos temas?
 - [ ] ¿Se mantiene el responsive design?
 - [ ] ¿No se rompen los hover/active states existentes?
+
+---
+
+## 22. Naming Conventions — CSS & BEM
+
+### 22.1 BEM modificado
+- **Bloque (Block)**: Representa el contenedor principal del componente. Se escribe en kebab-case.
+  ```scss
+  .product-card { }
+  ```
+- **Elemento (Element)**: Representa una parte del bloque. Se concatena con doble guion bajo (`__`).
+  ```scss
+  .product-card__header { }
+  .product-card__image { }
+  ```
+- **Modificador (Modifier)**: Representa un estado o variación del bloque o elemento. Se concatena con doble guion medio (`--`).
+  ```scss
+  .product-card__favorite--active { }
+  .label--new { }
+  ```
+
+### 22.2 Reglas de Nombrado y Estructura
+- **Host Context**: Para adaptar estilos en modo oscuro sin transiciones globales del body, usar siempre:
+  ```scss
+  :host-context([data-theme='dark']) .mi-elemento { }
+  ```
+- **Clases utilitarias**: Escribir siempre en kebab-case (`.hide-mobile`, `.text-clamp`).
+- **Estructura de archivos**: Cada componente visual debe seguir la jerarquía estricta:
+  ```
+  component-name/
+  ├── component-name.ts
+  ├── component-name.html
+  ├── component-name.scss
+  └── component-name.spec.ts
+  ```
 
 ---
 

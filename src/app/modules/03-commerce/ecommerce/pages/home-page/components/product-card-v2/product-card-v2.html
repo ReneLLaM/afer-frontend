@@ -16,7 +16,7 @@
   <div class="product-card__right">
     <div class="product-card__info-top">
       <div class="product-card__meta-row">
-        <span class="product-card__sku">{{ product().sku | slice:0:10 }}{{ product().sku.length > 10 ? '...' : '' }}</span>
+        <span class="product-card__sku">{{ product().sku }}</span>
         <div class="product-card__status-row">
           @if (product().isNew) {
             <span class="status-badge status-badge--new">NUEVO</span>
