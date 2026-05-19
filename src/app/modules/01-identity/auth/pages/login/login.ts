@@ -1,24 +1,29 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthStore } from '../../store/auth.store';
 
 @Component({
   selector: 'login-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPage {
-  private readonly fb        = inject(FormBuilder);
-  private readonly router    = inject(Router);
-  private readonly authStore = inject(AuthStore);
+  private readonly fb         = inject(NonNullableFormBuilder);
+  private readonly router     = inject(Router);
+  private readonly authStore  = inject(AuthStore);
+  private readonly destroyRef = inject(DestroyRef);
 
-  hasError  = signal(false);
-  isPosting = signal(false);
+  hasError     = signal(false);
+  errorMessage = signal('');
+  isPosting    = signal(false);
+  showPassword = signal(false);
 
   loginForm = this.fb.group({
     email:    ['', [Validators.required, Validators.email]],
@@ -37,21 +42,33 @@ export class LoginPage {
     const { email, password } = this.loginForm.getRawValue();
 
     this.authStore
-      .login({ email: email!, password: password! })
-      .subscribe((success) => {
-        this.isPosting.set(false);
-
-        if (success) {
+      .login({ email, password })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isPosting.set(false);
           this.router.navigate(['/']);
-        } else {
+        },
+        error: (err: HttpErrorResponse) => {
+          this.isPosting.set(false);
           this.hasError.set(true);
-          setTimeout(() => this.hasError.set(false), 3000);
+
+          if (err.status === 429) {
+            this.errorMessage.set('Has excedido el límite de intentos de inicio de sesión. Por favor, espera un momento.');
+          } else {
+            this.errorMessage.set(err?.error?.message || 'Email o contraseña incorrectos.');
+          }
+
+          setTimeout(() => this.hasError.set(false), 5000);
         }
       });
   }
 
   onGoogleLogin(): void {
-    // Redirige al usuario a la URL del backend para iniciar OAuth con Google
     window.location.href = this.authStore.getGoogleAuthUrl();
+  }
+
+  togglePassword(): void {
+    this.showPassword.update(v => !v);
   }
 }

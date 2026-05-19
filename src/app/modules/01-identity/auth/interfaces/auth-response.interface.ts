@@ -20,3 +20,14 @@ export interface RegisterData {
   phone?:   string;
   gender?:  string;
 }
+
+export interface UpdatePasswordCredentials {
+  currentPassword:  string;
+  newPassword:      string;
+}
+
+export interface UpdateProfileData {
+  fullName?: string;
+  phone?:    string;
+  gender?:   string;
+}

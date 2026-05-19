@@ -141,6 +141,10 @@
     position: relative;
     display: flex;
     align-items: center;
+
+    .auth-page__input {
+      padding-right: 2.5rem;
+    }
   }
 
   &__input {

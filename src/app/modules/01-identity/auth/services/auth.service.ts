@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../../../environments/environment';
-import { AuthResponse, LoginCredentials } from '../interfaces';
+import { AuthResponse, LoginCredentials, User, UpdatePasswordCredentials, UpdateProfileData } from '../interfaces';
 
 /**
  * AuthService — SOLO responsable de las peticiones HTTP al backend.
@@ -117,5 +117,29 @@ export class AuthService {
    */
   resetPassword(token: string, password: string): Observable<{ ok: boolean; message: string }> {
     return this.http.post<{ ok: boolean; message: string }>(`${this.baseUrl}/auth/reset-password`, { token, password });
+  }
+
+  /**
+   * GET /users/me
+   * Obtiene la información detallada del perfil del usuario autenticado.
+   */
+  getProfile(): Observable<User> {
+    return this.http.get<User>(`${this.baseUrl}/users/me`);
+  }
+
+  /**
+   * PATCH /users/me
+   * Actualiza la información del perfil del usuario autenticado.
+   */
+  updateProfile(data: UpdateProfileData): Observable<User> {
+    return this.http.patch<User>(`${this.baseUrl}/users/me`, data);
+  }
+
+  /**
+   * POST /auth/update-password
+   * Actualiza la contraseña del usuario autenticado.
+   */
+  updatePassword(data: UpdatePasswordCredentials): Observable<{ ok: boolean; message: string }> {
+    return this.http.post<{ ok: boolean; message: string }>(`${this.baseUrl}/auth/update-password`, data);
   }
 }

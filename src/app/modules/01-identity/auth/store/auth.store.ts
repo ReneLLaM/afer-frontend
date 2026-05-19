@@ -78,9 +78,9 @@ export class AuthStore {
     return this.authService.login(credentials).pipe(
       tap((response) => this._setSession(response)),
       map(() => true),
-      catchError(() => {
+      catchError((error) => {
         this._clearSession();
-        return of(false);
+        return throwError(() => error);
       }),
     );
   }
@@ -157,7 +157,7 @@ export class AuthStore {
    */
   forceLogout(): void {
     this._clearSession();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/iniciar-sesion']);
   }
 
   // ─── RBAC helpers ───────────────────────────────────────
@@ -175,6 +175,13 @@ export class AuthStore {
   hasAnyPermission(permissions: string[]): boolean {
     const userPermissions = this.permissions();
     return permissions.some(p => userPermissions.includes(p));
+  }
+
+  /**
+   * Actualiza el objeto de usuario en el estado.
+   */
+  updateUser(user: User): void {
+    this._user.set(user);
   }
 
   // ─── Métodos internos ───────────────────────────────────

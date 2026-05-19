@@ -12,4 +12,6 @@ export interface User {
   status:        string;
   roles:         string[];
   permissions:   string[];
+  hasPassword?:  boolean;
+  isGoogleUser?: boolean;
 }

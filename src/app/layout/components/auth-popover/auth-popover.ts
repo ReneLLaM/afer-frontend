@@ -35,12 +35,17 @@ export class AuthPopover {
 
   navigateToLogin(): void {
     this.close();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/iniciar-sesion']);
   }
 
   navigateToRegister(): void {
     this.close();
-    this.router.navigate(['/register']);
+    this.router.navigate(['/registrarse']);
+  }
+
+  navigateToProfile(): void {
+    this.close();
+    this.router.navigate(['/perfil']);
   }
 
   onLogout(): void {

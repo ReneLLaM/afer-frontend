@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthStore } from '../../../../../modules/01-identity/auth/store/auth.store';
 
 @Component({
   selector: 'app-menu-mobile',
@@ -14,6 +15,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class MenuMobile {
   themeService = inject(ThemeService);
+  authStore    = inject(AuthStore);
 
   @HostBinding('class.is-open') isOpen = false;
 

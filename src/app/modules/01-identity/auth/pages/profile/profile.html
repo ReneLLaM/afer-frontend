@@ -1,0 +1,317 @@
+<div class="profile-page">
+  <div class="profile-page__container">
+    
+    @if (isLoading()) {
+      <div class="profile-page__loader-container">
+        <div class="profile-page__loader"></div>
+        <p class="profile-page__loader-text">Cargando tu información...</p>
+      </div>
+    } @else if (loadError()) {
+      <div class="profile-page__error-container">
+        <div class="profile-page__error-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <p class="profile-page__error-msg">{{ loadError() }}</p>
+        <button class="profile-page__retry-btn" (click)="fetchProfile()">Intentar de nuevo</button>
+      </div>
+    } @else {
+      
+      <!-- CARD PRINCIPAL DE PERFIL -->
+      <div class="profile-card">
+        
+        <!-- VISTA DE INFORMACIÓN DEL PERFIL (Read-only) -->
+        @if (!isEditingProfile() && !isEditingPassword()) {
+          <div class="profile-card__view">
+            <!-- Header de Perfil -->
+            <div class="profile-card__header">
+              <div class="profile-card__avatar-wrapper">
+                <div class="profile-card__avatar">
+                  {{ authStore.user()?.fullName?.charAt(0)?.toUpperCase() }}
+                </div>
+                @if (authStore.user()?.emailVerified) {
+                  <span class="profile-card__verified-badge" title="Cuenta verificada">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </span>
+                }
+              </div>
+              <h2 class="profile-card__name">{{ authStore.user()?.fullName }}</h2>
+              <p class="profile-card__email">{{ authStore.user()?.email }}</p>
+              
+              <div class="profile-card__badges">
+                @for (role of authStore.user()?.roles; track role) {
+                  <span class="profile-card__badge">{{ role | uppercase }}</span>
+                }
+              </div>
+            </div>
+
+            <!-- Detalles de Perfil -->
+            <div class="profile-card__details">
+              <h3 class="profile-card__details-title">Información Personal</h3>
+              <div class="profile-card__grid">
+                <div class="profile-card__item">
+                  <span class="profile-card__label">Nombre completo</span>
+                  <span class="profile-card__value">{{ authStore.user()?.fullName }}</span>
+                </div>
+                <div class="profile-card__item">
+                  <span class="profile-card__label">Correo electrónico</span>
+                  <span class="profile-card__value">{{ authStore.user()?.email }}</span>
+                </div>
+                <div class="profile-card__item">
+                  <span class="profile-card__label">Teléfono</span>
+                  <span class="profile-card__value">{{ authStore.user()?.phone || 'No registrado' }}</span>
+                </div>
+                <div class="profile-card__item">
+                  <span class="profile-card__label">Género</span>
+                  <span class="profile-card__value">{{ getGenderLabel(authStore.user()?.gender) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="profile-card__actions">
+              <button type="button" class="profile-card__btn profile-card__btn--secondary" (click)="enableEditProfile()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                <span>Editar Perfil</span>
+              </button>
+
+              <button type="button" class="profile-card__btn profile-card__btn--primary" (click)="enableEditPassword()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span>{{ authStore.user()?.hasPassword === false ? 'Configurar Contraseña' : 'Cambiar Contraseña' }}</span>
+              </button>
+
+              <button type="button" class="profile-card__btn profile-card__btn--danger" (click)="onLogout()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                <span>Cerrar Sesión</span>
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- FORMULARIO: EDITAR PERFIL -->
+        @if (isEditingProfile()) {
+          <div class="profile-card__edit">
+            <div class="profile-card__edit-header">
+              <h3 class="profile-card__edit-title">Editar Perfil</h3>
+              <p class="profile-card__edit-desc">Actualiza tus datos básicos de contacto.</p>
+            </div>
+
+            <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+              <label class="profile-form__field">
+                <span class="profile-form__label">Nombre completo</span>
+                <input
+                  type="text"
+                  class="profile-form__input"
+                  formControlName="fullName"
+                  placeholder="Tu nombre completo"
+                />
+                @if (profileForm.get('fullName')?.touched && profileForm.get('fullName')?.invalid) {
+                  <span class="profile-form__field-error">
+                    @if (profileForm.get('fullName')?.errors?.['required']) { El nombre es obligatorio. }
+                    @if (profileForm.get('fullName')?.errors?.['minlength']) { Mínimo 2 caracteres. }
+                  </span>
+                }
+              </label>
+
+              <div class="profile-form__row">
+                <label class="profile-form__field">
+                  <span class="profile-form__label">Número de teléfono</span>
+                  <input
+                    type="tel"
+                    class="profile-form__input"
+                    formControlName="phone"
+                    placeholder="Ej. +591 70000000"
+                  />
+                </label>
+
+                <label class="profile-form__field">
+                  <span class="profile-form__label">Género</span>
+                  <div class="profile-form__select-wrapper">
+                    <select class="profile-form__select" formControlName="gender">
+                      <option value="male">Masculino</option>
+                      <option value="female">Femenino</option>
+                      <option value="undefined">Sin especificar</option>
+                    </select>
+                    <span class="profile-form__select-arrow">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="6 9 12 15 18 9"/>
+                      </svg>
+                    </span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="profile-form__actions">
+                <button type="button" class="profile-form__btn profile-form__btn--cancel" (click)="cancelEditProfile()" [disabled]="isSavingProfile()">
+                  Cancelar
+                </button>
+                <button type="submit" class="profile-form__btn profile-form__btn--submit" [disabled]="profileForm.invalid || isSavingProfile()">
+                  {{ isSavingProfile() ? 'Guardando...' : 'Guardar Cambios' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+
+        <!-- FORMULARIO: CAMBIAR / CONFIGURAR CONTRASEÑA -->
+        @if (isEditingPassword()) {
+          <div class="profile-card__edit">
+            <div class="profile-card__edit-header">
+              <h3 class="profile-card__edit-title">{{ authStore.user()?.hasPassword === false ? 'Configurar Contraseña' : 'Cambiar Contraseña' }}</h3>
+              <p class="profile-card__edit-desc">
+                {{ authStore.user()?.hasPassword === false 
+                  ? 'Configura una contraseña para iniciar sesión directamente con tu correo electrónico.' 
+                  : 'Actualiza tu contraseña para mantener tu cuenta segura.' 
+                }}
+              </p>
+            </div>
+
+            <form class="profile-form" [formGroup]="passwordForm" (ngSubmit)="onUpdatePassword()">
+              
+              @if (authStore.user()?.hasPassword !== false) {
+                <label class="profile-form__field">
+                  <span class="profile-form__label">Contraseña actual</span>
+                  <div class="profile-form__input-wrapper">
+                    <input
+                      [type]="showCurrentPassword() ? 'text' : 'password'"
+                      class="profile-form__input"
+                      formControlName="currentPassword"
+                      placeholder="Ingresa tu contraseña actual"
+                      autocomplete="current-password"
+                    />
+                    <button
+                      type="button"
+                      class="profile-form__toggle-password"
+                      (click)="toggleCurrentPassword()"
+                      [attr.aria-label]="showCurrentPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                    >
+                      @if (showCurrentPassword()) {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                          <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                      } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      }
+                    </button>
+                  </div>
+                  @if (passwordForm.get('currentPassword')?.touched && passwordForm.get('currentPassword')?.invalid) {
+                    <span class="profile-form__field-error">La contraseña actual es obligatoria.</span>
+                  }
+                </label>
+              }
+
+              <div class="profile-form__row">
+                <label class="profile-form__field">
+                  <span class="profile-form__label">Nueva contraseña</span>
+                  <div class="profile-form__input-wrapper">
+                    <input
+                      [type]="showNewPassword() ? 'text' : 'password'"
+                      class="profile-form__input"
+                      formControlName="newPassword"
+                      placeholder="Mínimo 6 caracteres"
+                      autocomplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      class="profile-form__toggle-password"
+                      (click)="toggleNewPassword()"
+                      [attr.aria-label]="showNewPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                    >
+                      @if (showNewPassword()) {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                          <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                      } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      }
+                    </button>
+                  </div>
+                  @if (passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.invalid) {
+                    <span class="profile-form__field-error">
+                      @if (passwordForm.get('newPassword')?.errors?.['required']) { La contraseña es obligatoria. }
+                      @if (passwordForm.get('newPassword')?.errors?.['minlength']) { Mínimo 6 caracteres. }
+                      @if (passwordForm.get('newPassword')?.errors?.['pattern']) { Debe incluir una mayúscula, minúscula y número. }
+                    </span>
+                  }
+                </label>
+
+                <label class="profile-form__field">
+                  <span class="profile-form__label">Confirmar contraseña</span>
+                  <div class="profile-form__input-wrapper">
+                    <input
+                      [type]="showConfirmPassword() ? 'text' : 'password'"
+                      class="profile-form__input"
+                      formControlName="confirmNewPassword"
+                      placeholder="Repite la nueva contraseña"
+                      autocomplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      class="profile-form__toggle-password"
+                      (click)="toggleConfirmPassword()"
+                      [attr.aria-label]="showConfirmPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                    >
+                      @if (showConfirmPassword()) {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                          <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                      } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      }
+                    </button>
+                  </div>
+                  @if (passwordForm.get('confirmNewPassword')?.touched && (passwordForm.get('confirmNewPassword')?.invalid || passwordForm.errors?.['mismatch'])) {
+                    <span class="profile-form__field-error">
+                      @if (passwordForm.get('confirmNewPassword')?.errors?.['required']) { Debes confirmar la contraseña. }
+                      @else if (passwordForm.errors?.['mismatch']) { Las contraseñas no coinciden. }
+                    </span>
+                  }
+                </label>
+              </div>
+
+              <div class="profile-form__actions">
+                <button type="button" class="profile-form__btn profile-form__btn--cancel" (click)="cancelEditPassword()" [disabled]="isSavingPassword()">
+                  Cancelar
+                </button>
+                <button type="submit" class="profile-form__btn profile-form__btn--submit" [disabled]="passwordForm.invalid || isSavingPassword()">
+                  {{ isSavingPassword() 
+                    ? (authStore.user()?.hasPassword === false ? 'Guardando...' : 'Actualizando...') 
+                    : (authStore.user()?.hasPassword === false ? 'Configurar Contraseña' : 'Actualizar Contraseña') 
+                  }}
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+
+      </div>
+    }
+  </div>
+</div>

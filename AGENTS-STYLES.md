@@ -406,28 +406,49 @@ padding: 6px;
 ### Auth Input
 
 ```scss
-width: 100%;
-padding: 0.8rem 1rem;
-border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 80%);
-border-radius: 10px 0; /* top-left y bottom-right redondeados */
-font-size: 0.9rem;
-background: var(--afer-surface);
-color: var(--afer-text-primary);
-box-shadow: 0 2px 4px color-mix(in srgb, var(--afer-shadow), transparent 70%);
-transition: border-color 0.2s ease, box-shadow 0.2s ease;
+// Contenedor del formulario
+&__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-&:focus {
-  outline: none;
-  border-color: var(--afer-primary);
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--afer-primary-absolute), transparent 80%);
+// Campo individual
+&__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+// Input
+&__input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(138, 144, 153, 0.2);
+  border-radius: clamp(10px, 1.5vw, 14px) 0;
+  font-size: 0.9rem;
+  background: #ffffff;
+  color: var(--afer-text-primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--afer-primary);
+    box-shadow: 0 4px 12px rgba(239, 126, 38, 0.2);
+  }
+
+  &::placeholder {
+    color: #8a9099;
+  }
 }
 ```
 
 **Dark mode**:
 ```scss
 :host-context([data-theme='dark']) & {
-  background: color-mix(in srgb, var(--afer-surface), #000 15%);
-  border-color: color-mix(in srgb, var(--afer-hover), transparent 50%);
+  background: #2a2f36;
+  border-color: rgba(255, 255, 255, 0.1);
   box-shadow: none;
 
   &:focus {
@@ -495,6 +516,39 @@ transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
   border-color: var(--afer-text-muted);
   background: var(--afer-hover);
   box-shadow: 0 4px 8px color-mix(in srgb, var(--afer-shadow), transparent 60%);
+}
+```
+
+### Input Wrapper (para botones de visibilidad de contraseña)
+
+```scss
+&__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .input-class {
+    padding-right: 2.5rem;
+  }
+}
+
+&__toggle-password {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--afer-text-muted);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--afer-text-primary);
+  }
 }
 ```
 

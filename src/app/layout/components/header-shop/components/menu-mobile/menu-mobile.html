@@ -233,6 +233,29 @@
   <div class="menu-section">
     <p class="menu-title">Mi cuenta</p>
     <ul class="menu-list">
+      @if (authStore.isAuthenticated()) {
+        <li class="menu-actions">
+          <a routerLink="/perfil" routerLinkActive="active" (click)="close()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-user"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M12 7a4 4 0 1 0 0 8a4 4 0 0 0 0 -8" />
+              <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+            </svg>
+            <span class="menu-text">Mi Perfil</span>
+          </a>
+        </li>
+      }
       <!-- favoritos, carrito -->
       <li class="menu-actions">
         <a href="#">
@@ -334,53 +357,78 @@
     <p class="menu-title">Configuración</p>
     <ul class="menu-list">
       <!-- login, register, tema -->
-      <li class="menu-actions">
-        <a routerLink="/login" routerLinkActive="active" (click)="close()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="icon icon-tabler icons-tabler-outline icon-tabler-login"
+      @if (authStore.isAuthenticated()) {
+        <li class="menu-actions">
+          <a (click)="authStore.logout(); close()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-logout"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+              <path d="M9 12h12l-3 -3" />
+              <path d="M18 15l3 -3" />
+            </svg>
+            <span class="menu-text">Cerrar sesión</span>
+          </a>
+        </li>
+      } @else {
+        <li class="menu-actions">
+          <a routerLink="/iniciar-sesion" routerLinkActive="active" (click)="close()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-login"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path
+                d="M15 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"
+              />
+              <path d="M21 12h-13l3 -3" />
+              <path d="M11 15l-3 -3" />
+            </svg>
+            <span class="menu-text">Iniciar sesión</span></a
           >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M15 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"
-            />
-            <path d="M21 12h-13l3 -3" />
-            <path d="M11 15l-3 -3" />
-          </svg>
-          <span class="menu-text">Iniciar sesión</span></a
-        >
-      </li>
-      <li class="menu-actions">
-        <a routerLink="/register" routerLinkActive="active" (click)="close()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="icon icon-tabler icons-tabler-outline icon-tabler-user-plus"
+        </li>
+        <li class="menu-actions">
+          <a routerLink="/registrarse" routerLinkActive="active" (click)="close()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-user-plus"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+              <path d="M16 19h6" />
+              <path d="M19 16v6" />
+              <path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
+            </svg>
+            <span class="menu-text">Registrate</span></a
           >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-            <path d="M16 19h6" />
-            <path d="M19 16v6" />
-            <path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
-          </svg>
-          <span class="menu-text">Registrate</span></a
-        >
-      </li>
+        </li>
+      }
       <li class="menu-actions">
         <a (click)="themeService.toggleTheme()">
           <mat-icon>{{ themeService.isDarkMode() ? 'dark_mode' : 'light_mode' }}</mat-icon>
