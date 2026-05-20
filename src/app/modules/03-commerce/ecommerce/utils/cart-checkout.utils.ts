@@ -1,4 +1,4 @@
-import { CartItem } from '../models/cart.model';
+import { CartItem } from '../pages/mi-carrito/interfaces/mi-carrito.interface';
 
 /** Construye el enlace de WhatsApp con el resumen del pedido. */
 export function buildWhatsAppCheckoutUrl(

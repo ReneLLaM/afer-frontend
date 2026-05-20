@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 
-import { CartItem } from '../../models/cart.model';
+import { CartItem } from '../../pages/mi-carrito/interfaces/mi-carrito.interface';
 import { ProductImagePipe } from '../../pipes/product-image.pipe';
 
 @Component({

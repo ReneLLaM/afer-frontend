@@ -5,7 +5,7 @@ import {
   CartItem,
   CartMeta,
   CartResponse,
-} from '../../modules/03-commerce/ecommerce/models/cart.model';
+} from '../../modules/03-commerce/ecommerce/pages/mi-carrito/interfaces/mi-carrito.interface';
 import { Datum } from '../../modules/03-commerce/ecommerce/pages/products-page/interfaces/products-response.interface';
 
 const EMPTY_META: CartMeta = {

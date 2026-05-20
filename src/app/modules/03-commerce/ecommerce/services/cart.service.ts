@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../../../environments/environment';
-import { CartResponse } from '../models/cart.model';
+import { CartResponse } from '../pages/mi-carrito/interfaces/mi-carrito.interface';
 
 const baseUrl = environment.baseUrl;
 

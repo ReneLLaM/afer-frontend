@@ -1,4 +1,4 @@
-import { Datum } from '../pages/products-page/interfaces/products-response.interface';
+import { Datum } from '../../products-page/interfaces/products-response.interface';
 
 export interface CartMeta {
   itemCount: number;
