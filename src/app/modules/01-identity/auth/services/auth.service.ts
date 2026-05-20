@@ -63,8 +63,8 @@ export class AuthService {
    * Envía el código temporal generado por el backend después del redirect de Google
    * para obtener los tokens de sesión.
    */
-  exchangeGoogleCode(code: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/google/exchange`, { code }, {
+  exchangeGoogleCode(code: string, cartItems?: { productId: string; quantity: number }[]): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/google/exchange`, { code, cartItems }, {
       withCredentials: true, // Importante para que el backend setee la cookie de refresh
     });
   }

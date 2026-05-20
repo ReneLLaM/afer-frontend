@@ -11,6 +11,7 @@ export interface AuthResponse {
 export interface LoginCredentials {
   email:    string;
   password: string;
+  guestId?: string;
 }
 
 export interface RegisterData {
@@ -19,6 +20,7 @@ export interface RegisterData {
   password: string;
   phone?:   string;
   gender?:  string;
+  cartItems?: { productId: string; quantity: number }[];
 }
 
 export interface UpdatePasswordCredentials {

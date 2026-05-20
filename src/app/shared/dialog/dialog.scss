@@ -1,0 +1,213 @@
+.dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.dialog-container {
+  background: var(--afer-surface);
+  width: 100%;
+  max-width: 380px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  position: relative;
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  padding: 1.5rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(12px) scale(0.96); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.dialog-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.dialog-afer-logo {
+  margin-bottom: 1rem;
+  
+  svg {
+    width: 44px;
+    height: 44px;
+    color: var(--afer-primary);
+  }
+}
+
+.dialog-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  
+  .dialog-icon-mask {
+    width: 28px;
+    height: 28px;
+    background-color: currentColor;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+  }
+}
+
+.dialog-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--afer-text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.dialog-body {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.dialog-message {
+  font-size: 0.9rem;
+  color: var(--afer-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.dialog-footer {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.btn-confirm, .btn-cancel {
+  padding: 0.8rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: none;
+  min-width: 100px;
+}
+
+.btn-confirm {
+  background: var(--afer-primary-absolute);
+  color: #ffffff;
+  border-radius: clamp(10px, 1.5vw, 14px) 0;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--afer-primary-absolute), transparent 70%);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--afer-primary-absolute), transparent 65%);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  :host-context([data-theme='dark']) & {
+    background: color-mix(in srgb, var(--afer-primary-absolute), transparent 88%);
+    color: var(--afer-primary-absolute);
+    border: 1px solid color-mix(in srgb, var(--afer-primary-absolute), transparent 72%);
+    box-shadow: none;
+
+    &:hover:not(:disabled) {
+      background: var(--afer-primary-absolute);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 6px 16px color-mix(in srgb, var(--afer-primary-absolute), transparent 60%);
+    }
+  }
+}
+
+.btn-cancel {
+  background: var(--afer-surface);
+  border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 75%);
+  border-radius: 10px;
+  color: var(--afer-text-primary);
+  box-shadow: 0 2px 4px color-mix(in srgb, var(--afer-shadow), transparent 70%);
+  
+  &:hover {
+    border-color: var(--afer-text-muted);
+    background: var(--afer-hover);
+    box-shadow: 0 4px 8px color-mix(in srgb, var(--afer-shadow), transparent 60%);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  :host-context([data-theme='dark']) & {
+    background: color-mix(in srgb, var(--afer-surface), #000 15%);
+    border-color: color-mix(in srgb, var(--afer-hover), transparent 50%);
+    box-shadow: none;
+
+    &:hover {
+      background: var(--afer-hover);
+      border-color: color-mix(in srgb, var(--afer-hover), transparent 30%);
+    }
+  }
+}
+
+.btn-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--afer-text-muted);
+  cursor: pointer;
+  padding: 0.4rem;
+  line-height: 1;
+  border-radius: 50%;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--afer-hover);
+    color: var(--afer-text-primary);
+  }
+}
+
+.dialog-type-confirm .dialog-icon-container {
+  color: var(--afer-secondary);
+}
+
+.dialog-type-info .dialog-icon-container {
+  color: var(--afer-secondary);
+}
+
+.dialog-type-warning .dialog-icon-container {
+  color: var(--afer-accent-absolute);
+}
+
+.dialog-type-error .dialog-icon-container {
+  color: var(--afer-corporate);
+}
+
+.dialog-type-success .dialog-icon-container {
+  color: rgb(34, 197, 94);
+}

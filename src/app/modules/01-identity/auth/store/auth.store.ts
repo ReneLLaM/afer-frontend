@@ -6,6 +6,8 @@ import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { AuthResponse, LoginCredentials, User } from '../interfaces';
 import { FavoritesStore } from '../../../../core/stores/favorites.store';
+import { CartStore } from '../../../../core/stores/cart.store';
+import { DialogService } from '../../../../shared/services/dialog.service';
 
 // ─── Tipos ───────────────────────────────────────────────
 export type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
@@ -28,24 +30,26 @@ const TOKEN_KEY = 'token';
  */
 @Injectable({ providedIn: 'root' })
 export class AuthStore {
-  private readonly authService    = inject(AuthService);
-  private readonly router         = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
   private readonly favoritesStore = inject(FavoritesStore);
+  private readonly cartStore = inject(CartStore);
+  private readonly dialogService = inject(DialogService);
 
   // ─── Estado privado (writable) ──────────────────────────
   private readonly _authStatus = signal<AuthStatus>('checking');
-  private readonly _user       = signal<User | null>(null);
-  private readonly _token      = signal<string | null>(null);
+  private readonly _user = signal<User | null>(null);
+  private readonly _token = signal<string | null>(null);
 
   // ─── Estado público (readonly) ──────────────────────────
-  readonly authStatus  = this._authStatus.asReadonly();
-  readonly user        = this._user.asReadonly();
-  readonly token       = this._token.asReadonly();
+  readonly authStatus = this._authStatus.asReadonly();
+  readonly user = this._user.asReadonly();
+  readonly token = this._token.asReadonly();
 
   // ─── Señales derivadas (computed) ───────────────────────
   readonly isAuthenticated = computed(() => this._authStatus() === 'authenticated');
-  readonly permissions     = computed(() => this._user()?.permissions ?? []);
-  readonly roles           = computed(() => this._user()?.roles ?? []);
+  readonly permissions = computed(() => this._user()?.permissions ?? []);
+  readonly roles = computed(() => this._user()?.roles ?? []);
 
   /**
    * rxResource: verifica la sesión automáticamente al iniciar la app.
@@ -200,6 +204,8 @@ export class AuthStore {
 
     if (!token) {
       this._authStatus.set('not-authenticated');
+      this.cartStore.setAuthenticated(false);
+      this.cartStore.loadCart(true);
       return of(false);
     }
 
@@ -215,19 +221,46 @@ export class AuthStore {
     );
   }
 
-  private _setSession(response: AuthResponse): void {
+  private async _setSession(response: AuthResponse): Promise<void> {
     this._user.set(response.user);
     this._token.set(response.accessToken);
     this._authStatus.set('authenticated');
+    this.cartStore.setAuthenticated(true);
+    
     // Carga los IDs de favoritos al autenticar (solo una vez)
     this.favoritesStore.loadIds();
+
+    // Preguntar si desea agrupar el carrito local
+    const localItems = this.cartStore.getLocalItemsForMerge();
+    if (localItems.length > 0) {
+      const confirmMerge = await this.dialogService.confirm({
+        title: 'Fusión de Carrito',
+        message: '¿Deseas añadir los productos que tenías en tu carrito antes de iniciar sesión a tu cuenta?',
+        confirmText: 'Sí, agrupar',
+        cancelText: 'No, limpiar',
+        type: 'confirm'
+      });
+      
+      if (confirmMerge) {
+        this.cartStore.merge();
+      } else {
+        this.cartStore.clearLocalCart();
+        this.cartStore.loadCart(true);
+      }
+    } else {
+      // Cargar carrito de la DB normalmente
+      this.cartStore.loadCart(true);
+    }
   }
 
   private _clearSession(): void {
     this._user.set(null);
     this._token.set(null);
     this._authStatus.set('not-authenticated');
+    this.cartStore.setAuthenticated(false);
     // Limpiar favoritos al cerrar sesión
     this.favoritesStore.reset();
+    this.cartStore.reset();
+    this.cartStore.loadCart(true);
   }
 }

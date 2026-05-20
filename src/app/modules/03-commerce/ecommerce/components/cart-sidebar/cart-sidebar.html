@@ -1,0 +1,75 @@
+<div class="cart-sidebar-overlay" [class.is-open]="isOpen()" (click)="onClose()"></div>
+
+<aside class="cart-sidebar" [class.is-open]="isOpen()">
+  <div class="cart-sidebar__header">
+    <div class="cart-sidebar__title-wrapper">
+      <h2 class="cart-sidebar__title">Mi Carrito</h2>
+      @if (cartStore.count() > 0) {
+        <span class="cart-sidebar__count">{{ cartStore.count() }}</span>
+      }
+    </div>
+    <button class="cart-sidebar__close" (click)="onClose()" aria-label="Cerrar carrito">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="cart-sidebar__content">
+    @if (cartStore.isLoading() && cartStore.isEmpty()) {
+      <div class="cart-sidebar__loading">
+        <div class="spinner"></div>
+        <p>Cargando carrito...</p>
+      </div>
+    } @else if (cartStore.isEmpty()) {
+      <div class="cart-sidebar__empty">
+        <div class="cart-sidebar__empty-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+        </div>
+        <h3 class="cart-sidebar__empty-title">Tu carrito está vacío</h3>
+        <p class="cart-sidebar__empty-text">¡Parece que aún no has añadido nada!</p>
+        <button class="btn-primary" (click)="onClose()" [routerLink]="['/productos']">
+          Empezar a comprar
+        </button>
+      </div>
+    } @else {
+      <div class="cart-sidebar__items">
+        @for (item of cartStore.items(); track item.id) {
+          <app-cart-line-item 
+            [item]="item"
+            [isUpdating]="cartStore.isItemPending(item.id)"
+            (quantityChange)="onUpdateQuantity(item.id, $event)"
+            (remove)="onRemoveItem(item.id)">
+          </app-cart-line-item>
+        }
+      </div>
+    }
+  </div>
+
+  @if (!cartStore.isEmpty()) {
+    <div class="cart-sidebar__footer">
+      <div class="cart-sidebar__summary">
+        <div class="cart-sidebar__summary-row">
+          <span>Subtotal</span>
+          <span class="cart-sidebar__subtotal">
+            <span class="currency">Bs.</span>{{ cartStore.subtotal() | number:'1.2-2' }}
+          </span>
+        </div>
+        <p class="cart-sidebar__summary-note">Impuestos y envío calculados al finalizar.</p>
+      </div>
+      <div class="cart-sidebar__actions">
+        <button class="btn-primary btn-primary--block" [routerLink]="['/mi-carrito']" (click)="onClose()">
+          Ver mi carrito
+        </button>
+        <button class="btn-secondary btn-secondary--block" (click)="onClose()">
+          Seguir comprando
+        </button>
+      </div>
+    </div>
+  }
+</aside>

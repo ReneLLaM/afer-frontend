@@ -1,6 +1,6 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { ToastService, Toast } from './toast.service';
+import { ToastService, Toast } from '../services/toast.service';
 
 @Component({
   selector: 'toast',

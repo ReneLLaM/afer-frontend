@@ -4,6 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 import { Datum } from '../../../../pages/products-page/interfaces/products-response.interface';
 import { ProductImagePipe } from '../../../../pipes/product-image.pipe';
 import { FavoritesStore } from '../../../../../../../core/stores/favorites.store';
+import { CartStore } from '../../../../../../../core/stores/cart.store';
 
 @Component({
   selector: 'app-product-card-v2',
@@ -16,6 +17,7 @@ import { FavoritesStore } from '../../../../../../../core/stores/favorites.store
 export class ProductCardV2 {
   private readonly router         = inject(Router);
   private readonly favoritesStore = inject(FavoritesStore);
+  private readonly cartStore = inject(CartStore);
 
   product = input.required<Datum>();
 
@@ -25,10 +27,12 @@ export class ProductCardV2 {
   /** True mientras el toggle está en vuelo (previene doble clic) */
   readonly isToggling = computed(() => this.favoritesStore.isToggling(this.product().id));
 
+  readonly isAddingToCart = computed(() => this.cartStore.isPending(this.product().id));
+
   onAddToCart(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    // TODO: CartStore
+    this.cartStore.addItem(this.product().id, 1, this.product());
   }
 
   onFavoriteClick(event: Event): void {

@@ -25,6 +25,7 @@ import { Carousel } from '../../../../../../shared/components/carousel/carousel'
 import { ProductResponse } from '../interfaces/product-response.interface';
 import { Datum } from '../interfaces/products-response.interface';
 import { FavoritesStore } from '../../../../../../core/stores/favorites.store';
+import { CartStore } from '../../../../../../core/stores/cart.store';
 import { AuthStore } from '../../../../../01-identity/auth/store/auth.store';
 
 @Component({
@@ -43,7 +44,13 @@ export class ProductDetailPage {
   private readonly productService = inject(ProductsService);
   private readonly breadcrumbService = inject(BreadcrumbService);
   readonly favoritesStore = inject(FavoritesStore);
+  readonly cartStore = inject(CartStore);
   readonly authStore = inject(AuthStore);
+
+  readonly quantity = signal(1);
+
+  // TODO: Implementar validación de stock en la UI (badge "Sin stock")
+  // TODO: Limitar MAX_QUANTITY al stock disponible del producto
 
   readonly isFavorite = computed(() => {
     const p = this.product() as ProductResponse | null | undefined;
@@ -55,13 +62,34 @@ export class ProductDetailPage {
     return p ? this.favoritesStore.isToggling(p.id) : false;
   });
 
+  readonly isAddingToCart = computed(() => {
+    const p = this.product() as ProductResponse | null | undefined;
+    return p ? this.cartStore.isPending(p.id) : false;
+  });
+
   onFavoriteClick(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
     const p = this.product() as ProductResponse | null | undefined;
     if (p) {
-      // Usar 'any' temporalmente porque FavoritesStore requiere un Datum y ProductResponse tiene algunas diferencias tipológicas.
-      this.favoritesStore.toggle(p.id, p as any);
+      this.favoritesStore.toggle(p.id, p as unknown as Datum);
+    }
+  }
+
+  decrementQuantity(): void {
+    this.quantity.update((q) => Math.max(1, q - 1));
+  }
+
+  incrementQuantity(): void {
+    this.quantity.update((q) => q + 1);
+  }
+
+  onAddToCart(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const p = this.product() as ProductResponse | null | undefined;
+    if (p) {
+      this.cartStore.addItem(p.id, this.quantity(), p as unknown as Datum);
     }
   }
 

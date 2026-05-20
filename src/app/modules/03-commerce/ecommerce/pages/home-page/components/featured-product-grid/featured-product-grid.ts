@@ -22,7 +22,6 @@ const EMPTY_RESPONSE: ProductsResponse = { data: [], meta: { total: 0, limit: 0,
 export class FeaturedProductGrid {
   private productsService = inject(ProductsService);
   private destroyRef = inject(DestroyRef);
-
   category = input<FeaturedCategory | null>(null);
 
   products = signal<Datum[]>([]);
@@ -55,10 +54,6 @@ export class FeaturedProductGrid {
         this.products.set(response.data);
         this.isLoading.set(false);
       });
-  }
-
-  handleAddToCart(_id: string): void {
-    // TODO: Cart service
   }
 
   handleFavorite(_id: string): void {

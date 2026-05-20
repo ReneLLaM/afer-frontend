@@ -1,6 +1,9 @@
-import { computed, effect, inject, Injectable, signal, untracked } from '@angular/core';
+import { computed, effect, inject, Injectable, Injector, signal, untracked } from '@angular/core';
 
 import { FavoritesService, FavoriteItem } from '../../modules/03-commerce/ecommerce/services/favorites.service';
+import { AuthStore } from '../../modules/01-identity/auth/store/auth.store';
+import { DialogService } from '../../shared/services/dialog.service';
+import { Router } from '@angular/router';
 
 /**
  * FavoritesStore — Estado global de favoritos con Angular Signals.
@@ -23,6 +26,13 @@ import { FavoritesService, FavoriteItem } from '../../modules/03-commerce/ecomme
 @Injectable({ providedIn: 'root' })
 export class FavoritesStore {
   private readonly favoritesService = inject(FavoritesService);
+  private readonly injector = inject(Injector);
+  private readonly dialogService = inject(DialogService);
+  private readonly router = inject(Router);
+
+  private get authStore() {
+    return this.injector.get(AuthStore);
+  }
 
   // ─── Estado privado ──────────────────────────────────────
   private readonly _favoriteIds  = signal<Set<string>>(new Set());
@@ -112,7 +122,22 @@ export class FavoritesStore {
    * @param productId UUID del producto
    * @param productData Datos completos del producto (para agregar a _favorites si está cargado)
    */
-  toggle(productId: string, productData?: import('../../modules/03-commerce/ecommerce/pages/products-page/interfaces/products-response.interface').Datum): void {
+  async toggle(productId: string, productData?: import('../../modules/03-commerce/ecommerce/pages/products-page/interfaces/products-response.interface').Datum): Promise<void> {
+    if (!this.authStore.isAuthenticated()) {
+      const confirm = await this.dialogService.confirm({
+        title: 'Favoritos',
+        message: 'Debes iniciar sesión para guardar productos en tus favoritos.',
+        confirmText: 'Iniciar Sesión',
+        cancelText: 'Más tarde',
+        type: 'info'
+      });
+
+      if (confirm) {
+        this.router.navigate(['/iniciar-sesion']);
+      }
+      return;
+    }
+
     if (this.isToggling(productId)) return; // Evitar doble clic
 
     const wasFavorite = this.isFavorite(productId);

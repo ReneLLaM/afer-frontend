@@ -180,11 +180,16 @@
 
         <div class="product-actions">
           <div class="quantity-selector">
-            <button class="quantity-btn">-</button>
-            <span class="quantity-val">1</span>
-            <button class="quantity-btn">+</button>
+            <button type="button" class="quantity-btn" (click)="decrementQuantity()" [disabled]="quantity() <= 1">-</button>
+            <span class="quantity-val">{{ quantity() }}</span>
+            <button type="button" class="quantity-btn" (click)="incrementQuantity()">+</button>
           </div>
-          <button class="btn-add-cart">
+          <button
+            type="button"
+            class="btn-add-cart"
+            (click)="onAddToCart($event)"
+            [disabled]="isAddingToCart()"
+          >
             Agregar
             <svg
               width="18"

@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AuthStore } from '../../store/auth.store';
 import { User } from '../../interfaces';
-import { ToastService } from '../../../../../shared/toast/toast.service';
+import { ToastService } from '../../../../../shared/services/toast.service';
 
 @Component({
   selector: 'profile-page',

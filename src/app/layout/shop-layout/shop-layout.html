@@ -6,3 +6,8 @@
 </main>
 
 <footer-shop></footer-shop>
+
+<app-cart-sidebar 
+  [isOpen]="cartStore.isSidebarOpen()" 
+  (close)="cartStore.closeSidebar()">
+</app-cart-sidebar>

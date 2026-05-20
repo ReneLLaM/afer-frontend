@@ -178,7 +178,7 @@
   .menu-actions {
     margin: 1px 0;
 
-    a {
+    a, .menu-item-btn {
       display: flex;
       align-items: center;
       gap: 14px;
@@ -192,6 +192,10 @@
       cursor: pointer;
       position: relative;
       -webkit-tap-highlight-color: transparent;
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
 
       &:hover,
       &.active {

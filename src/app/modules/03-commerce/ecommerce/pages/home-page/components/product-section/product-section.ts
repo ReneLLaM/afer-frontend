@@ -24,7 +24,6 @@ const EMPTY_RESPONSE: ProductsResponse = { data: [], meta: { total: 0, limit: 0,
 export class ProductSection {
   private productsService = inject(ProductsService);
   private destroyRef = inject(DestroyRef);
-
   title = input.required<string>();
   isFeatured = input<boolean>(false);
   isTrending = input<boolean>(false);
@@ -85,10 +84,6 @@ export class ProductSection {
         this.products.set(response.data);
         this.isLoading.set(false);
       });
-  }
-
-  handleAddToCart(_id: string): void {
-    // TODO: Cart service
   }
 
   handleFavorite(_id: string): void {

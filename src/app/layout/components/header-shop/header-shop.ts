@@ -10,6 +10,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthPopover } from '../auth-popover/auth-popover';
 import { AuthStore } from '../../../modules/01-identity/auth/store/auth.store';
 import { FavoritesStore } from '../../../core/stores/favorites.store';
+import { CartStore } from '../../../core/stores/cart.store';
+import { DialogService } from '../../../shared/services/dialog.service';
 
 @Component({
   selector: 'header-shop',
@@ -25,6 +27,8 @@ export class HeaderShop {
   private readonly route = inject(ActivatedRoute);
   readonly authStore = inject(AuthStore);
   readonly favoritesStore = inject(FavoritesStore);
+  readonly cartStore = inject(CartStore);
+  private readonly dialogService = inject(DialogService);
   searchTerm = signal<string>('');
 
   private readonly queryParams = toSignal(this.route.queryParams);
@@ -68,5 +72,23 @@ export class HeaderShop {
 
   openAuthPopover(): void {
     this.popover().open();
+  }
+
+  async goToFavorites(): Promise<void> {
+    if (this.authStore.isAuthenticated()) {
+      this.router.navigate(['/mis-favoritos']);
+    } else {
+      const confirm = await this.dialogService.confirm({
+        title: 'Iniciar Sesión',
+        message: 'Debes iniciar sesión para ver tus productos favoritos.',
+        confirmText: 'Ir a Login',
+        cancelText: 'Más tarde',
+        type: 'info'
+      });
+
+      if (confirm) {
+        this.router.navigate(['/iniciar-sesion'], { queryParams: { returnUrl: '/mis-favoritos' } });
+      }
+    }
   }
 }

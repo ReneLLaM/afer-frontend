@@ -155,9 +155,6 @@ export class ProductsPage {
     // TODO: Favorite service
   }
 
-  handleAddToCart(_productId: string): void {
-    // TODO: Cart service
-  }
 
   handleSelectionChange(categories: string[]): void {
     this.navegar({ category: categories.length > 0 ? categories.join(',') : null, page: 1 });

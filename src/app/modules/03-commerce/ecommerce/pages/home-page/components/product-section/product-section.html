@@ -21,10 +21,7 @@
                 [product]="product" 
               />
             } @else if (cardStyle() === 'mini') {
-              <app-product-card-mini
-                [product]="product"
-                (addToCart)="handleAddToCart($event)"
-              />
+              <app-product-card-mini [product]="product" />
             } @else {
               <product-card
                 [product]="product"

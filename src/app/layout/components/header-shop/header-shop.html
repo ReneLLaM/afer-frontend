@@ -89,7 +89,7 @@
     </button>
 
     <!-- me gusta -->
-    <button routerLink="/mis-favoritos">
+    <button (click)="goToFavorites()">
       <svg
         class="icon"
         width="44"
@@ -121,7 +121,7 @@
     </button>
 
     <!-- carrito -->
-    <button>
+    <button routerLink="/mi-carrito">
       <svg
         class="icon"
         width="49"
@@ -149,7 +149,9 @@
           stroke-width="0.5"
         />
       </svg>
-      <span class="badge">0</span>
+      @if (cartStore.count() > 0) {
+        <span class="badge">{{ cartStore.count() }}</span>
+      }
     </button>
 
     <!-- perfil -->

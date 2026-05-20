@@ -61,6 +61,11 @@ export const ecommerceRoutes: Routes = [
         loadComponent: () => import('./pages/acerca-de-nosotros-page/acerca-de-nosotros-page').then((m) => m.AcercaDeNosotrosPage),
         data: { breadcrumb: 'Acerca de Nosotros' },
       },
+      {
+        path: 'mi-carrito',
+        loadComponent: () => import('./pages/mi-carrito/mi-carrito').then((m) => m.MiCarritoPage),
+        data: { breadcrumb: 'Mi Carrito' },
+      },
     ],
   },
 ];
