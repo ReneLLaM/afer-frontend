@@ -3,7 +3,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { AuthStore } from '../../store/auth.store';
@@ -23,7 +22,6 @@ export class ProfilePage implements OnInit {
   private readonly authService  = inject(AuthService);
   readonly authStore            = inject(AuthStore);
   private readonly toastService = inject(ToastService);
-  private readonly router       = inject(Router);
   private readonly destroyRef   = inject(DestroyRef);
 
   // Estados generales de la página
@@ -90,7 +88,7 @@ export class ProfilePage implements OnInit {
       });
   }
 
-  resetProfileFormValues(user: User): void {
+  resetProfileFormValues(user: { fullName: string; phone: string | null; gender: string | null }): void {
     this.profileForm.patchValue({
       fullName: user.fullName,
       phone: user.phone || '',
@@ -266,6 +264,5 @@ export class ProfilePage implements OnInit {
 
   onLogout(): void {
     this.authStore.logout();
-    this.router.navigate(['/']);
   }
 }

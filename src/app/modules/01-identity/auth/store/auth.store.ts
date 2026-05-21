@@ -133,15 +133,14 @@ export class AuthStore {
    * Incluso si el backend falla, la sesión local se limpia igualmente.
    */
   logout(): void {
-    const currentUrl = this.router.url;
     this.authService.logout().subscribe({
       complete: () => {
         this._clearSession();
-        this.router.navigateByUrl(currentUrl);
+        this.router.navigate(['/iniciar-sesion']);
       },
       error: () => {
         this._clearSession();
-        this.router.navigateByUrl(currentUrl);
+        this.router.navigate(['/iniciar-sesion']);
       },
     });
   }
