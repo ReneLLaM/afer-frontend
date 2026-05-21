@@ -1,8 +1,8 @@
 import { Component, inject, input, output, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthStore } from '../../../../../modules/01-identity/auth/store/auth.store';
-import { ThemeService } from '../../../../../core/services/theme.service';
+import { AuthStore } from '../../../../modules/01-identity/auth/store/auth.store';
+import { ThemeService } from '../../../../core/services/theme.service';
 import type { AdminNavItem } from '../../admin-nav.config';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthStore } from '../../../../../modules/01-identity/auth/store/auth.store';
+import { AuthStore } from '../../../01-identity/auth/store/auth.store';
 import { ADMIN_NAV_ITEMS } from '../../admin-nav.config';
 
 @Component({

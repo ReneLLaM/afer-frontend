@@ -1,9 +1,9 @@
 import { Component, inject, signal, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthStore } from '../../modules/01-identity/auth/store/auth.store';
-import { ADMIN_NAV_ITEMS } from '../../modules/02-rbac-admin/admin/admin-nav.config';
-import { AdminSidebar } from '../../modules/02-rbac-admin/admin/components/admin-sidebar/admin-sidebar';
-import { AdminHeader } from '../../modules/02-rbac-admin/admin/components/admin-header/admin-header';
+import { ADMIN_NAV_ITEMS } from '../../modules/02-rbac-admin/admin-nav.config';
+import { AdminSidebar } from '../../modules/02-rbac-admin/components/admin-sidebar/admin-sidebar';
+import { AdminHeader } from '../../modules/02-rbac-admin/components/admin-header/admin-header';
 
 @Component({
   selector: 'admin-layout',

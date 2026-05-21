@@ -8,7 +8,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    loadChildren: () => import('./modules/02-rbac-admin/admin/admin.routes').then(m => m.default)
+    loadChildren: () => import('./modules/02-rbac-admin/admin.routes').then(m => m.default)
   },
   {
     path: '**',

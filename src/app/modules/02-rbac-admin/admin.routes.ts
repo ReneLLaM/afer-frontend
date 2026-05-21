@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '../../../core/guards/auth.guard';
-import { permissionGuard } from '../../../core/guards/permission.guard';
-import { PERMISSIONS } from '../../../core/constants/permissions';
-import { AdminLayout } from '../../../layout/admin-layout/admin-layout';
+import { authGuard } from '../../core/guards/auth.guard';
+import { permissionGuard } from '../../core/guards/permission.guard';
+import { PERMISSIONS } from '../../core/constants/permissions';
+import { AdminLayout } from '../../layout/admin-layout/admin-layout';
 
 export const adminRoutes: Routes = [
   {
