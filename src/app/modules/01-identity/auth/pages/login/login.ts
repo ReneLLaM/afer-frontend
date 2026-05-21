@@ -54,7 +54,11 @@ export class LoginPage {
         next: () => {
           this.isPosting.set(false);
           const target = this.returnUrl() || '/';
-          this.router.navigateByUrl(target);
+          if (target === '/' && this.authStore.permissions().length > 0) {
+            this.router.navigateByUrl('/admin');
+          } else {
+            this.router.navigateByUrl(target);
+          }
         },
         error: (err: HttpErrorResponse) => {
           this.isPosting.set(false);

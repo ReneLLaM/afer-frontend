@@ -1,4 +1,4 @@
-import { Component, inject, HostBinding, HostListener, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, HostBinding, HostListener, ChangeDetectionStrategy, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
@@ -25,6 +25,8 @@ export class MenuMobile {
   private readonly dialogService = inject(DialogService);
 
   @HostBinding('class.is-open') isOpen = false;
+
+  hasAdminAccess = computed(() => this.authStore.permissions().length > 0);
 
   @HostListener('document:keydown.escape')
   onEscapeKey(): void {
@@ -62,5 +64,10 @@ export class MenuMobile {
         this.router.navigate(['/iniciar-sesion'], { queryParams: { returnUrl: '/mis-favoritos' } });
       }
     }
+  }
+
+  navigateToAdmin(): void {
+    this.close();
+    this.router.navigate(['/admin']);
   }
 }

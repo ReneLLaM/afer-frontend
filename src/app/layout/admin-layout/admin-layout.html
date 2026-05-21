@@ -1,0 +1,13 @@
+<div class="admin-layout" [class.admin-layout--collapsed]="isSidebarCollapsed()">
+  <admin-sidebar
+    [items]="navItems"
+    [isCollapsed]="isSidebarCollapsed()"
+    (collapsedChange)="onSidebarToggle($event)"
+  />
+  <div class="admin-layout__main">
+    <admin-header />
+    <main class="admin-layout__content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<header class="admin-header">
+  <div class="admin-header__content">
+    <h2 class="admin-header__title">Panel de administraci&oacute;n</h2>
+
+    <div class="admin-header__actions">
+      <a routerLink="/" class="admin-header__store-link" title="Ir a la tienda">
+        <mat-icon>storefront</mat-icon>
+        <span class="admin-header__store-label">Tienda</span>
+      </a>
+
+      <button class="admin-header__btn" (click)="themeService.toggleTheme()" aria-label="Toggle theme">
+        <mat-icon>{{ themeService.isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+
+      <button class="admin-header__btn" (click)="navigateToProfile()" aria-label="Profile">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+
+      <button class="admin-header__btn admin-header__btn--danger" (click)="logout()" aria-label="Logout">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </div>
+</header>

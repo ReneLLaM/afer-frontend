@@ -17,6 +17,7 @@ export class AuthPopover {
 
   readonly isAuthenticated = this.authStore.isAuthenticated;
   readonly user            = this.authStore.user;
+  readonly permissions     = this.authStore.permissions;
 
   isOpen = signal(false);
 
@@ -48,6 +49,11 @@ export class AuthPopover {
   navigateToProfile(): void {
     this.close();
     this.router.navigate(['/perfil']);
+  }
+
+  navigateToAdmin(): void {
+    this.close();
+    this.router.navigate(['/admin']);
   }
 
   onLogout(): void {

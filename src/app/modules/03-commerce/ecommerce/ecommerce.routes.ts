@@ -68,11 +68,6 @@ export const ecommerceRoutes: Routes = [
       },
     ],
   },
-  // Wildcard: redirige rutas no encontradas al home
-  {
-    path: '**',
-    redirectTo: ''
-  },
 ];
 
 export default ecommerceRoutes;

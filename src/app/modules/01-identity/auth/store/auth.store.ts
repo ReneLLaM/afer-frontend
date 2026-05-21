@@ -172,22 +172,40 @@ export class AuthStore {
     this.router.navigate(['/iniciar-sesion'], { queryParams: { returnUrl: currentUrl } });
   }
 
-  // ─── RBAC helpers ───────────────────────────────────────
+  // ─── RBAC helpers — Permisos ──────────────────────────────
 
-  /**
-   * Verifica si el usuario tiene un permiso específico.
-   */
   hasPermission(permission: string): boolean {
     return this.permissions().includes(permission);
   }
 
-  /**
-   * Verifica si el usuario tiene al menos uno de los permisos dados.
-   */
   hasAnyPermission(permissions: string[]): boolean {
     const userPermissions = this.permissions();
     return permissions.some(p => userPermissions.includes(p));
   }
+
+  hasAllPermissions(permissions: string[]): boolean {
+    const userPermissions = this.permissions();
+    return permissions.every(p => userPermissions.includes(p));
+  }
+
+  hasModulePermission(module: string): boolean {
+    return this.permissions().some(p => p.startsWith(`${module}.`));
+  }
+
+  // ─── RBAC helpers — Roles ────────────────────────────────
+
+  hasRole(role: string): boolean {
+    return this.roles().includes(role);
+  }
+
+  hasAnyRole(roles: string[]): boolean {
+    const userRoles = this.roles();
+    return roles.some(r => userRoles.includes(r));
+  }
+
+  readonly isAdmin = computed(() =>
+    this.roles().some(r => r === 'admin' || r === 'super-admin')
+  );
 
   /**
    * Actualiza el objeto de usuario en el estado.

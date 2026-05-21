@@ -137,6 +137,22 @@
         }
       }
     }
+
+    &--admin {
+      color: var(--afer-secondary-absolute);
+
+      svg {
+        color: var(--afer-secondary-absolute);
+      }
+
+      &:hover {
+        background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 92%);
+
+        svg {
+          color: var(--afer-secondary-absolute);
+        }
+      }
+    }
   }
 }
 
