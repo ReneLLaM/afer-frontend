@@ -1,0 +1,69 @@
+/* Botones de cabecera en páginas admin — importar en el .scss de cada página */
+
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  height: 38px;
+  padding: 0 1rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+
+  i {
+    font-size: 1.05rem;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  &--primary {
+    background: var(--afer-primary);
+    color: #fff;
+    border-color: color-mix(in srgb, var(--afer-primary), #000 8%);
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--afer-primary), #fff 12%);
+    }
+
+    &:active:not(:disabled) {
+      background: color-mix(in srgb, var(--afer-primary), #000 10%);
+    }
+  }
+
+  &--secondary {
+    background: var(--afer-surface);
+    color: var(--afer-text-primary);
+    border-color: color-mix(in srgb, var(--afer-text-muted), transparent 75%);
+
+    &:hover:not(:disabled) {
+      border-color: var(--afer-secondary-absolute);
+      color: var(--afer-secondary-absolute);
+      background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 94%);
+    }
+  }
+}
+
+:host-context([data-theme='dark']) .admin-btn--primary {
+  background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
+  color: var(--afer-secondary);
+  border-color: color-mix(in srgb, var(--afer-secondary), transparent 75%);
+
+  &:hover:not(:disabled) {
+    background: var(--afer-secondary);
+    color: #fff;
+    border-color: var(--afer-secondary);
+  }
+
+  &:active:not(:disabled) {
+    background: color-mix(in srgb, var(--afer-secondary), #000 10%);
+  }
+}

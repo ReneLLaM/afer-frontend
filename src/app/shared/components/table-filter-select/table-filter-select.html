@@ -1,0 +1,15 @@
+<label class="table-filter-select">
+  @if (label()) {
+    <span class="table-filter-select__label">{{ label() }}</span>
+  }
+  <select
+    class="table-filter-select__control"
+    [value]="value()"
+    (change)="onChange($event)"
+  >
+    <option value="">{{ placeholder() }}</option>
+    @for (opt of options(); track opt.value) {
+      <option [value]="opt.value">{{ opt.label }}</option>
+    }
+  </select>
+</label>

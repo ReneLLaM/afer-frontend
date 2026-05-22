@@ -1,0 +1,210 @@
+<div
+  class="data-table"
+  [class.data-table--loading]="isLoading()"
+  [class.data-table--compact]="density() === 'compact'"
+  [class.data-table--reorderable]="reorderable()"
+  [class.data-table--fixed]="layout() === 'fixed'"
+>
+  <div class="data-table__wrapper">
+    <table>
+      <!--
+        colgroup fija los anchos ANTES de que el contenido se renderice.
+        Combinado con table-layout: fixed en el CSS, elimina el parpadeo
+        de anchos al reordenar columnas.
+      -->
+      <colgroup>
+        @if (reorderable()) {
+          <col style="width: 44px;" />
+        }
+        @for (col of visibleColumns(); track col.key) {
+          <col [style.width]="col.width" [style.min-width]="col.minWidth" />
+        }
+        @if (hasActionsColumn()) {
+          <col style="width: 130px;" />
+        }
+      </colgroup>
+
+      <thead>
+        <tr>
+          @if (reorderable()) {
+            <th class="col-reorder" style="width: 44px;"></th>
+          }
+          @for (col of visibleColumns(); track col.key) {
+            <th
+              [ngClass]="getHeaderClasses(col)"
+              [style.text-align]="col.align ?? 'left'"
+              [attr.data-hide]="col.hideBelow ?? null"
+              (click)="col.sortable && onSort(col.key)"
+            >
+              <span
+                class="th-content"
+                [class.th-content--center]="col.align === 'center'"
+                [class.th-content--end]="col.align === 'right'"
+              >
+                <span class="th-label">{{ col.label }}</span>
+
+                @if (col.sortable) {
+                  <span class="sort-icon" [class.sort-icon--active]="isSorted(col.key)">
+                    @if (getSortDirection(col.key) === 'asc') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="19" x2="12" y2="5"></line>
+                        <polyline points="5 12 12 5 19 12"></polyline>
+                      </svg>
+                    } @else if (getSortDirection(col.key) === 'desc') {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <polyline points="19 12 12 19 5 12"></polyline>
+                      </svg>
+                    } @else {
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sort-icon__default">
+                        <path d="M7 15l5 5 5-5M7 9l5-5 5 5"/>
+                      </svg>
+                    }
+                  </span>
+                }
+              </span>
+            </th>
+          }
+          @if (hasActionsColumn()) {
+            <th class="col-actions-head">Acciones</th>
+          }
+        </tr>
+      </thead>
+
+      <tbody>
+        @if (isLoading()) {
+          <tr>
+            <td [attr.colspan]="columns().length + (hasActionsColumn() ? 1 : 0) + (reorderable() ? 1 : 0)" class="state-cell">
+              <div class="loading-state">
+                <div class="spinner"></div>
+                <span>Cargando datos…</span>
+              </div>
+            </td>
+          </tr>
+
+        } @else if (hasData()) {
+          @for (row of displayData(); track trackRow($index, row)) {
+            <tr>
+              @if (reorderable()) {
+                <td class="cell-reorder" aria-label="Reordenar">
+                  <i class="ri-draggable" aria-hidden="true"></i>
+                </td>
+              }
+              @for (col of visibleColumns(); track col.key) {
+                <td
+                  [class]="getCellClasses(col, getRaw(row, col.key), row)"
+                  [style.text-align]="col.align ?? 'left'"
+                  [attr.data-hide]="col.hideBelow ?? null"
+                >
+                  <!-- 1. Template personalizado -->
+                  @if (col.template) {
+                    <ng-container
+                      [ngTemplateOutlet]="col.template"
+                      [ngTemplateOutletContext]="{
+                        $implicit: getRaw(row, col.key),
+                        row: row,
+                        col: col
+                      }"
+                    />
+
+                  <!-- 2. Imagen -->
+                  } @else if (isImageColumn(col)) {
+                    <img
+                      [class]="getImageClasses(col)"
+                      [src]="getRaw(row, col.key)"
+                      [alt]="col.label"
+                      loading="lazy"
+                    />
+
+                  <!-- 3. Badge / estado -->
+                  } @else if (isBadgeColumn(col)) {
+                    <span
+                      class="cell-badge"
+                      [class]="'cell-badge--' + getBadgeVariant(col, getRaw(row, col.key), row)"
+                    >
+                      {{ getBadgeLabel(col, getRaw(row, col.key), row) }}
+                    </span>
+
+                  <!-- 4. Boolean (Check/X) -->
+                  } @else if (isBooleanColumn(col)) {
+                    <div class="cell-boolean" [class.cell-boolean--true]="getRaw(row, col.key)">
+                      @if (getRaw(row, col.key)) {
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      } @else {
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      }
+                    </div>
+
+                  <!-- 5. Texto plano (default) -->
+                  } @else {
+                    {{ formatValue(col, getRaw(row, col.key), row) }}
+                  }
+                </td>
+              }
+
+              <!-- 6. Acciones -->
+              @if (hasActionsColumn()) {
+                <td class="cell-actions">
+                  <div class="actions-wrapper">
+                    @for (action of resolvedActions(); track action.label) {
+                      @if (isActionVisible(action, row)) {
+                        <button
+                          type="button"
+                          class="action-btn"
+                          [class]="action.class"
+                          [attr.aria-label]="action.label"
+                          [title]="action.label"
+                          (click)="action.callback(row)"
+                        >
+                          <i [class]="action.icon"></i>
+                        </button>
+                      }
+                    }
+                    @if (!hasVisibleActionsForRow(row)) {
+                      <span class="actions-empty" aria-hidden="true">—</span>
+                    }
+                  </div>
+                </td>
+              }
+            </tr>
+          }
+
+        } @else {
+          <tr>
+            <td [attr.colspan]="columns().length + (hasActionsColumn() ? 1 : 0) + (reorderable() ? 1 : 0)" class="state-cell">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span>{{ emptyMessage() }}</span>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (!isLoading() && showFooterInfo()) {
+    <div class="data-table__footer">
+      @if (meta()) {
+        <span class="data-table__info">
+          Mostrando <strong>{{ data().length }}</strong>
+          de <strong>{{ meta()!.total }}</strong> registros
+        </span>
+      } @else if (hasData()) {
+        <span class="data-table__info">
+          <strong>{{ data().length }}</strong>
+          {{ data().length === 1 ? 'registro' : 'registros' }}
+        </span>
+      }
+    </div>
+  }
+</div>

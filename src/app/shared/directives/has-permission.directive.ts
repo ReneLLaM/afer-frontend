@@ -2,40 +2,36 @@ import { Directive, effect, inject, input, TemplateRef, ViewContainerRef } from 
 import { AuthStore } from '../../modules/01-identity/auth/store/auth.store';
 
 /**
- * HasPermissionDirective — Directiva estructural para mostrar/ocultar elementos
- * basados en los permisos del usuario (RBAC).
- *
- * Uso en templates:
- *   @if (...) es preferible en Angular 17+, pero para permisos una directiva
- *   suele ser más limpia visualmente:
- *   <button *hasPermission="'products.create'">Crear Producto</button>
- *
- *   También soporta múltiples permisos (hasAnyPermission):
- *   <div *hasPermission="['products.create', 'products.update']">...</div>
+ * Directiva estructural RBAC.
+ * @example
+ * <button *hasPermission="PERMISSIONS.USERS.CREATE">Crear</button>
+ * <div *hasPermission="['a', 'b']; mode: 'all'">...</div>
  */
 @Directive({
   selector: '[hasPermission]',
-  standalone: true
+  standalone: true,
 })
 export class HasPermissionDirective {
   private readonly templateRef = inject(TemplateRef<unknown>);
   private readonly viewContainer = inject(ViewContainerRef);
   private readonly authStore = inject(AuthStore);
 
-  // Recibe un string (un permiso) o un array de strings (varios permisos)
-  hasPermission = input.required<string | string[]>();
+  hasPermission = input.required<string | string[]>({ alias: 'hasPermission' });
+  hasPermissionMode = input<'any' | 'all'>('any', { alias: 'hasPermissionMode' });
 
   private hasView = false;
 
   constructor() {
-    // Usamos un effect para reaccionar a cambios en los permisos del AuthStore
-    // o cambios en el input de la directiva.
     effect(() => {
       const requiredPerms = this.hasPermission();
+      const mode = this.hasPermissionMode();
       let hasAccess = false;
 
       if (Array.isArray(requiredPerms)) {
-        hasAccess = this.authStore.hasAnyPermission(requiredPerms);
+        hasAccess =
+          mode === 'all'
+            ? this.authStore.hasAllPermissions(requiredPerms)
+            : this.authStore.hasAnyPermission(requiredPerms);
       } else {
         hasAccess = this.authStore.hasPermission(requiredPerms);
       }

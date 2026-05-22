@@ -1,0 +1,103 @@
+.admin-list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 82%);
+  background: var(--afer-surface);
+
+  &__search {
+    flex: 1 1 220px;
+    min-width: 0;
+    display: block;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &__clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    height: 38px;
+    padding: 0 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 78%);
+    border-radius: 10px;
+    background: var(--afer-background);
+    color: var(--afer-text-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+
+    i {
+      font-size: 1rem;
+    }
+
+    &:hover {
+      border-color: var(--afer-corporate);
+      color: var(--afer-corporate);
+      background: color-mix(in srgb, var(--afer-corporate), transparent 92%);
+    }
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--afer-corporate);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+  }
+}
+
+:host-context([data-theme='dark']) .admin-list-toolbar {
+  border-color: color-mix(in srgb, var(--afer-hover), transparent 55%);
+  background: color-mix(in srgb, var(--afer-surface), var(--afer-background) 40%);
+
+  &__clear {
+    background: color-mix(in srgb, var(--afer-background), transparent 20%);
+    border-color: color-mix(in srgb, var(--afer-hover), transparent 40%);
+
+    &:hover {
+      background: color-mix(in srgb, var(--afer-corporate), transparent 88%);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-list-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+
+    &__search,
+    &__actions {
+      flex: 1 1 100%;
+      width: 100%;
+    }
+
+    &__actions {
+      justify-content: flex-start;
+    }
+
+    &__clear {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}

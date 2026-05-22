@@ -1,60 +1,64 @@
 .breadcrumb {
-  padding: 0 1rem;
+  padding: 0.5rem 0;
   background-color: transparent;
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
+  margin-bottom: 0.5rem;
 
   &__list {
     list-style: none;
     padding: 0;
     margin: 0;
     display: inline-flex;
-    flex-wrap: wrap; /* Permitir envoltura de líneas si se desborda */
+    flex-wrap: wrap;
     align-items: center;
-    gap: 4px 6px; /* row-gap y column-gap */
-    background: color-mix(in srgb, var(--afer-text-muted), transparent 92%);
-    border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 80%);
-    border-radius: 99px;
-    padding: 4px 10px;
-    max-width: 100%;
+    gap: 4px;
   }
 
   &__item {
     display: flex;
     align-items: center;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
     color: var(--afer-text-muted);
     letter-spacing: 0.01em;
-    white-space: nowrap; /* Los enlaces individuales se mantienen en una línea */
 
     &--active {
-      white-space: normal; /* El título actual puede hacer wrap para evitar overflow */
       min-width: 0;
-      flex: 1 1 auto;
     }
   }
 
   &__link {
     text-decoration: none;
     color: inherit;
-    transition: all 0.2s ease;
-    padding: 3px 8px;
-    border-radius: 99px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 4px 8px;
+    border-radius: 8px;
     display: inline-flex;
     align-items: center;
     gap: 5px;
 
     svg {
+      width: 14px;
+      height: 14px;
       flex-shrink: 0;
+    }
+
+    &--home {
+      padding: 4px;
+      background: color-mix(in srgb, var(--afer-text-muted), transparent 94%);
+      
+      svg {
+        width: 15px;
+        height: 15px;
+      }
     }
 
     &:hover {
       color: var(--afer-secondary-absolute);
       background: color-mix(in srgb, var(--afer-secondary), transparent 92%);
+      transform: translateY(-1px);
     }
   }
 
@@ -62,8 +66,8 @@
     display: flex;
     align-items: center;
     color: var(--afer-text-muted);
-    opacity: 0.35;
-    margin: 0 1px;
+    opacity: 0.25;
+    margin: 0 2px;
     pointer-events: none;
 
     svg {
@@ -75,30 +79,26 @@
   &__current {
     color: var(--afer-text-primary);
     font-weight: 700;
-    padding: 3px 8px;
+    padding: 4px 8px;
     pointer-events: none;
-    white-space: normal; /* Permitir wrap del texto largo del producto actual */
-    word-break: break-word;
     display: inline-block;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .breadcrumb {
-    padding: 0 0.75rem;
-    
-    &__list {
-      padding: 6px 10px;
-      gap: 4px 6px;
-      border-radius: 12px; /* look moderno tipo bloque redondeado cuando hace wrap en móviles */
-    }
+    margin-bottom: 0.25rem;
     
     &__item {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
     }
     
     &__link, &__current {
-      padding: 2px 6px;
+      padding: 3px 6px;
+    }
+    
+    &__link--home {
+      padding: 4px;
     }
 
     &__separator svg {

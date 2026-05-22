@@ -13,7 +13,7 @@ Este agente rige **todo el código TypeScript/Angular** del proyecto frontend. A
 - State management (signals, stores)
 - HTTP layer, caching, error handling
 
-**No cubre**: Estilos CSS/SCSS, diseño UI/UX, sistema de colores (ver `AGENTS-STYLES.md`).
+**No cubre**: Estilos CSS/SCSS, diseño UI/UX, sistema de colores (ver `AGENTS-STYLES.md`). Listados admin (tabla, búsqueda, paginación): ver `AGENTS-DATA-LIST.md`.
 
 ---
 

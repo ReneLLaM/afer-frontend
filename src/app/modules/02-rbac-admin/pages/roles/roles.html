@@ -1,0 +1,63 @@
+<div class="roles-page">
+  <breadcrumb />
+
+  <header class="roles-page__header">
+    <div class="roles-page__header-content">
+      <h1 class="roles-page__title">Roles</h1>
+      <p class="roles-page__subtitle">
+        Gestión de roles y sus permisos asociados.
+      </p>
+    </div>
+
+    <div class="roles-page__header-actions">
+      <button
+        *hasPermission="PERMISSIONS.ROLES.CREATE"
+        class="admin-btn admin-btn--primary"
+        type="button"
+        (click)="onSeedRoles()"
+        [disabled]="loading()"
+      >
+        <i class="ri-database-2-line"></i>
+        <span>Sincronizar Seed</span>
+      </button>
+
+      <button *hasPermission="PERMISSIONS.ROLES.CREATE" class="admin-btn admin-btn--secondary" type="button">
+        <i class="ri-add-line"></i>
+        <span>Crear Rol</span>
+      </button>
+    </div>
+  </header>
+
+  <app-admin-list-toolbar
+    [search]="search()"
+    searchPlaceholder="Buscar roles..."
+    [hasActiveFilters]="hasActiveFilters()"
+    [filterCount]="activeFilterCount()"
+    (searchChange)="onSearch($event)"
+    (clearFilters)="onClearFilters()"
+  />
+
+  @if (error()) {
+    <div class="roles-page__error">{{ error() }}</div>
+  }
+
+  <app-data-table
+    [columns]="columns"
+    [data]="data()"
+    [loading]="loading()"
+    [serverSort]="true"
+    [showFooterInfo]="false"
+    trackByKey="id"
+    [sortKey]="sortBy()"
+    [sortDir]="sortDirection()"
+    [crud]="tableCrud"
+    emptyMessage="No se encontraron roles"
+    (sortChange)="onSort($event)"
+  />
+
+  <app-pagination
+    [meta]="meta()"
+    (pageChange)="onPageChange($event)"
+    (limitChange)="onLimitChange($event)"
+  />
+</div>

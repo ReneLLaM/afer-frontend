@@ -1,7 +1,13 @@
 .admin-layout {
   display: flex;
-  min-height: 100dvh;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
   background: var(--afer-background);
+
+  &--collapsed {
+    // Estilos para cuando el sidebar está colapsado si es necesario
+  }
 }
 
 .admin-layout__main {
@@ -9,17 +15,41 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  min-height: 100dvh;
+  height: 100dvh;
+  position: relative;
 }
 
 .admin-layout__content {
   flex: 1;
-  padding: 0;
   overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+
+  // Scrollbar personalizado para un look más limpio
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--afer-text-muted), transparent 85%);
+    border-radius: 10px;
+    &:hover {
+      background: color-mix(in srgb, var(--afer-text-muted), transparent 70%);
+    }
+  }
 }
 
 @media (max-width: 767px) {
   .admin-layout {
-    flex-direction: column;
+    flex-direction: row; // Mantener row porque el sidebar es fixed/absolute
+  }
+
+  .admin-layout__main {
+    height: 100dvh;
+    width: 100%;
   }
 }

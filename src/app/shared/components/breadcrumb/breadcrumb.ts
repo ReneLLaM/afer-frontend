@@ -33,14 +33,21 @@ export class Breadcrumb {
     }
 
     const dynamicLabels = this.breadcrumbService.dynamicLabels();
-    return this.routeBreadcrumbs().map(b => ({
-      ...b,
-      label: dynamicLabels[b.url] || b.label,
-    }));
+    // Filtrar breadcrumbs que sean redundantes con el icono de inicio
+    return this.routeBreadcrumbs()
+      .filter(b => {
+        const label = b.label.toLowerCase();
+        return label !== 'inicio' && label !== 'home' && b.url !== '/';
+      })
+      .map(b => ({
+        ...b,
+        label: dynamicLabels[b.url] || b.label,
+      }));
   });
 
   constructor() {
     this.currentUrl.set(this.router.url);
+    this.routeBreadcrumbs.set(this.buildBreadcrumbs(this.activatedRoute.root));
 
     this.router.events
       .pipe(
@@ -55,24 +62,28 @@ export class Breadcrumb {
   }
 
   private buildBreadcrumbs(route: ActivatedRoute, url = '', breadcrumbs: BreadcrumbItem[] = []): BreadcrumbItem[] {
-    const label = route.routeConfig?.data?.['breadcrumb'];
-    let path = route.snapshot?.url.map(segment => segment.path).join('/') ?? '';
-
-    if (!path && route.routeConfig?.path) {
-      path = route.routeConfig.path;
+    const nextRoute = route.firstChild;
+    
+    if (!nextRoute) {
+      return breadcrumbs;
     }
 
-    const nextUrl = path ? `${url}/${path}` : url;
-
-
-    if (label && !breadcrumbs.some(b => b.label === label)) {
-      breadcrumbs = [...breadcrumbs, { label, url: nextUrl }];
+    const snapshot = nextRoute.snapshot;
+    if (!snapshot) {
+      return this.buildBreadcrumbs(nextRoute, url, breadcrumbs);
     }
 
-    if (route.firstChild) {
-      return this.buildBreadcrumbs(route.firstChild, nextUrl, breadcrumbs);
+    const routeURL: string = snapshot.url.map(segment => segment.path).join('/');
+    
+    if (routeURL !== '') {
+      url += `/${routeURL}`;
     }
 
-    return breadcrumbs;
+    const label = snapshot.data['breadcrumb'];
+    if (label && !breadcrumbs.some(b => b.url === url)) {
+      breadcrumbs.push({ label, url });
+    }
+
+    return this.buildBreadcrumbs(nextRoute, url, breadcrumbs);
   }
 }

@@ -1,0 +1,28 @@
+<div class="admin-list-toolbar">
+  <app-search-input
+    class="admin-list-toolbar__search"
+    [placeholder]="searchPlaceholder()"
+    [initialValue]="search()"
+    [fullWidth]="true"
+    icon="remix"
+    (searchChange)="searchChange.emit($event)"
+  />
+
+  <div class="admin-list-toolbar__actions">
+    <ng-content select="[filters]" />
+
+    @if (hasActiveFilters()) {
+      <button
+        type="button"
+        class="admin-list-toolbar__clear"
+        (click)="onClear()"
+      >
+        <i class="ri-filter-off-line" aria-hidden="true"></i>
+        <span>Quitar filtros</span>
+        @if (filterCount() > 0) {
+          <span class="admin-list-toolbar__badge">{{ filterCount() }}</span>
+        }
+      </button>
+    }
+  </div>
+</div>

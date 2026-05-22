@@ -1,11 +1,8 @@
 import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
+import type { ListMeta } from '../../models/list-meta.model';
 
-export interface PaginationMeta {
-  total: number;
-  limit: number;
-  page: number;
-  totalPages: number;
-}
+/** @deprecated Usar ListMeta */
+export type PaginationMeta = ListMeta;
 
 @Component({
   selector: 'app-pagination',
@@ -16,8 +13,12 @@ export interface PaginationMeta {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginationComponent {
-  meta = input.required<PaginationMeta>();
+  meta = input.required<ListMeta>();
+
   pageChange = output<number>();
+  limitChange = output<number>();
+
+  readonly pageSizeOptions = [10, 20, 50, 100];
 
   pages = computed((): (number | string)[] => {
     const total = this.meta().totalPages;
@@ -70,5 +71,10 @@ export class PaginationComponent {
     if (this.meta().page < this.meta().totalPages) {
       this.onPageClick(this.meta().page + 1);
     }
+  }
+
+  onLimitChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.limitChange.emit(Number(select.value));
   }
 }

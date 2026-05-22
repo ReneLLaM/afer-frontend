@@ -1,0 +1,50 @@
+<div class="users-page">
+  <breadcrumb />
+
+  <header class="users-page__header">
+    <div class="users-page__header-content">
+      <h1 class="users-page__title">Usuarios</h1>
+      <p class="users-page__subtitle">
+        Gestión de usuarios del sistema y asignación de roles.
+      </p>
+    </div>
+
+    <button *hasPermission="PERMISSIONS.USERS.CREATE" class="admin-btn admin-btn--primary" type="button">
+      <i class="ri-user-add-line"></i>
+      <span>Crear Usuario</span>
+    </button>
+  </header>
+
+  <app-admin-list-toolbar
+    [search]="search()"
+    searchPlaceholder="Buscar usuarios..."
+    [hasActiveFilters]="hasActiveFilters()"
+    [filterCount]="activeFilterCount()"
+    (searchChange)="onSearch($event)"
+    (clearFilters)="onClearFilters()"
+  />
+
+  @if (error()) {
+    <div class="users-page__error">{{ error() }}</div>
+  }
+
+  <app-data-table
+    [columns]="columns"
+    [data]="data()"
+    [loading]="loading()"
+    [serverSort]="true"
+    [showFooterInfo]="false"
+    trackByKey="id"
+    [sortKey]="sortBy()"
+    [sortDir]="sortDirection()"
+    [crud]="tableCrud"
+    emptyMessage="No se encontraron usuarios"
+    (sortChange)="onSort($event)"
+  />
+
+  <app-pagination
+    [meta]="meta()"
+    (pageChange)="onPageChange($event)"
+    (limitChange)="onLimitChange($event)"
+  />
+</div>

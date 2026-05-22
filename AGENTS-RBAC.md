@@ -55,60 +55,46 @@ interface AuthResponse {
 ```
 modules/
   02-rbac-admin/
-    admin/
-      pages/                    ← Páginas ruteables (lazy loaded)
-        dashboard/              ← /admin — Dashboard principal
-        users/                  ← /admin/usuarios
-          users-list/           ← Lista de usuarios (tabla)
-          user-create/          ← Crear usuario
-          user-edit/            ← Editar usuario
-          user-detail/          ← Detalle + asignar permisos
-        roles/                  ← /admin/roles
-          roles-list/           ← Lista de roles
-          role-create/          ← Crear rol + asignar permisos
-          role-edit/            ← Editar rol
-        permissions/            ← /admin/permisos
-          permissions-list/     ← Lista de permisos (solo lectura)
-        banners/                ← /admin/banners
-          banners-list/
-          banner-create/
-          banner-edit/
-        files/                  ← /admin/archivos
-          file-manager/         ← Gestor de archivos subidos
-      components/               ← Componentes reutilizables del admin
-        admin-table/            ← Tabla con paginación, filtros, acciones
-        admin-form/             ← Layout base para formularios
-        admin-sidebar/          ← Sidebar con navegación filtrada por permisos
-        admin-header/           ← Header del panel
-        permission-tree/        ← Checkboxes de permisos agrupados por módulo
-        image-uploader/         ← Subir imágenes a /files/:folder
-        status-badge/           ← Badge de estado (activo/inactivo/bloqueado)
-        confirm-dialog/         ← Diálogo de confirmación genérico
-        admin-breadcrumb/       ← Breadcrumbs del admin
-      services/                 ← Servicios HTTP del admin
-        admin-users.service.ts
-        admin-roles.service.ts
-        admin-permissions.service.ts
-        admin-banners.service.ts
-        admin-files.service.ts
-      models/                   ← Interfaces de API
-        admin-user.model.ts
-        admin-role.model.ts
-        admin-permission.model.ts
-        admin-banner.model.ts
-        admin-file.model.ts
-      stores/                   ← Signal stores (si el estado lo justifica)
-        admin-ui.store.ts       ← Estado de sidebar, modal, etc.
-      utils/                    ← Utilidades
-        permission.utils.ts     ← Funciones puras para filtrar permisos
-        admin-routes.utils.ts   ← Helpers para rutas admin
-    shared/                     ← Compartido entre admin y ecommerce
+    pages/                    ← Páginas ruteables (lazy loaded)
+      dashboard/              ← /admin — Dashboard principal
+      users/                  ← /admin/usuarios
+      roles/                  ← /admin/roles
+      permissions/            ← /admin/permisos
+      banners/                ← /admin/banners
+    components/               ← Componentes reutilizables del admin
+      (ver app-data-table en shared/components)
+      admin-form/
+      admin-sidebar/
+      admin-header/
+      permission-tree/
+      image-uploader/
+      status-badge/
+      confirm-dialog/
+      admin-breadcrumb/
+    models/                   ← Interfaces de API (fuera de pages/)
+      admin-user.model.ts
+      admin-role.model.ts
+      admin-permission.model.ts
+      admin-banner.model.ts
+      admin-file.model.ts
+    services/                 ← Servicios HTTP (fuera de pages/)
+      admin-users.service.ts
+      admin-roles.service.ts
+      admin-permissions.service.ts
+      admin-banners.service.ts
+      admin-files.service.ts
+    stores/                   ← Signal stores (si el estado lo justifica)
+      admin-ui.store.ts
+    utils/                    ← Utilidades
+      permission.utils.ts
+      admin-routes.utils.ts
+    shared/                   ← Compartido entre admin y ecommerce
       directives/
-        has-permission.directive.ts   ← *hasPermission="'products.create'"
-        has-role.directive.ts         ← *hasRole="'admin'"
+        has-permission.directive.ts
+        has-role.directive.ts
       guards/
-        permission.guard.ts           ← Protege rutas por permisos
-        admin-access.guard.ts         ← Verifica que tenga ALGÚN permiso admin
+        permission.guard.ts
+        admin-access.guard.ts
 ```
 
 ### 2.1 Convención de nombres
@@ -576,76 +562,42 @@ export class AdminSidebar {
 
 ---
 
-## 8. Componente AdminTable
+## 8. Listados admin — `app-data-table` (no `admin-table`)
 
-### 8.1 Interfaz
+> **Guía completa**: ver [`AGENTS-DATA-LIST.md`](AGENTS-DATA-LIST.md) (URL, búsqueda, filtros, paginación, presets).
 
-```typescript
-// admin-table/admin-table.ts
-
-interface AdminTableColumn<T> {
-  key: keyof T | string;
-  label: string;
-  sortable?: boolean;
-  /** Renderizado custom con template */
-  template?: TemplateRef<{ $implicit: T }>;
-}
-
-interface AdminTableAction<T> {
-  label: string;
-  icon: string;
-  permission?: string;
-  action: (item: T) => void;
-  variant?: 'primary' | 'danger' | 'ghost';
-}
-
-interface AdminTableConfig<T> {
-  data: T[];
-  columns: AdminTableColumn<T>[];
-  actions: AdminTableAction<T>[];
-  loading: boolean;
-  totalItems: number;
-  currentPage: number;
-  pageSize: number;
-  searchable: boolean;
-  searchTerm: string;
-}
-```
-
-### 8.2 Uso
+### 8.1 Stack estándar
 
 ```html
-<admin-table
-  [data]="users()"
-  [columns]="userColumns"
-  [actions]="userActions"
+<app-admin-list-toolbar ... (searchChange)="onSearch($event)" (clearFilters)="onClearFilters()">
+  <div filters>...</div>
+</app-admin-list-toolbar>
+
+<app-data-table
+  [columns]="columns"
+  [data]="data()"
   [loading]="loading()"
-  [totalItems]="totalUsers()"
-  [currentPage]="page()"
-  [pageSize]="pageSize()"
-  [searchable]="true"
-  (pageChange)="onPageChange($event)"
-  (searchChange)="onSearchChange($event)"
-  (sortChange)="onSortChange($event)"
+  [serverSort]="true"
+  [showFooterInfo]="false"
+  trackByKey="id"
+  [sortKey]="sortBy()"
+  [sortDir]="sortDirection()"
+  [actions]="tableActions()"
+  (sortChange)="onSort($event)"
 />
+
+<app-pagination [meta]="meta()" (pageChange)="..." (limitChange)="..." />
 ```
 
-```typescript
-export class UsersListPage {
-  userColumns: AdminTableColumn<User>[] = [
-    { key: 'fullName', label: 'Nombre', sortable: true },
-    { key: 'email', label: 'Email', sortable: true },
-    { key: 'roles', label: 'Roles', template: this.rolesTemplate },
-    { key: 'status', label: 'Estado', template: this.statusTemplate },
-  ];
+### 8.2 Utilidades URL
 
-  userActions: AdminTableAction<User>[] = [
-    { label: 'Ver', icon: 'visibility', action: (u) => this.router.navigate(['/admin/usuarios', u.id]) },
-    { label: 'Editar', icon: 'edit', permission: PERMISSIONS.USERS.UPDATE, action: (u) => this.router.navigate(['/admin/usuarios', u.id, 'editar']) },
-    { label: 'Eliminar', icon: 'delete', permission: PERMISSIONS.USERS.DELETE, action: (u) => this.confirmDelete(u), variant: 'danger' },
-  ];
-}
-```
+`shared/utils/list-query.utils.ts` — `readListParams`, `buildListQueryPatch`, `toApiOffset`.
+
+### 8.3 RBAC en listados
+
+- Rutas: `permissionGuard` + `data.permission: PERMISSIONS.*`
+- Botones: `*hasPermission="PERMISSIONS.USERS.CREATE"` (directiva con `hasPermissionMode: 'all' | 'any'`)
+- Acciones tabla: filtrar en `computed` con `authStore.hasPermission(PERMISSIONS.*)`
 
 ---
 
@@ -1000,7 +952,167 @@ export class AdminLayout {
 
 ---
 
-## 15. Anti-patrones específicos de RBAC
+## 15. Filtros y paginación en URL (query params)
+
+### 15.1 Regla fundamental
+
+**Todos los filtros, búsqueda, ordenamiento y paginación DEBEN reflejarse en la URL.** Esto permite:
+- Compartir URLs con filtros aplicados
+- Recargar la página sin perder el estado
+- Navegar adelante/atrás manteniendo filtros
+- Bookmarks de vistas filtradas
+
+### 15.2 Query params soportados
+
+| Param | Tipo | Ejemplo | Descripción |
+|-------|------|---------|-------------|
+| `page` | number | `?page=2` | Página actual |
+| `limit` | number | `?limit=20` | Items por página |
+| `search` | string | `?search=crear` | Término de búsqueda |
+| `sort` | string | `?sort=name` | Campo de ordenamiento |
+| `order` | ASC\|DESC | `?order=DESC` | Dirección del orden |
+| Filtros custom | string | `?module=users` | Filtros específicos del módulo |
+
+### 15.3 Patrón en páginas admin
+
+```typescript
+import { Component, inject, computed } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { switchMap, tap } from 'rxjs';
+import { AdminPermissionsService } from '../../services/admin-permissions.service';
+
+@Component({
+  selector: 'permissions-list-page',
+  standalone: true,
+  templateUrl: './permissions-list-page.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class PermissionsListPage {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly service = inject(AdminPermissionsService);
+
+  // Leer query params como signal
+  queryParams = toSignal(this.route.queryParams, { initialValue: {} });
+
+  // Derivar opciones de la URL
+  page = computed(() => Number(this.queryParams()['page'] ?? 1));
+  limit = computed(() => Number(this.queryParams()['limit'] ?? 20));
+  search = computed(() => this.queryParams()['search'] ?? '');
+  sort = computed(() => this.queryParams()['sort'] ?? '');
+  order = computed(() => this.queryParams()['order'] ?? 'ASC');
+
+  // Construir opciones para el servicio
+  options = computed(() => ({
+    page: this.page(),
+    limit: this.limit(),
+    search: this.search(),
+    sort: this.sort(),
+    order: this.order(),
+  }));
+
+  // Fetch data reactivamente
+  response = toSignal(
+    this.options.pipe(
+      switchMap(opts => this.service.findAll(opts))
+    ),
+    { initialValue: { data: [], meta: { total: 0, totalPages: 1 } } }
+  );
+
+  data = computed(() => this.response().data);
+  meta = computed(() => this.response().meta);
+
+  // Actualizar URL sin recargar
+  private updateQueryParams(params: Record<string, string | number | null>): void {
+    const current = this.queryParams();
+    const updated = { ...current };
+
+    for (const [key, value] of Object.entries(params)) {
+      if (value === null || value === '' || value === undefined) {
+        delete updated[key];
+      } else {
+        updated[key] = String(value);
+      }
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: updated,
+      queryParamsHandling: '',
+    });
+  }
+
+  onSearch(term: string): void {
+    this.updateQueryParams({ search: term, page: 1 });
+  }
+
+  onSort(field: string): void {
+    const currentOrder = this.order();
+    const currentSort = this.sort();
+    const newOrder = currentSort === field && currentOrder === 'ASC' ? 'DESC' : 'ASC';
+    this.updateQueryParams({ sort: field, order: newOrder });
+  }
+
+  onPageChange(newPage: number): void {
+    this.updateQueryParams({ page: newPage });
+  }
+
+  onClearFilters(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page: '1' },
+      queryParamsHandling: '',
+    });
+  }
+}
+```
+
+### 15.4 Sincronizar componentes de UI con la URL
+
+```html
+<!-- El search input lee el valor inicial de la URL -->
+<app-search-input
+  [initialValue]="search()"
+  (searchChange)="onSearch($event)"
+/>
+
+<!-- La paginación lee la página actual de la URL -->
+<app-pagination
+  [currentPage]="page()"
+  [totalPages]="meta().totalPages"
+  (pageChange)="onPageChange($event)"
+/>
+```
+
+### 15.5 Reglas
+
+- ✅ **SIEMPRE** reflejar filtros en la URL
+- ✅ **SIEMPRE** leer el estado inicial de los query params
+- ✅ **SIEMPRE** resetear a `page=1` cuando cambia un filtro
+- ✅ **SIEMPRE** usar `router.navigate([], { relativeTo: this.route })` para no perder child routes
+- ❌ **NUNCA** mantener estado de filtros solo en signals locales
+- ❌ **NUNCA** usar `queryParamsHandling: 'merge'` si quieres control total de los params
+
+### 15.6 Ejemplo: múltiples filtros
+
+```typescript
+onFilterChange(filterKey: string, value: string | null): void {
+  this.updateQueryParams({ [filterKey]: value, page: 1 });
+}
+
+// En el template:
+<app-filter-bar
+  [moduleFilter]="queryParams()['module'] ?? ''"
+  [resourceFilter]="queryParams()['resource'] ?? ''"
+  (moduleChange)="onFilterChange('module', $event)"
+  (resourceChange)="onFilterChange('resource', $event)"
+/>
+```
+
+---
+
+## 16. Anti-patrones específicos de RBAC
 
 ### 15.1 NO crear middleware de permisos en el frontend
 

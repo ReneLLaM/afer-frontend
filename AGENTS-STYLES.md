@@ -16,7 +16,19 @@ Este agente rige **todo el código CSS/SCSS/HTML visual** del proyecto frontend.
 - Animaciones y micro-interacciones
 - Accesibilidad visual
 
-**No cubre**: Lógica TypeScript, arquitectura Angular, gestión de estado (ver `AGENTS.md`).
+**No cubre**: Lógica TypeScript, arquitectura Angular, gestión de estado (ver `AGENTS.md`). Patrón de listados admin: ver `AGENTS-DATA-LIST.md`.
+
+---
+
+## 1.1 Tokens — Tabla y toolbar admin
+
+| Área | Variables / clases |
+|------|-------------------|
+| Tabla | `--dt-surface`, `--dt-accent`, `--dt-border`, `--dt-row-hover` en `data-table.scss` |
+| Búsqueda | Focus: `border-color: var(--afer-secondary-absolute)` + ring en `search-input.scss` |
+| Toolbar | `admin-list-toolbar` — search `flex: 1` en desktop (`--full`) |
+| Filtros | `table-filter-select` + slot `[filters]` con `align-items: center` |
+| Botones cabecera | `admin-btn`, `admin-btn--primary`, `admin-btn--secondary` |
 
 ---
 

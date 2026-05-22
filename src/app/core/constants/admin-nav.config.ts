@@ -51,3 +51,8 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
     permissions: Object.values(PERMISSIONS.PERMISSIONS),
   },
 ];
+
+/** Cualquier permiso de módulo admin permite entrar al dashboard */
+export const ALL_ADMIN_PERMISSIONS: string[] = [
+  ...new Set(ADMIN_NAV_ITEMS.flatMap((item) => item.permissions)),
+];

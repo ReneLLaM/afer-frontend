@@ -12,6 +12,11 @@ import { DialogService } from '../services/dialog.service';
 export class DialogComponent {
   protected readonly dialogService = inject(DialogService);
 
+  get iconType(): string {
+    const type = this.dialogService.options()?.type || 'info';
+    return type === 'confirm' ? 'info' : type;
+  }
+
   onConfirm(): void {
     this.dialogService.close(true);
   }

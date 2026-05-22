@@ -1,4 +1,18 @@
 <nav class="pagination" aria-label="Navegación de páginas">
+  <!-- Selector de cantidad -->
+  <div class="pagination__limit">
+    <span class="pagination__limit-label">Mostrar:</span>
+    <select 
+      class="pagination__limit-select" 
+      [value]="meta().limit" 
+      (change)="onLimitChange($event)"
+    >
+      @for (option of pageSizeOptions; track option) {
+        <option [value]="option">{{ option }}</option>
+      }
+    </select>
+  </div>
+
   <!-- Botón Anterior -->
   <button 
     class="pagination__btn pagination__btn--prev"

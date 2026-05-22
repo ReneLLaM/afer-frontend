@@ -14,8 +14,8 @@
         </div>
         <div class="dialog-icon-container">
           <div class="dialog-icon-mask" 
-               [style.mask-image]="'url(/assets/icons/toasts/' + (dialogService.options()?.type || 'info') + '.svg)'"
-               [style.-webkit-mask-image]="'url(/assets/icons/toasts/' + (dialogService.options()?.type || 'info') + '.svg)'">
+               [style.mask-image]="'url(/assets/icons/toasts/' + iconType + '.svg)'"
+               [style.-webkit-mask-image]="'url(/assets/icons/toasts/' + iconType + '.svg)'">
           </div>
         </div>
         <h3 class="dialog-title">{{ dialogService.options()?.title }}</h3>

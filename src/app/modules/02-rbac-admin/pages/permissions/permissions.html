@@ -1,0 +1,73 @@
+<div class="permissions-page">
+  <breadcrumb />
+
+  <header class="permissions-page__header">
+    <div class="permissions-page__header-content">
+      <h1 class="permissions-page__title">Permisos</h1>
+      <p class="permissions-page__subtitle">
+        Catálogo de permisos del sistema. Se sincronizan desde el backend mediante seed.
+      </p>
+    </div>
+
+    <button
+      *hasPermission="PERMISSIONS.PERMISSIONS.CREATE"
+      class="admin-btn admin-btn--primary"
+      type="button"
+      (click)="onSeedPermissions()"
+      [disabled]="loading()"
+    >
+      <i class="ri-database-2-line"></i>
+      <span>Sincronizar Seed</span>
+    </button>
+  </header>
+
+  <app-admin-list-toolbar
+    [search]="search()"
+    searchPlaceholder="Buscar por nombre, slug o descripción..."
+    [hasActiveFilters]="hasActiveFilters()"
+    [filterCount]="activeFilterCount()"
+    (searchChange)="onSearch($event)"
+    (clearFilters)="onClearFilters()"
+  >
+    <div filters class="permissions-page__filters">
+      <app-table-filter-select
+        label="Módulo"
+        placeholder="Todos los módulos"
+        [value]="moduleFilter()"
+        [options]="moduleOptions"
+        (valueChange)="onModuleFilter($event)"
+      />
+      <app-table-filter-select
+        label="Acción"
+        placeholder="Todas las acciones"
+        [value]="actionFilter()"
+        [options]="actionOptions"
+        (valueChange)="onActionFilter($event)"
+      />
+    </div>
+  </app-admin-list-toolbar>
+
+  @if (error()) {
+    <div class="permissions-page__error">{{ error() }}</div>
+  }
+
+  <app-data-table
+    [columns]="columns"
+    [data]="data()"
+    [loading]="loading()"
+    [serverSort]="true"
+    [showFooterInfo]="false"
+    trackByKey="id"
+    [sortKey]="sortBy()"
+    [sortDir]="sortDirection()"
+    [crud]="tableCrud"
+    emptyMessage="No se encontraron permisos"
+    (sortChange)="onSort($event)"
+  />
+
+  <app-pagination
+    [meta]="meta()"
+    (pageChange)="onPageChange($event)"
+    (limitChange)="onLimitChange($event)"
+  />
+</div>

@@ -1,0 +1,89 @@
+<div class="permission-detail">
+  <breadcrumb />
+
+  <header class="permission-detail__top">
+    <button type="button" class="permission-detail__back admin-btn admin-btn--secondary" (click)="goBack()">
+      <i class="ri-arrow-left-line"></i>
+      Volver al listado
+    </button>
+  </header>
+
+  @if (loading()) {
+    <div class="permission-detail__panel permission-detail__panel--state">
+      <div class="permission-detail__loading">
+        <div class="permission-detail__spinner"></div>
+        <span>Cargando permiso…</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="permission-detail__panel permission-detail__panel--state permission-detail__panel--error">
+      <i class="ri-error-warning-line"></i>
+      <p>{{ error() }}</p>
+      <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">Volver</button>
+    </div>
+  } @else if (permission(); as p) {
+    <section class="permission-detail__hero">
+      <div class="permission-detail__hero-main">
+        <span class="permission-detail__eyebrow">Permiso del sistema</span>
+        <h1 class="permission-detail__title">{{ p.name }}</h1>
+        <code class="permission-detail__slug">{{ p.slug }}</code>
+      </div>
+      <div class="permission-detail__hero-badges">
+        <span class="permission-detail__chip permission-detail__chip--module">
+          <i class="ri-folder-line"></i>
+          {{ p.module | moduleLabel }}
+        </span>
+        <span class="permission-detail__chip permission-detail__chip--action">
+          <i class="ri-shield-keyhole-line"></i>
+          {{ p.action }}
+        </span>
+      </div>
+    </section>
+
+    <div class="permission-detail__grid">
+      <article class="permission-detail__panel permission-detail__panel--wide">
+        <h2 class="permission-detail__panel-title">
+          <i class="ri-file-text-line"></i>
+          Descripción
+        </h2>
+        <p class="permission-detail__description">
+          {{ p.description || 'Sin descripción registrada para este permiso.' }}
+        </p>
+      </article>
+
+      <article class="permission-detail__panel">
+        <h2 class="permission-detail__panel-title">
+          <i class="ri-fingerprint-line"></i>
+          Identificador
+        </h2>
+        <dl class="permission-detail__meta">
+          <div>
+            <dt>ID interno</dt>
+            <dd><code>{{ p.id }}</code></dd>
+          </div>
+          <div>
+            <dt>Slug</dt>
+            <dd><code>{{ p.slug }}</code></dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="permission-detail__panel">
+        <h2 class="permission-detail__panel-title">
+          <i class="ri-calendar-line"></i>
+          Registro
+        </h2>
+        <dl class="permission-detail__meta">
+          <div>
+            <dt>Creado</dt>
+            <dd>{{ p.createdAt | localeDate:'medium' }}</dd>
+          </div>
+          <div>
+            <dt>Módulo · Acción</dt>
+            <dd>{{ p.module }} · {{ p.action }}</dd>
+          </div>
+        </dl>
+      </article>
+    </div>
+  }
+</div>

@@ -1,0 +1,29 @@
+<div class="catalog-stub">
+  <breadcrumb />
+
+  <header class="catalog-stub__header">
+    <h1 class="catalog-stub__title">{{ title() }}</h1>
+    <p class="catalog-stub__subtitle">{{ subtitle() }}</p>
+    <span class="catalog-stub__badge">Vista previa — tabla lista</span>
+  </header>
+
+  <app-admin-list-toolbar
+    search=""
+    [searchPlaceholder]="'Buscar ' + title().toLowerCase() + '...'"
+    [hasActiveFilters]="false"
+    [filterCount]="0"
+    (searchChange)="onSearch($event)"
+    (clearFilters)="onClearFilters()"
+  />
+
+  <app-data-table
+    [columns]="columns()"
+    [data]="data"
+    [loading]="false"
+    [serverSort]="true"
+    [reorderable]="reorderable()"
+    [emptyMessage]="emptyMessage()"
+  />
+
+  <app-pagination [meta]="meta" />
+</div>

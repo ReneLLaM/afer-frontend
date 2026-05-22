@@ -17,6 +17,48 @@
     border-radius: 12px;
   }
 
+  &__limit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: auto;
+
+    &-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--afer-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    &-select {
+      padding: 0.4rem 2rem 0.4rem 0.75rem;
+      border: 1px solid rgba(128, 128, 128, 0.15);
+      border-radius: 8px;
+      background: var(--afer-surface);
+      color: var(--afer-text-primary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238a9099'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.6rem center;
+      background-size: 14px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--afer-secondary-absolute);
+      }
+
+      &:focus {
+        border-color: var(--afer-secondary-absolute);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--afer-secondary-absolute), transparent 90%);
+      }
+    }
+  }
+
   &__page {
     min-width: 40px;
     height: 40px;
