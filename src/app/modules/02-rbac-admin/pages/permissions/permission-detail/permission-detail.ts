@@ -5,13 +5,14 @@ import { switchMap, catchError, of, map } from 'rxjs';
 import { Breadcrumb } from '../../../../../shared/components/breadcrumb/breadcrumb';
 import { AdminPermissionsService } from '../../../services/admin-permissions.service';
 import { LocaleDatePipe } from '../../../../../shared/pipes/locale-date.pipe';
-import { ModuleLabelPipe } from '../../../../../shared/pipes/module-label.pipe';
+import { PermissionActionLabelPipe } from '../pipes/permission-action-label.pipe';
+import { PermissionModuleLabelPipe } from '../pipes/permission-module-label.pipe';
 import type { Permission } from '../../../interfaces/admin-permission.interface';
 
 @Component({
   selector: 'permission-detail-page',
   standalone: true,
-  imports: [Breadcrumb, LocaleDatePipe, ModuleLabelPipe],
+  imports: [Breadcrumb, LocaleDatePipe, PermissionModuleLabelPipe, PermissionActionLabelPipe],
   templateUrl: './permission-detail.html',
   styleUrl: './permission-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -24,7 +24,7 @@ interface GifCard {
   styleUrls: ['./modal.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GiftCardModalComponent {
+export class GiftCardModal {
   private destroyRef = inject(DestroyRef);
 
   readonly cards: GifCard[] = [

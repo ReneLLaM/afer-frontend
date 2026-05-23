@@ -10,18 +10,18 @@ import { ChangeDetectionStrategy } from '@angular/core';
 import { ProductCard } from '../../../components/product-card/product-card';
 import { SkeletonCard } from '../../../../../../shared/components/skeleton-card/skeleton-card';
 import { ProductsService, SortByProductsPublic } from '../../../services/products.service';
-import { PaginationComponent } from '../../../../../../shared/components/pagination/pagination';
-import { TreeFilterComponent, TreeNode } from './components/tree-filter/tree-filter';
-import { ListFilterComponent, FilterItem } from './components/list-filter/list-filter';
-import { MobileFilterDrawerComponent } from './components/mobile-filter-drawer/mobile-filter-drawer';
-import { ActiveFilterChipsComponent, ActiveFilter } from './components/active-filter-chips/active-filter-chips';
+import { Pagination } from '../../../../../../shared/components/pagination/pagination';
+import { TreeFilter, TreeNode } from './components/tree-filter/tree-filter';
+import { ListFilter, FilterItem } from './components/list-filter/list-filter';
+import { MobileFilterDrawer } from './components/mobile-filter-drawer/mobile-filter-drawer';
+import { ActiveFilterChips, ActiveFilter } from './components/active-filter-chips/active-filter-chips';
 import { BrandsResponse, Datum as BrandDatum } from '../../brands-page/interfaces/brands-response.interface';
 import { Datum as CategoryDatum, CategoriesResponse } from '../../categories-page/interfaces/categories-response.interface';
 
 @Component({
   selector: 'products-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductCard, SkeletonCard, PaginationComponent, TreeFilterComponent, ListFilterComponent, MobileFilterDrawerComponent, ActiveFilterChipsComponent],
+  imports: [CommonModule, FormsModule, ProductCard, SkeletonCard, Pagination, TreeFilter, ListFilter, MobileFilterDrawer, ActiveFilterChips],
   templateUrl: './products-page.html',
   styleUrl: './products-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

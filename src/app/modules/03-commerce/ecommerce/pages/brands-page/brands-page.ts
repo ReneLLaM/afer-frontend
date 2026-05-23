@@ -7,12 +7,12 @@ import { FormsModule } from '@angular/forms';
 import { BrandsService, SortByBrandsPublic } from '../../services/brands.service';
 import { BrandCard } from '../../components/brand-card/brand-card';
 import { SkeletonCard } from '../../../../../shared/components/skeleton-card/skeleton-card';
-import { PaginationComponent } from '../../../../../shared/components/pagination/pagination';
+import { Pagination } from '../../../../../shared/components/pagination/pagination';
 
 @Component({
   selector: 'app-brands',
   standalone: true,
-  imports: [BrandCard, SkeletonCard, FormsModule, PaginationComponent],
+  imports: [BrandCard, SkeletonCard, FormsModule, Pagination],
   templateUrl: './brands-page.html',
   styleUrl: './brands-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

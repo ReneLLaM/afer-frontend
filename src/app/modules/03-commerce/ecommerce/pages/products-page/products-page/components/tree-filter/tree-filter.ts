@@ -39,7 +39,7 @@ export interface FlatItem {
   templateUrl: './tree-filter.html',
   styleUrl: './tree-filter.scss',
 })
-export class TreeFilterComponent {
+export class TreeFilter {
   // ── Inputs / Outputs ────────────────────────────────────────────────────────
 
   data = input<TreeNode[]>([]);

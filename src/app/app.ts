@@ -1,13 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ToastComponent } from './shared/toast/toast';
-import { DialogComponent } from './shared/dialog/dialog';
+import { Toast } from './shared/toast/toast';
+import { Dialog } from './shared/dialog/dialog';
 import { CartStore } from './core/stores/cart.store';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ToastComponent, DialogComponent],
+  imports: [RouterOutlet, Toast, Dialog],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

@@ -1,14 +1,14 @@
 import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { CategoriesService } from '../../services/categories.service';
-import { CategoryTreeNodeComponent } from '../../components/category-tree-node/category-tree-node.component';
+import { CategoryTreeNode } from '../../components/category-tree-node/category-tree-node.component';
 import { CommonModule } from '@angular/common';
 import { CategoriesResponse, Datum } from './interfaces/categories-response.interface';
 
 @Component({
   selector: 'categories-page',
   standalone: true,
-  imports: [CommonModule, CategoryTreeNodeComponent],
+  imports: [CommonModule, CategoryTreeNode],
   templateUrl: './categories-page.component.html',
   styleUrl: './categories-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

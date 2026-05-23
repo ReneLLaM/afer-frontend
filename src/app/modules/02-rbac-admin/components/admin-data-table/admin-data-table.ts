@@ -9,12 +9,12 @@ import {
 } from '@angular/core';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import type { ListMeta } from '../../models/list-meta.model';
-import { AuthStore } from '../../../modules/01-identity/auth/store/auth.store';
+import type { ListMeta } from '../../../../shared/interfaces/list-meta.interface';
+import { AuthStore } from '../../../01-identity/auth/store/auth.store';
 import {
   buildCrudTableActions,
   type CrudTableActionsConfig,
-} from '../../utils/table-actions.utils';
+} from '../../utils/admin-table-actions.utils';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -71,7 +71,7 @@ export interface TableColumn<T = unknown> {
   sticky?: 'start' | 'end';
 }
 
-/** @deprecated Usar ListMeta desde shared/models/list-meta.model */
+/** @deprecated Usar ListMeta desde shared/interfaces/list-meta.interface */
 export type TableMeta = ListMeta;
 
 export interface TableAction<T = unknown> {
@@ -98,12 +98,12 @@ const IMAGE_KEY_HINTS = new Set([
   selector: 'app-data-table',
   standalone: true,
   imports: [CommonModule, NgTemplateOutlet, MatIconModule],
-  templateUrl: './data-table.html',
-  styleUrl: './data-table.scss',
+  templateUrl: './admin-data-table.html',
+  styleUrl: './admin-data-table.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class DataTableComponent<T = any> {
+export class DataTable<T = any> {
   private readonly authStore = inject(AuthStore);
 
   columns = input.required<TableColumn<T>[]>();

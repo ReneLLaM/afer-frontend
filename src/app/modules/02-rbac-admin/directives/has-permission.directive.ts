@@ -1,5 +1,5 @@
 import { Directive, effect, inject, input, TemplateRef, ViewContainerRef } from '@angular/core';
-import { AuthStore } from '../../modules/01-identity/auth/store/auth.store';
+import { AuthStore } from '../../01-identity/auth/store/auth.store';
 
 /**
  * Directiva estructural RBAC.

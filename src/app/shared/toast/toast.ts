@@ -1,6 +1,6 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { ToastService, Toast } from '../services/toast.service';
+import { ToastService, Toast as ToastItem } from '../services/toast.service';
 
 @Component({
   selector: 'toast',
@@ -10,10 +10,10 @@ import { ToastService, Toast } from '../services/toast.service';
   styleUrl: './toast.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToastComponent {
+export class Toast {
   private toastService = inject(ToastService);
 
-  get toasts(): readonly Toast[] {
+  get toasts(): readonly ToastItem[] {
     return this.toastService.allToasts;
   }
 

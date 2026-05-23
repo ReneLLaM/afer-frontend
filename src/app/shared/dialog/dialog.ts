@@ -9,7 +9,7 @@ import { DialogService } from '../services/dialog.service';
   templateUrl: './dialog.html',
   styleUrl: './dialog.scss'
 })
-export class DialogComponent {
+export class Dialog {
   protected readonly dialogService = inject(DialogService);
 
   get iconType(): string {

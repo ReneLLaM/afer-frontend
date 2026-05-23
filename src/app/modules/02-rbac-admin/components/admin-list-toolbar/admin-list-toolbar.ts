@@ -1,16 +1,16 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { SearchInputComponent } from '../search-input/search-input';
+import { SearchInput } from '../../../../shared/components/search-input/search-input';
 
 @Component({
   selector: 'app-admin-list-toolbar',
   standalone: true,
-  imports: [SearchInputComponent, MatIconModule],
+  imports: [SearchInput, MatIconModule],
   templateUrl: './admin-list-toolbar.html',
   styleUrl: './admin-list-toolbar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminListToolbarComponent {
+export class AdminListToolbar {
   search = input<string>('');
   searchPlaceholder = input<string>('Buscar...');
   hasActiveFilters = input<boolean>(false);

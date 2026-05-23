@@ -1,6 +1,6 @@
 import { Component, signal, inject, effect, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { GiftCardModalComponent } from '../../../../../layout/components/gift-card/modal/modal';
+import { GiftCardModal } from '../../../../../layout/components/gift-card/modal/modal';
 import { HeroSlider } from './hero-slider/hero-slider';
 import { CategoryCarousel } from './components/category-carousel/category-carousel';
 import { FeaturedProductGrid } from './components/featured-product-grid/featured-product-grid';
@@ -12,7 +12,7 @@ import { HomeService, FeaturedCategory } from '../../services/home.service';
   selector: 'home-page',
   standalone: true,
   imports: [
-    GiftCardModalComponent,
+    GiftCardModal,
     HeroSlider,
     CategoryCarousel,
     FeaturedProductGrid,

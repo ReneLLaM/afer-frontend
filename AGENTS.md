@@ -46,7 +46,7 @@ modules/
       pages/
       components/
       services/
-      models/
+      interfaces/
       stores/
   02-core/
   03-commerce/
@@ -54,7 +54,7 @@ modules/
       pages/
       components/
       services/
-      models/          ← Interfaces y types de API
+      interfaces/      ← Interfaces y types de API
       stores/          ← Signal stores (si aplica)
 ```
 
@@ -62,7 +62,7 @@ modules/
 - `pages/` → Componentes ruteables (lazy loaded)
 - `components/` → Componentes reutilizables del feature
 - `services/` → Servicios inyectables con `inject()`
-- `models/` → Interfaces para contratos de API
+- `interfaces/` → Interfaces y types para contratos de API
 - `stores/` → Signal stores solo si el estado justifica complejidad
 
 ### 2.3 Services inyectables
@@ -466,7 +466,7 @@ handleDynamic(data: any) { }
 ### 6.3 Interfaces para contratos de API
 
 ```typescript
-// models/product.model.ts
+// interfaces/product.interface.ts
 export interface Product {
   id: string;
   title: string;
@@ -572,7 +572,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, switchMap, tap } from 'rxjs';
 
 // 4. Internal - absolute paths
-import { Product } from '../../models/product.model';
+import { Product } from '../../interfaces/product.interface';
 import { ProductsService } from '../../services/products.service';
 
 // 5. Internal - relative paths
@@ -591,7 +591,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap, tap } from 'rxjs';
 import { ProductsService } from '../../services/products.service';
-import { Product } from '../../models/product.model';
+import { Product } from '../../interfaces/product.interface';
 
 @Component({
   selector: 'products-page',

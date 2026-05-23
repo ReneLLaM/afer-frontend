@@ -17,7 +17,6 @@ export class DashboardPage {
 
   user = this.authStore.user;
   permissions = this.authStore.permissions;
-  roles = this.authStore.roles;
 
   accessibleModules = computed(() =>
     ADMIN_NAV_ITEMS.filter(item =>

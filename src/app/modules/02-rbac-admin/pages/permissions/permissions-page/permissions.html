@@ -30,20 +30,48 @@
     (clearFilters)="onClearFilters()"
   >
     <div filters class="permissions-page__filters">
-      <app-table-filter-select
-        label="Módulo"
-        placeholder="Todos los módulos"
-        [value]="moduleFilter()"
-        [options]="moduleOptions"
-        (valueChange)="onModuleFilter($event)"
-      />
-      <app-table-filter-select
-        label="Acción"
-        placeholder="Todas las acciones"
-        [value]="actionFilter()"
-        [options]="actionOptions"
-        (valueChange)="onActionFilter($event)"
-      />
+      <label
+        class="permissions-page__filter-field"
+        [class.permissions-page__filter-field--active]="moduleFilter()"
+      >
+        <span class="permissions-page__filter-label">
+          Módulo
+          @if (moduleFilter()) {
+            <span class="permissions-page__filter-dot" aria-hidden="true"></span>
+          }
+        </span>
+        <select
+          class="permissions-page__filter-select"
+          [value]="moduleFilter()"
+          (change)="onModuleFilter($any($event.target).value)"
+        >
+          <option value="">Todos los módulos</option>
+          @for (option of moduleOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+      <label
+        class="permissions-page__filter-field"
+        [class.permissions-page__filter-field--active]="actionFilter()"
+      >
+        <span class="permissions-page__filter-label">
+          Acción
+          @if (actionFilter()) {
+            <span class="permissions-page__filter-dot" aria-hidden="true"></span>
+          }
+        </span>
+        <select
+          class="permissions-page__filter-select"
+          [value]="actionFilter()"
+          (change)="onActionFilter($any($event.target).value)"
+        >
+          <option value="">Todas las acciones</option>
+          @for (option of actionOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </label>
     </div>
   </app-admin-list-toolbar>
 

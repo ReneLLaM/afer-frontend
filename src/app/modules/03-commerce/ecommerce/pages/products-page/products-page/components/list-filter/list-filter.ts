@@ -23,7 +23,7 @@ export interface FilterItem {
   templateUrl: './list-filter.html',
   styleUrl: './list-filter.scss',
 })
-export class ListFilterComponent {
+export class ListFilter {
   // ── Inputs / Outputs ────────────────────────────────────────────────────────
 
   data = input<FilterItem[]>([]);

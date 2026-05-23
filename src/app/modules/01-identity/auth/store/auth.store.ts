@@ -22,7 +22,7 @@ const TOKEN_KEY = 'token';
  * - Mantener el estado de autenticación (user, token, status)
  * - Persistir el token en localStorage via effect()
  * - Exponer signals readonly para componentes y guards
- * - Proveer métodos RBAC (hasPermission, hasAnyPermission)
+ * - Proveer métodos RBAC basados en permisos
  *
  * NO hace:
  * - Peticiones HTTP directas (eso es AuthService)
@@ -49,7 +49,6 @@ export class AuthStore {
   // ─── Señales derivadas (computed) ───────────────────────
   readonly isAuthenticated = computed(() => this._authStatus() === 'authenticated');
   readonly permissions = computed(() => this._user()?.permissions ?? []);
-  readonly roles = computed(() => this._user()?.roles ?? []);
 
   /**
    * rxResource: verifica la sesión automáticamente al iniciar la app.
@@ -191,21 +190,6 @@ export class AuthStore {
   hasModulePermission(module: string): boolean {
     return this.permissions().some(p => p.startsWith(`${module}.`));
   }
-
-  // ─── RBAC helpers — Roles ────────────────────────────────
-
-  hasRole(role: string): boolean {
-    return this.roles().includes(role);
-  }
-
-  hasAnyRole(roles: string[]): boolean {
-    const userRoles = this.roles();
-    return roles.some(r => userRoles.includes(r));
-  }
-
-  readonly isAdmin = computed(() =>
-    this.roles().some(r => r === 'admin' || r === 'super-admin')
-  );
 
   /**
    * Actualiza el objeto de usuario en el estado.

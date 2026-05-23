@@ -9,28 +9,30 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { switchMap, tap, catchError, of, distinctUntilChanged } from 'rxjs';
 import {
-  DataTableComponent,
+  DataTable,
   type TableMeta,
   type SortEvent,
-} from '../../../../../shared/components/data-table/data-table';
-import { PaginationComponent } from '../../../../../shared/components/pagination/pagination';
+} from '../../../components/admin-data-table/admin-data-table';
+import { Pagination } from '../../../../../shared/components/pagination/pagination';
 import { Breadcrumb } from '../../../../../shared/components/breadcrumb/breadcrumb';
-import { AdminListToolbarComponent } from '../../../../../shared/components/admin-list-toolbar/admin-list-toolbar';
-import { TableFilterSelectComponent } from '../../../../../shared/components/table-filter-select/table-filter-select';
-import { HasPermissionDirective } from '../../../../../shared/directives/has-permission.directive';
+import { AdminListToolbar } from '../../../components/admin-list-toolbar/admin-list-toolbar';
+import { HasPermissionDirective } from '../../../directives/has-permission.directive';
 import { AdminPermissionsService } from '../../../services/admin-permissions.service';
 import { DialogService } from '../../../../../shared/services/dialog.service';
 import { PERMISSIONS, PermissionAction, PermissionModule } from '../../../../../core/constants/permissions';
+import { PermissionActionLabelPipe } from '../pipes/permission-action-label.pipe';
 import {
   areSameQueryParams,
   buildListQueryPatch,
   readListParams,
   sortDirectionFromOrder,
   toApiOffset,
-} from '../../../../../shared/utils/list-query.utils';
-import { toListMeta } from '../../../../../shared/models/list-meta.model';
-import { PERMISSION_TABLE_COLUMNS } from '../../../../../shared/config/table-columns/permission.columns';
+} from '../../../utils/admin-list-query.utils';
+import { toListMeta } from '../../../../../shared/interfaces/list-meta.interface';
+import { PERMISSION_TABLE_COLUMNS } from './permissions.columns';
 import type { Permission } from '../../../interfaces/admin-permission.interface';
+
+const permissionActionLabel = new PermissionActionLabelPipe();
 
 const DEFAULT_SORT_BY = 'module';
 const DEFAULT_ORDER: 'ASC' | 'DESC' = 'ASC';
@@ -49,11 +51,10 @@ const EMPTY_RESPONSE: PermissionsData = {
   selector: 'permissions-page',
   standalone: true,
   imports: [
-    DataTableComponent,
-    PaginationComponent,
+    DataTable,
+    Pagination,
     Breadcrumb,
-    AdminListToolbarComponent,
-    TableFilterSelectComponent,
+    AdminListToolbar,
     HasPermissionDirective,
   ],
   templateUrl: './permissions.html',
@@ -81,7 +82,7 @@ export class PermissionsPage {
 
   readonly actionOptions = Object.values(PermissionAction).map((a) => ({
     value: a,
-    label: a.replace('_', ' '),
+    label: permissionActionLabel.transform(a),
   }));
 
   queryParams = toSignal(this.route.queryParams, {

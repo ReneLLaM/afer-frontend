@@ -71,12 +71,12 @@ modules/
       status-badge/
       confirm-dialog/
       admin-breadcrumb/
-    models/                   ← Interfaces de API (fuera de pages/)
-      admin-user.model.ts
-      admin-role.model.ts
-      admin-permission.model.ts
-      admin-banner.model.ts
-      admin-file.model.ts
+    interfaces/               ← Interfaces de API (fuera de pages/)
+      admin-user.interface.ts
+      admin-role.interface.ts
+      admin-permission.interface.ts
+      admin-banner.interface.ts
+      admin-file.interface.ts
     services/                 ← Servicios HTTP (fuera de pages/)
       admin-users.service.ts
       admin-roles.service.ts
@@ -91,7 +91,6 @@ modules/
     shared/                   ← Compartido entre admin y ecommerce
       directives/
         has-permission.directive.ts
-        has-role.directive.ts
       guards/
         permission.guard.ts
         admin-access.guard.ts
@@ -104,7 +103,7 @@ modules/
 | Página | kebab-case + `-page` | `users-list-page` |
 | Componente | kebab-case | `admin-table` |
 | Servicio | PascalCase + `Service` | `AdminUsersService` |
-| Modelo | kebab-case + `.model.ts` | `admin-user.model.ts` |
+| Interface | kebab-case + `.interface.ts` | `admin-user.interface.ts` |
 | Store | kebab-case + `.store.ts` | `admin-ui.store.ts` |
 | Utilidad | kebab-case + `.utils.ts` | `permission.utils.ts` |
 
@@ -232,9 +231,9 @@ hasModulePermission(module: string): boolean {
 - `hasPermission()` → para checks individuales
 - `hasAnyPermission()` → para checks "al menos uno"
 - `hasAllPermissions()` → para checks "todos requeridos"
-- `hasRole()` → solo para UI (badges, mensajes), NO para autorización
-- `isAdmin` → solo para UI, NO para autorización
 - `hasModulePermission()` → para el sidebar (saber si mostrar un módulo)
+- Base de autorización y visibilidad: permisos, no roles
+- `hasRole()` e `isAdmin` quedan solo como compatibilidad puntual; no crear nueva lógica basada en roles salvo requisito explícito
 
 ---
 
@@ -251,18 +250,6 @@ export const permissionGuard: CanActivateFn = (route) => {
 
   const requiredPermission = route.data['permission'] as string | string[] | undefined;
   const permissionMode = route.data['permissionMode'] as 'any' | 'all' | undefined;
-  const requiredRole = route.data['role'] as string | string[] | undefined;
-
-  // Si hay role requerido
-  if (requiredRole) {
-    const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
-    if (!authStore.hasAnyRole(roles)) {
-      router.navigate(['/']);
-      return false;
-    }
-    return true;
-  }
-
   // Si hay permiso requerido
   if (requiredPermission) {
     const perms = Array.isArray(requiredPermission) ? requiredPermission : [requiredPermission];
@@ -297,8 +284,6 @@ export const permissionGuard: CanActivateFn = (route) => {
 // Múltiples permisos (todos requeridos)
 { path: 'config', canActivate: [permissionGuard], data: { permission: [PERMISSIONS.USERS.UPDATE, PERMISSIONS.ROLES.UPDATE], permissionMode: 'all' } }
 
-// Por rol
-{ path: 'super-config', canActivate: [permissionGuard], data: { role: 'super-admin' } }
 ```
 
 ### 5.2 Acceso al admin — Layout-based redirect
@@ -337,7 +322,7 @@ ngOnInit(): void {
 
 ### 6.1 HasPermissionDirective
 
-**Ubicación:** `shared/directives/has-permission.directive.ts`
+**Ubicación:** `modules/02-rbac-admin/directives/has-permission.directive.ts`
 
 ```typescript
 @Directive({
@@ -393,60 +378,11 @@ export class HasPermissionDirective {
 <div *hasPermission="[PERMISSIONS.USERS.UPDATE, PERMISSIONS.ROLES.UPDATE]" mode="all">...</div>
 ```
 
-### 6.2 HasRoleDirective
+### 6.2 Roles
 
-**Ubicación:** `shared/directives/has-role.directive.ts`
-
-```typescript
-@Directive({
-  selector: '[hasRole]',
-  standalone: true
-})
-export class HasRoleDirective {
-  private readonly templateRef = inject(TemplateRef<unknown>);
-  private readonly viewContainer = inject(ViewContainerRef);
-  private readonly authStore = inject(AuthStore);
-
-  hasRole = input.required<string | string[]>();
-  mode = input<'any' | 'all'>('any');
-
-  private hasView = false;
-
-  constructor() {
-    effect(() => {
-      const required = this.hasRole();
-      const m = this.mode();
-      let hasAccess = false;
-
-      if (Array.isArray(required)) {
-        hasAccess = m === 'all'
-          ? required.every(r => this.authStore.hasRole(r))
-          : required.some(r => this.authStore.hasRole(r));
-      } else {
-        hasAccess = this.authStore.hasRole(required);
-      }
-
-      if (hasAccess && !this.hasView) {
-        this.viewContainer.createEmbeddedView(this.templateRef);
-        this.hasView = true;
-      } else if (!hasAccess && this.hasView) {
-        this.viewContainer.clear();
-        this.hasView = false;
-      }
-    });
-  }
-}
-```
-
-**Uso:**
-
-```html
-<!-- Solo para super-admin -->
-<div *hasRole="'super-admin'">Configuración avanzada</div>
-
-<!-- Admin o super-admin -->
-<div *hasRole="['admin', 'super-admin']">Panel de gestión</div>
-```
+- El proyecto debe basar autorización de rutas y visibilidad de acciones en permisos.
+- No existe `HasRoleDirective`; no crear nuevas directivas, guards ni checks de UI basados en roles salvo requisito explícito del negocio.
+- Si aparece lógica heredada con roles, tratarla como excepción y preferir migrarla a permisos.
 
 ---
 
@@ -591,7 +527,7 @@ export class AdminSidebar {
 
 ### 8.2 Utilidades URL
 
-`shared/utils/list-query.utils.ts` — `readListParams`, `buildListQueryPatch`, `toApiOffset`.
+`modules/02-rbac-admin/utils/admin-list-query.utils.ts` — `readListParams`, `buildListQueryPatch`, `toApiOffset`.
 
 ### 8.3 RBAC en listados
 
@@ -935,7 +871,7 @@ export class AdminLayout {
 ### 14.2 DON'T
 
 - ❌ NO hardcodear strings de permisos
-- ❌ NO usar `hasRole()` para autorización (solo para UI)
+- ❌ NO usar roles para autorización o visibilidad nueva; usar permisos
 - ❌ NO confiar en el frontend para seguridad
 - ❌ NO crear un permiso `admin.access` (el acceso se basa en permisos reales)
 - ❌ NO asumir que un rol siempre tendrá los mismos permisos

@@ -1,4 +1,4 @@
-import type { TableAction } from '../components/data-table/data-table';
+import type { TableAction } from '../components/admin-data-table/admin-data-table';
 
 export interface CrudActionDef<T> {
   permission?: string | string[];

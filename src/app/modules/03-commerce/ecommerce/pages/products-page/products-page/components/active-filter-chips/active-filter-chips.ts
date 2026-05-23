@@ -51,7 +51,7 @@ export interface ActiveFilter {
   styleUrl: './active-filter-chips.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ActiveFilterChipsComponent {
+export class ActiveFilterChips {
   filters = input<ActiveFilter[]>([]);
   remove = output<string>();
   clearAll = output<void>();

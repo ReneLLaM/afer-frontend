@@ -27,7 +27,7 @@ ParÃ¡metros estÃ¡ndar (siempre en la URL, **nunca** `queryParamsHandling: 'm
 | `order` | `ASC` / `DESC` | DirecciÃ³n |
 | `module`, `action`, â€¦ | â€” | Filtros custom por entidad |
 
-### Utilidades (`shared/utils/list-query.utils.ts`)
+### Utilidades (`modules/02-rbac-admin/utils/admin-list-query.utils.ts`)
 
 ```typescript
 import {
@@ -35,7 +35,7 @@ import {
   buildListQueryPatch,
   toApiOffset,
   sortDirectionFromOrder,
-} from '@app/shared/utils/list-query.utils';
+} from '@app/modules/02-rbac-admin/utils/admin-list-query.utils';
 
 // Leer desde queryParams signal
 const listParams = computed(() => readListParams(this.queryParams()));
@@ -150,7 +150,7 @@ readonly tableCrud = {
 
 - Iconos por defecto: `ri-eye-line`, `ri-edit-line`, `ri-delete-bin-line`
 - Alternativa manual: `[actions]` con `permission` en cada `TableAction`
-- Helper: `buildCrudTableActions()` en `shared/utils/table-actions.utils.ts`
+- Helper: `buildCrudTableActions()` en `modules/02-rbac-admin/utils/admin-table-actions.utils.ts`
 
 ### Inputs clave
 
@@ -188,8 +188,6 @@ readonly tableCrud = {
 ### Pipes reutilizables
 
 - `LocaleDatePipe` â€” fechas
-- `TruncatePipe` â€” textos largos
-- `ModuleLabelPipe` â€” mÃ³dulos RBAC en espaÃ±ol
 
 ---
 
@@ -203,7 +201,7 @@ readonly tableCrud = {
 />
 ```
 
-`ListMeta`: `{ total, limit, page, totalPages }` â€” unificado en `shared/models/list-meta.model.ts`.
+`ListMeta`: `{ total, limit, page, totalPages }` â€” unificado en `shared/interfaces/list-meta.interface.ts`.
 
 **Reglas:**
 

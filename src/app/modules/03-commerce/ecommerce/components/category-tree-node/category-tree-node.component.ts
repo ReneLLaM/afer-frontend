@@ -6,12 +6,12 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-category-tree-node',
   standalone: true,
-  imports: [CommonModule, forwardRef(() => CategoryTreeNodeComponent)],
+  imports: [CommonModule, forwardRef(() => CategoryTreeNode)],
   templateUrl: './category-tree-node.component.html',
   styleUrl: './category-tree-node.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CategoryTreeNodeComponent {
+export class CategoryTreeNode {
   private readonly router = inject(Router);
   node = input.required<Datum>();
   level = input<number>(0);

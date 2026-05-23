@@ -1,17 +1,17 @@
 import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { Breadcrumb } from '../../../../shared/components/breadcrumb/breadcrumb';
 import {
-  DataTableComponent,
+  DataTable,
   type TableColumn,
-} from '../../../../shared/components/data-table/data-table';
-import { PaginationComponent } from '../../../../shared/components/pagination/pagination';
-import { AdminListToolbarComponent } from '../../../../shared/components/admin-list-toolbar/admin-list-toolbar';
-import type { ListMeta } from '../../../../shared/models/list-meta.model';
+} from '../../components/admin-data-table/admin-data-table';
+import { Pagination } from '../../../../shared/components/pagination/pagination';
+import { AdminListToolbar } from '../../components/admin-list-toolbar/admin-list-toolbar';
+import type { ListMeta } from '../../../../shared/interfaces/list-meta.interface';
 
 @Component({
   selector: 'admin-catalog-stub-page',
   standalone: true,
-  imports: [Breadcrumb, DataTableComponent, PaginationComponent, AdminListToolbarComponent],
+  imports: [Breadcrumb, DataTable, Pagination, AdminListToolbar],
   templateUrl: './catalog-stub.html',
   styleUrl: './catalog-stub.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

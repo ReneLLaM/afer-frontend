@@ -6,17 +6,6 @@ export const permissionGuard: CanActivateFn = (route) => {
   const authStore = inject(AuthStore);
   const router = inject(Router);
 
-  const requiredRole = route.data['role'] as string | string[] | undefined;
-
-  if (requiredRole) {
-    const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
-    if (!authStore.hasAnyRole(roles)) {
-      router.navigate(['/']);
-      return false;
-    }
-    return true;
-  }
-
   const requiredPermission = route.data['permission'] as string | string[] | undefined;
   const permissionMode = route.data['permissionMode'] as 'any' | 'all' | undefined;
 

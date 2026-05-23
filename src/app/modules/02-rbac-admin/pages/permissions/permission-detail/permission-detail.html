@@ -31,11 +31,11 @@
       <div class="permission-detail__hero-badges">
         <span class="permission-detail__chip permission-detail__chip--module">
           <i class="ri-folder-line"></i>
-          {{ p.module | moduleLabel }}
+          {{ p.module | permissionModuleLabel }}
         </span>
         <span class="permission-detail__chip permission-detail__chip--action">
           <i class="ri-shield-keyhole-line"></i>
-          {{ p.action }}
+          {{ p.action | permissionActionLabel }}
         </span>
       </div>
     </section>
@@ -80,7 +80,7 @@
           </div>
           <div>
             <dt>Módulo · Acción</dt>
-            <dd>{{ p.module }} · {{ p.action }}</dd>
+            <dd>{{ p.module | permissionModuleLabel }} · {{ p.action | permissionActionLabel }}</dd>
           </div>
         </dl>
       </article>

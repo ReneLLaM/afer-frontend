@@ -1,10 +1,12 @@
-import type { TableColumn } from '../../components/data-table/data-table';
-import type { Permission } from '../../../modules/02-rbac-admin/interfaces/admin-permission.interface';
-import { LocaleDatePipe } from '../../pipes/locale-date.pipe';
-import { ModuleLabelPipe } from '../../pipes/module-label.pipe';
+import type { TableColumn } from '../../../components/admin-data-table/admin-data-table';
+import { LocaleDatePipe } from '../../../../../shared/pipes/locale-date.pipe';
+import { PermissionActionLabelPipe } from '../pipes/permission-action-label.pipe';
+import { PermissionModuleLabelPipe } from '../pipes/permission-module-label.pipe';
+import type { Permission } from '../../../interfaces/admin-permission.interface';
 
 const localeDate = new LocaleDatePipe();
-const moduleLabel = new ModuleLabelPipe();
+const moduleLabel = new PermissionModuleLabelPipe();
+const actionLabel = new PermissionActionLabelPipe();
 
 const MODULE_BADGES: Record<string, { label: string; variant: 'primary' | 'info' | 'success' | 'warning' | 'neutral' }> = {
   products: { label: 'Productos', variant: 'primary' },
@@ -23,7 +25,7 @@ const ACTION_BADGES: Record<string, { label: string; variant: 'success' | 'info'
   delete: { label: 'Eliminar', variant: 'danger' },
   export: { label: 'Exportar', variant: 'neutral' },
   import: { label: 'Importar', variant: 'neutral' },
-  assign_access: { label: 'Asignar', variant: 'info' },
+  assign_access: { label: 'Asignar acceso', variant: 'info' },
 };
 
 export const PERMISSION_TABLE_COLUMNS: TableColumn<Permission>[] = [
@@ -49,7 +51,7 @@ export const PERMISSION_TABLE_COLUMNS: TableColumn<Permission>[] = [
     sortable: true,
     minWidth: '90px',
     type: 'badge',
-    badgeFn: (v) => ACTION_BADGES[String(v).toLowerCase()] ?? { label: String(v), variant: 'neutral' },
+    badgeFn: (v) => ACTION_BADGES[String(v).toLowerCase()] ?? { label: actionLabel.transform(v), variant: 'neutral' },
   },
   {
     key: 'description',

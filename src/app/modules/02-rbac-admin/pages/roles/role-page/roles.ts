@@ -9,15 +9,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { switchMap, tap, catchError, of, distinctUntilChanged } from 'rxjs';
 import {
-  DataTableComponent,
+  DataTable,
   type TableColumn,
   type TableMeta,
   type SortEvent,
-} from '../../../../../shared/components/data-table/data-table';
-import { PaginationComponent } from '../../../../../shared/components/pagination/pagination';
+} from '../../../components/admin-data-table/admin-data-table';
+import { Pagination } from '../../../../../shared/components/pagination/pagination';
 import { Breadcrumb } from '../../../../../shared/components/breadcrumb/breadcrumb';
-import { AdminListToolbarComponent } from '../../../../../shared/components/admin-list-toolbar/admin-list-toolbar';
-import { HasPermissionDirective } from '../../../../../shared/directives/has-permission.directive';
+import { AdminListToolbar } from '../../../components/admin-list-toolbar/admin-list-toolbar';
+import { HasPermissionDirective } from '../../../directives/has-permission.directive';
 import { AdminRolesService } from '../../../services/admin-roles.service';
 import { DialogService } from '../../../../../shared/services/dialog.service';
 import { PERMISSIONS } from '../../../../../core/constants/permissions';
@@ -27,8 +27,8 @@ import {
   readListParams,
   sortDirectionFromOrder,
   toApiOffset,
-} from '../../../../../shared/utils/list-query.utils';
-import { toListMeta } from '../../../../../shared/models/list-meta.model';
+} from '../../../utils/admin-list-query.utils';
+import { toListMeta } from '../../../../../shared/interfaces/list-meta.interface';
 import type { Role, RolesResponse } from '../../../interfaces/admin-role.interface';
 
 const DEFAULT_SORT_BY = 'name';
@@ -43,10 +43,10 @@ const EMPTY_RESPONSE: RolesResponse = {
   selector: 'roles-page',
   standalone: true,
   imports: [
-    DataTableComponent,
-    PaginationComponent,
+    DataTable,
+    Pagination,
     Breadcrumb,
-    AdminListToolbarComponent,
+    AdminListToolbar,
     HasPermissionDirective,
   ],
   templateUrl: './roles.html',

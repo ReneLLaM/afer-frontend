@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-const MODULE_LABELS: Record<string, string> = {
+const PERMISSION_MODULE_LABELS: Record<string, string> = {
   products: 'Productos',
   categories: 'Categorías',
   brands: 'Marcas',
@@ -10,11 +10,11 @@ const MODULE_LABELS: Record<string, string> = {
   banners: 'Banners',
 };
 
-@Pipe({ name: 'moduleLabel', standalone: true })
-export class ModuleLabelPipe implements PipeTransform {
+@Pipe({ name: 'permissionModuleLabel', standalone: true })
+export class PermissionModuleLabelPipe implements PipeTransform {
   transform(value: unknown): string {
     if (value == null) return '';
     const key = String(value).toLowerCase();
-    return MODULE_LABELS[key] ?? String(value);
+    return PERMISSION_MODULE_LABELS[key] ?? String(value);
   }
 }

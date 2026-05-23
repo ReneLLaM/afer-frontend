@@ -1,5 +1,5 @@
 import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
-import type { ListMeta } from '../../models/list-meta.model';
+import type { ListMeta } from '../../interfaces/list-meta.interface';
 
 /** @deprecated Usar ListMeta */
 export type PaginationMeta = ListMeta;
@@ -12,7 +12,7 @@ export type PaginationMeta = ListMeta;
   styleUrl: './pagination.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaginationComponent {
+export class Pagination {
   meta = input.required<ListMeta>();
 
   pageChange = output<number>();

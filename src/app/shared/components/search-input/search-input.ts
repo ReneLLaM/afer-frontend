@@ -21,7 +21,7 @@ export type SearchSize = 'md' | 'lg';
   styleUrl: './search-input.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchInputComponent {
+export class SearchInput {
   placeholder = input<string>('Buscar...');
   initialValue = input<string>('');
   debounceTime = input<number>(300);

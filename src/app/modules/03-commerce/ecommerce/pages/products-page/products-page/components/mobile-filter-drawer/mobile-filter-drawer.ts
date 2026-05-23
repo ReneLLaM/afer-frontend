@@ -100,7 +100,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './mobile-filter-drawer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MobileFilterDrawerComponent {
+export class MobileFilterDrawer {
   private document = inject(DOCUMENT);
 
   isOpen = input<boolean>(false);
