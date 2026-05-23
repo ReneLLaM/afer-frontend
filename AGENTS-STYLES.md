@@ -28,7 +28,7 @@ Este agente rige **todo el cÃ³digo CSS/SCSS/HTML visual** del proyecto fronten
 | BÃºsqueda | Focus: `border-color: var(--afer-secondary-absolute)` + ring + `padding-left >= 46px` en `search-input.scss` |
 | Toolbar | `admin-list-toolbar` con 3 zonas: `__search`, `__filters`, `__clear-slot` |
 | Filtros | `table-filter-select` con estado activo visible (label + dot + borde/fondo) |
-| Botones cabecera | `admin-btn`, `admin-btn--primary`, `admin-btn--secondary` |
+| Botones cabecera | `admin-btn`, `admin-btn--primary`, `admin-btn--secondary` definidos en cada `scss` local (sin `@use` compartido) |
 
 
 ## 1.2 Reglas obligatorias â€” Toolbar admin

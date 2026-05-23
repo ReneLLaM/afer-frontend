@@ -52,7 +52,7 @@ export const adminRoutes: Routes = [
         path: 'roles',
         canActivate: [permissionGuard],
         data: { permission: PERMISSIONS.ROLES.READ, breadcrumb: 'Roles' },
-        loadComponent: () => import('./pages/roles/roles').then(m => m.RolesPage),
+        loadComponent: () => import('./pages/roles/role-page/roles').then(m => m.RolesPage),
       },
       {
         path: 'permisos',

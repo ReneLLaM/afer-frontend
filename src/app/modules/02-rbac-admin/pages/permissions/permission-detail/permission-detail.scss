@@ -1,9 +1,62 @@
-@use '../../../../../shared/styles/admin-buttons';
-
 .permission-detail {
   padding: 1rem 1.5rem 2rem;
   width: 100%;
   max-width: none;
+
+  .admin-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    height: 38px;
+    padding: 0 1rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--afer-text-primary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+
+    i {
+      font-size: 1.05rem;
+      line-height: 1;
+    }
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    &--primary {
+      background: var(--afer-primary);
+      color: #ffffff;
+      border-color: color-mix(in srgb, var(--afer-primary), #000 8%);
+
+      &:hover:not(:disabled) {
+        background: color-mix(in srgb, var(--afer-primary), #fff 12%);
+      }
+
+      &:active:not(:disabled) {
+        background: color-mix(in srgb, var(--afer-primary), #000 10%);
+      }
+    }
+
+    &--secondary {
+      background: var(--afer-surface);
+      color: var(--afer-text-primary);
+      border-color: color-mix(in srgb, var(--afer-text-muted), transparent 75%);
+
+      &:hover:not(:disabled) {
+        border-color: var(--afer-secondary-absolute);
+        color: var(--afer-secondary-absolute);
+        background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 94%);
+      }
+    }
+  }
 
   &__top {
     margin-bottom: 1rem;
@@ -201,6 +254,22 @@
 }
 
 :host-context([data-theme='dark']) .permission-detail {
+  .admin-btn--primary {
+    background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
+    color: var(--afer-secondary);
+    border-color: color-mix(in srgb, var(--afer-secondary), transparent 75%);
+
+    &:hover:not(:disabled) {
+      background: var(--afer-secondary);
+      color: #ffffff;
+      border-color: var(--afer-secondary);
+    }
+
+    &:active:not(:disabled) {
+      background: color-mix(in srgb, var(--afer-secondary), #000 10%);
+    }
+  }
+
   &__hero,
   &__panel {
     background: color-mix(in srgb, var(--afer-surface), var(--afer-background) 35%);

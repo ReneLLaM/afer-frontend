@@ -284,11 +284,7 @@ URL ?page=1&limit=10&search=foo&module=products&sortBy=slug&order=ASC
 
 ## 11. Botones de cabecera (Seed, Crear)
 
-Usar clases compartidas (`shared/styles/admin-buttons.scss`):
-
-```scss
-@use '../../shared/styles/admin-buttons';
-```
+Definir clases de botones en el `scss` local de cada página/componente (sin `@use` compartido).
 
 ```html
 <button *hasPermission="PERMISSIONS.X.CREATE" class="admin-btn admin-btn--primary" type="button">
@@ -298,6 +294,7 @@ Usar clases compartidas (`shared/styles/admin-buttons.scss`):
 <button class="admin-btn admin-btn--secondary" type="button">Crear</button>
 ```
 
+- **Nunca** usar `@use` para `admin-buttons`; cada módulo define su bloque local `.admin-btn`.
 - **No** usar `filter: brightness()` en hover (rompe dark mode).
 - Variantes: `--primary`, `--secondary`
 
@@ -319,7 +316,7 @@ Usar clases compartidas (`shared/styles/admin-buttons.scss`):
 
 1. Columnas en `shared/config/table-columns/{entity}.columns.ts`
 2. PÃ¡gina listado: `readListParams` + toolbar + tabla `[crud]` + paginaciÃ³n
-3. `@use admin-buttons` + `*hasPermission` en acciones de cabecera
+3. `.admin-btn` local + `*hasPermission` en acciones de cabecera
 4. Detalle: ruta `:id` o `:slug`, panel ancho completo
 5. Constantes `PERMISSIONS.{MODULE}.*` â€” nunca strings sueltos
 

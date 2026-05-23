@@ -13,23 +13,23 @@ import {
   type TableColumn,
   type TableMeta,
   type SortEvent,
-} from '../../../../shared/components/data-table/data-table';
-import { PaginationComponent } from '../../../../shared/components/pagination/pagination';
-import { Breadcrumb } from '../../../../shared/components/breadcrumb/breadcrumb';
-import { AdminListToolbarComponent } from '../../../../shared/components/admin-list-toolbar/admin-list-toolbar';
-import { HasPermissionDirective } from '../../../../shared/directives/has-permission.directive';
-import { AdminRolesService } from '../../services/admin-roles.service';
-import { DialogService } from '../../../../shared/services/dialog.service';
-import { PERMISSIONS } from '../../../../core/constants/permissions';
+} from '../../../../../shared/components/data-table/data-table';
+import { PaginationComponent } from '../../../../../shared/components/pagination/pagination';
+import { Breadcrumb } from '../../../../../shared/components/breadcrumb/breadcrumb';
+import { AdminListToolbarComponent } from '../../../../../shared/components/admin-list-toolbar/admin-list-toolbar';
+import { HasPermissionDirective } from '../../../../../shared/directives/has-permission.directive';
+import { AdminRolesService } from '../../../services/admin-roles.service';
+import { DialogService } from '../../../../../shared/services/dialog.service';
+import { PERMISSIONS } from '../../../../../core/constants/permissions';
 import {
   areSameQueryParams,
   buildListQueryPatch,
   readListParams,
   sortDirectionFromOrder,
   toApiOffset,
-} from '../../../../shared/utils/list-query.utils';
-import { toListMeta } from '../../../../shared/models/list-meta.model';
-import type { Role, RolesResponse } from '../../interfaces/admin-role.interface';
+} from '../../../../../shared/utils/list-query.utils';
+import { toListMeta } from '../../../../../shared/models/list-meta.model';
+import type { Role, RolesResponse } from '../../../interfaces/admin-role.interface';
 
 const DEFAULT_SORT_BY = 'name';
 const DEFAULT_ORDER: 'ASC' | 'DESC' = 'ASC';
