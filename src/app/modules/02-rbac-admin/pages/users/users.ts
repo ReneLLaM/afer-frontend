@@ -22,6 +22,7 @@ import { AdminUsersService } from '../../services/admin-users.service';
 import { DialogService } from '../../../../shared/services/dialog.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions';
 import {
+  areSameQueryParams,
   buildListQueryPatch,
   readListParams,
   sortDirectionFromOrder,
@@ -29,7 +30,7 @@ import {
 } from '../../../../shared/utils/list-query.utils';
 import { toListMeta } from '../../../../shared/models/list-meta.model';
 import { LocaleDatePipe } from '../../../../shared/pipes/locale-date.pipe';
-import type { User, UsersResponse } from '../../models/admin-user.model';
+import type { User, UsersResponse } from '../../interfaces/admin-user.interface';
 
 const DEFAULT_SORT_BY = 'email';
 const DEFAULT_ORDER: 'ASC' | 'DESC' = 'ASC';
@@ -156,10 +157,16 @@ export class UsersPage {
   });
 
   private navigateQuery(patch: Record<string, string | number | null | undefined>): void {
+    const nextQuery = buildListQueryPatch(this.queryParams(), patch);
+    const currentQuery = buildListQueryPatch(this.queryParams(), {});
+
+    if (areSameQueryParams(currentQuery, nextQuery)) return;
+
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: buildListQueryPatch(this.queryParams(), patch),
+      queryParams: nextQuery,
       queryParamsHandling: '',
+      replaceUrl: true,
     });
   }
 

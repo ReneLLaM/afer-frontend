@@ -16,45 +16,56 @@
 
   &__icon {
     position: absolute;
-    left: 12px; // Un poco más a la izquierda
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     color: var(--afer-text-muted);
     pointer-events: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 2; // Asegurar que esté por encima del input
+    z-index: 3;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: color 0.2s ease;
 
-    svg,
-    i {
-      width: 100%;
-      height: 100%;
+    svg {
+      width: 17px;
+      height: 17px;
       display: block;
-      font-size: 1rem;
+    }
+
+    mat-icon,
+    i {
+      width: 17px;
+      height: 17px;
+      font-size: 17px;
+      line-height: 17px;
+      display: block;
     }
   }
 
   &__input {
     width: 100%;
     height: 38px;
-    padding: 0 34px 0 36px; // Ajustar paddings para que no se pise con iconos
+    padding: 0 40px 0 12px;
+    position: relative;
+    z-index: 1;
     border: 1.5px solid color-mix(in srgb, var(--afer-text-muted), transparent 85%);
-    border-radius: 10px; // Un poco menos redondeado para ser más moderno
+    border-radius: 10px;
     background: var(--afer-surface);
     color: var(--afer-text-primary);
     font-size: 0.82rem;
-    font-weight: 500; // Un poco menos grueso
+    font-weight: 500;
     line-height: 1.2;
     outline: none;
+    appearance: none;
+    -webkit-appearance: none;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
     &::placeholder {
       color: var(--afer-text-muted);
-      opacity: 0.5;
+      opacity: 0.55;
       font-weight: 400;
     }
 
@@ -64,18 +75,25 @@
 
     &:focus {
       border-color: var(--afer-secondary-absolute);
-      background: var(--afer-surface);
       box-shadow: 0 0 0 3px color-mix(in srgb, var(--afer-secondary-absolute), transparent 94%);
-      
-      ~ .search-input__icon {
-        color: var(--afer-secondary-absolute);
-      }
     }
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button,
+    &::-webkit-search-results-button,
+    &::-webkit-search-results-decoration {
+      display: none;
+      -webkit-appearance: none;
+    }
+  }
+
+  &:focus-within .search-input__icon {
+    color: var(--afer-secondary-absolute);
   }
 
   &__clear {
     position: absolute;
-    right: 8px;
+    right: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -111,13 +129,9 @@
     max-width: 100%;
 
     &__input {
-      height: 42px; // Un poco más grande para touch
+      height: 42px;
       font-size: 0.85rem;
       border-radius: 10px;
-    }
-
-    &__icon {
-      left: 12px;
     }
 
     &__clear {

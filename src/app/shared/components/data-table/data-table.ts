@@ -8,6 +8,7 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import type { ListMeta } from '../../models/list-meta.model';
 import { AuthStore } from '../../../modules/01-identity/auth/store/auth.store';
 import {
@@ -96,7 +97,7 @@ const IMAGE_KEY_HINTS = new Set([
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule, NgTemplateOutlet],
+  imports: [CommonModule, NgTemplateOutlet, MatIconModule],
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -279,6 +280,10 @@ export class DataTableComponent<T = any> {
 
   getRaw(row: T, key: string): unknown {
     return (row as Record<string, unknown>)[key];
+  }
+
+  isRemixIcon(icon: string): boolean {
+    return icon ? icon.startsWith('ri-') : false;
   }
 
   isActionVisible(action: TableAction<T>, row: T): boolean {

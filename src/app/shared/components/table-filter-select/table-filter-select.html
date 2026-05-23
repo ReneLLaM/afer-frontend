@@ -1,6 +1,11 @@
-<label class="table-filter-select">
+<label class="table-filter-select" [class.table-filter-select--active]="isActive()">
   @if (label()) {
-    <span class="table-filter-select__label">{{ label() }}</span>
+    <span class="table-filter-select__label">
+      {{ label() }}
+      @if (isActive()) {
+        <span class="table-filter-select__dot" aria-hidden="true"></span>
+      }
+    </span>
   }
   <select
     class="table-filter-select__control"

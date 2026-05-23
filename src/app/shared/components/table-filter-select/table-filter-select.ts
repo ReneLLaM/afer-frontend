@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 
 export interface TableFilterOption {
   value: string;
@@ -17,6 +17,7 @@ export class TableFilterSelectComponent {
   placeholder = input<string>('Todos');
   value = input<string>('');
   options = input.required<TableFilterOption[]>();
+  isActive = computed(() => this.value().trim().length > 0);
 
   valueChange = output<string>();
 

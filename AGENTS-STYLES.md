@@ -1,14 +1,14 @@
-# Afer Bolivia — UI/UX & Design System Agent
+﻿# Afer Bolivia â€” UI/UX & Design System Agent
 
-> **Propósito**: Guía completa unificada de diseño UI/UX, sistema de estilos, componentes visuales y patrones de interfaz para todo el proyecto frontend de Afer Bolivia. Todo agente o desarrollador debe seguir estas reglas para mantener la consistencia visual y máxima calidad de la interfaz.
+> **PropÃ³sito**: GuÃ­a completa unificada de diseÃ±o UI/UX, sistema de estilos, componentes visuales y patrones de interfaz para todo el proyecto frontend de Afer Bolivia. Todo agente o desarrollador debe seguir estas reglas para mantener la consistencia visual y mÃ¡xima calidad de la interfaz.
 
 ---
 
 ## 1. Rol y Alcance
 
-Este agente rige **todo el código CSS/SCSS/HTML visual** del proyecto frontend. Aplica a:
+Este agente rige **todo el cÃ³digo CSS/SCSS/HTML visual** del proyecto frontend. Aplica a:
 - Variables CSS y sistema de colores
-- Tipografía y escala tipográfica
+- TipografÃ­a y escala tipogrÃ¡fica
 - Espaciado, layout y grid
 - Componentes visuales (cards, botones, badges, etc.)
 - Dark mode y transiciones
@@ -16,54 +16,67 @@ Este agente rige **todo el código CSS/SCSS/HTML visual** del proyecto frontend.
 - Animaciones y micro-interacciones
 - Accesibilidad visual
 
-**No cubre**: Lógica TypeScript, arquitectura Angular, gestión de estado (ver `AGENTS.md`). Patrón de listados admin: ver `AGENTS-DATA-LIST.md`.
+**No cubre**: LÃ³gica TypeScript, arquitectura Angular, gestiÃ³n de estado (ver `AGENTS.md`). PatrÃ³n de listados admin: ver `AGENTS-DATA-LIST.md`.
 
 ---
 
-## 1.1 Tokens — Tabla y toolbar admin
+## 1.1 Tokens â€” Tabla y toolbar admin
 
-| Área | Variables / clases |
+| Ãrea | Variables / clases |
 |------|-------------------|
 | Tabla | `--dt-surface`, `--dt-accent`, `--dt-border`, `--dt-row-hover` en `data-table.scss` |
-| Búsqueda | Focus: `border-color: var(--afer-secondary-absolute)` + ring en `search-input.scss` |
-| Toolbar | `admin-list-toolbar` — search `flex: 1` en desktop (`--full`) |
-| Filtros | `table-filter-select` + slot `[filters]` con `align-items: center` |
+| BÃºsqueda | Focus: `border-color: var(--afer-secondary-absolute)` + ring + `padding-left >= 46px` en `search-input.scss` |
+| Toolbar | `admin-list-toolbar` con 3 zonas: `__search`, `__filters`, `__clear-slot` |
+| Filtros | `table-filter-select` con estado activo visible (label + dot + borde/fondo) |
 | Botones cabecera | `admin-btn`, `admin-btn--primary`, `admin-btn--secondary` |
+
+
+## 1.2 Reglas obligatorias â€” Toolbar admin
+
+- Layout desktop: 3 columnas centradas (`search | filtros | quitar filtros`).
+- Layout tablet/mobile: apilar en 1 columna sin huecos cuando no existan filtros activos.
+- Placeholder de bÃºsqueda del toolbar admin: `Buscar por nombre`.
+- El icono de lupa no puede solaparse con el texto del input.
+- En dark mode, el estado activo de filtros debe reforzar contraste con:
+  - dot visible,
+  - label activo,
+  - borde/fondo activo del select,
+  - borde del toolbar cuando `hasActiveFilters` es true.
 
 ---
 
 ## 2. Sistema de Colores
 
-### 2.1 Variables CSS — Modo Claro (`[data-theme='light']`)
+### 2.1 Variables CSS â€” Modo Claro (`[data-theme='light']`)
 
 | Variable | Valor | Uso |
 |----------|-------|-----|
 | `--afer-primary` | `#ef7e26` | Botones principales, enlaces, elementos destacados |
-| `--afer-secondary` | `#006e9e` | Botones secundarios, badges de categoría, acentos |
+| `--afer-secondary` | `#006e9e` | Botones secundarios, badges de categorÃ­a, acentos |
 | `--afer-corporate` | `#d43b00` | Identidad corporativa, logos, detalles institucionales |
-| `--afer-accent` | `#f5d020` | Alertas, insignias, llamadas de atención |
-| `--afer-background` | `#f2f2f2` | Fondo principal de la página |
-| `--afer-surface` | `#ffffff` | Tarjetas, modales, menús desplegables |
-| `--afer-text-primary` | `#2a2e35` | Títulos, cuerpo de texto |
-| `--afer-text-secondary` | `#5a6169` | Subtítulos, descripciones, metadatos |
+| `--afer-accent` | `#f5d020` | Alertas, insignias, llamadas de atenciÃ³n |
+| `--afer-background` | `#f2f2f2` | Fondo principal de la pÃ¡gina |
+| `--afer-surface` | `#ffffff` | Tarjetas, modales, menÃºs desplegables |
+| `--afer-text-primary` | `#2a2e35` | TÃ­tulos, cuerpo de texto |
+| `--afer-text-secondary` | `#5a6169` | SubtÃ­tulos, descripciones, metadatos |
 | `--afer-text-muted` | `#8a9099` | Placeholders, estados deshabilitados |
 | `--afer-shadow` | `rgba(0, 0, 0, 0.08)` | Sombras base para superficies |
 | `--afer-hover` | `rgba(0, 0, 0, 0.08)` | Efectos hover |
 
-### 2.2 Variables CSS — Modo Oscuro (`[data-theme='dark']`)
+### 2.2 Variables CSS â€” Modo Oscuro (`[data-theme='dark']`)
 
 | Variable | Valor | Uso |
 |----------|-------|-----|
-| `--afer-primary` | `#ffffff` | Máximo contraste sobre fondo oscuro |
+| `--afer-primary` | `#ffffff` | MÃ¡ximo contraste sobre fondo oscuro |
 | `--afer-secondary` | `#ef7e26` | Color secundario (toma el naranja principal) |
 | `--afer-corporate` | `#d43b00` | Se mantiene para identidad corporativa |
 | `--afer-accent` | `#f5d020` | Acento brillante sobre fondo oscuro |
 | `--afer-background` | `#1a1f26` | Fondo oscuro principal |
-| `--afer-surface` | `#242a31` | Superficies de tarjetas (ligeramente más claro) |
+| `--afer-surface` | `#242a31` | Superficies de tarjetas (ligeramente mÃ¡s claro) |
 | `--afer-text-primary` | `#e8eaed` | Texto principal claro |
 | `--afer-text-secondary` | `#b8bdc3` | Texto secundario gris claro |
 | `--afer-text-muted` | `#878d95` | Texto silenciado |
-| `--afer-shadow` | `rgba(0, 0, 0, 0.3)` | Sombras más intensas en modo oscuro |
+| `--afer-shadow` | `rgba(0, 0, 0, 0.3)` | Sombras mÃ¡s intensas en modo oscuro |
 | `--afer-hover` | `rgba(255, 255, 255, 0.1)` | Efectos hover en modo oscuro |
 
 ### 2.3 Versiones Absolute (siempre fijas)
@@ -83,7 +96,7 @@ Este agente rige **todo el código CSS/SCSS/HTML visual** del proyecto frontend.
 ```
 
 > [!NOTE]
-> Usa las variables `-absolute` cuando necesites un color que NO cambie con el tema. Por ejemplo, el botón de agregar al carrito siempre debe mantener su tono azul de marca en modo claro u oscuro.
+> Usa las variables `-absolute` cuando necesites un color que NO cambie con el tema. Por ejemplo, el botÃ³n de agregar al carrito siempre debe mantener su tono azul de marca en modo claro u oscuro.
 
 ### 2.4 Color mix para transparencias
 
@@ -98,34 +111,34 @@ box-shadow: 0 8px 20px color-mix(in srgb, var(--afer-secondary-absolute), transp
 
 ---
 
-## 3. Tipografía
+## 3. TipografÃ­a
 
 ### 3.1 Familia
 - **Fuente principal**: `Inter` (Google Fonts)
-- **Monospace**: Para SKU y datos técnicos
+- **Monospace**: Para SKU y datos tÃ©cnicos
 
-### 3.2 Escala tipográfica
+### 3.2 Escala tipogrÃ¡fica
 
-| Elemento | Tamaño | Peso | Uso |
+| Elemento | TamaÃ±o | Peso | Uso |
 |----------|--------|------|-----|
-| H1 / Hero | `clamp(1.5rem, 4vw, 2.5rem)` | 900 | Títulos principales |
-| H2 / Section | `clamp(1.25rem, 4vw, 1.75rem)` | 900 | Títulos de sección |
-| H3 / Card title | `clamp(0.9rem, 2vw, 1rem)` | 800 | Títulos de tarjeta |
+| H1 / Hero | `clamp(1.5rem, 4vw, 2.5rem)` | 900 | TÃ­tulos principales |
+| H2 / Section | `clamp(1.25rem, 4vw, 1.75rem)` | 900 | TÃ­tulos de secciÃ³n |
+| H3 / Card title | `clamp(0.9rem, 2vw, 1rem)` | 800 | TÃ­tulos de tarjeta |
 | Body | `0.95rem - 1rem` | 400-600 | Texto cuerpo |
 | Small / Meta | `0.75rem - 0.85rem` | 600-700 | Metadatos, badges |
-| Micro | `0.55rem - 0.7rem` | 700-800 | SKU, tags pequeños |
+| Micro | `0.55rem - 0.7rem` | 700-800 | SKU, tags pequeÃ±os |
 
-### 3.3 Reglas tipográficas
-- **Títulos de sección**: `text-transform: uppercase`, `letter-spacing: -1px`
+### 3.3 Reglas tipogrÃ¡ficas
+- **TÃ­tulos de secciÃ³n**: `text-transform: uppercase`, `letter-spacing: -1px`
 - **Badges y tags**: `text-transform: uppercase`, `letter-spacing: 0.5px - 1px`, `font-weight: 800`
 - **Precios**: `font-weight: 900`, `letter-spacing: -0.5px`
 - **Body text**: `line-height: 1.4 - 1.6`
-- **Títulos compactos**: `line-height: 1.2`
+- **TÃ­tulos compactos**: `line-height: 1.2`
 
 ### 3.4 Truncamiento de texto
 
 ```scss
-// Truncamiento multi-línea estándar
+// Truncamiento multi-lÃ­nea estÃ¡ndar
 display: -webkit-box;
 -webkit-line-clamp: 2; // o 3
 -webkit-box-orient: vertical;
@@ -140,17 +153,17 @@ overflow: hidden;
 
 | Token | Valor | Uso |
 |-------|-------|-----|
-| xs | `4px` | Gap mínimo, padding micro |
-| sm | `6px - 8px` | Gap entre elementos pequeños |
-| md | `12px - 16px` | Padding de tarjetas, gap estándar |
+| xs | `4px` | Gap mÃ­nimo, padding micro |
+| sm | `6px - 8px` | Gap entre elementos pequeÃ±os |
+| md | `12px - 16px` | Padding de tarjetas, gap estÃ¡ndar |
 | lg | `20px - 24px` | Gap entre secciones |
-| xl | `40px` | Padding de página |
-| 2xl | `60px+` | Separación de bloques principales |
+| xl | `40px` | Padding de pÃ¡gina |
+| 2xl | `60px+` | SeparaciÃ³n de bloques principales |
 
 ### 4.2 Contenedores
 
 ```scss
-// Contenedor principal de página
+// Contenedor principal de pÃ¡gina
 max-width: 1400px;
 margin: 0 auto;
 padding: 0 1rem;
@@ -164,7 +177,7 @@ margin: 0 auto;
 ### 4.3 Grid patterns
 
 ```scss
-// Grid responsive automático
+// Grid responsive automÃ¡tico
 grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 
 // Breakpoints de grid
@@ -179,10 +192,10 @@ grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 | Elemento | Radio | Uso |
 |----------|-------|-----|
 | Tarjetas grandes | `clamp(12px, 1.5vw, 16px)` | Product cards, brand cards |
-| Botones | `clamp(10px, 1.5vw, 14px) 0` | Botón agregar (asimétrico) |
-| Auth inputs/buttons | `10px 0` | Inputs y botones de auth (asimétrico) |
-| Badges / Pills | `12px` | Badges de marca, categoría |
-| Iconos circulares | `50%` | Avatares, iconos de categoría |
+| Botones | `clamp(10px, 1.5vw, 14px) 0` | BotÃ³n agregar (asimÃ©trico) |
+| Auth inputs/buttons | `10px 0` | Inputs y botones de auth (asimÃ©trico) |
+| Badges / Pills | `12px` | Badges de marca, categorÃ­a |
+| Iconos circulares | `50%` | Avatares, iconos de categorÃ­a |
 | Inputs / Contenedores | `8px - 12px` | Elementos de formulario |
 | Secciones | `0 0 30px 30px` | Bordes inferiores redondeados |
 
@@ -190,7 +203,7 @@ grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 
 ## 6. Sombras
 
-### 6.1 Sombras estándar
+### 6.1 Sombras estÃ¡ndar
 
 ```scss
 // Sombra sutil (hover cards)
@@ -202,45 +215,45 @@ box-shadow: 0 4px 10px color-mix(in srgb, var(--afer-secondary), transparent 80%
 // Sombra elevada (hover botones)
 box-shadow: 0 8px 20px color-mix(in srgb, var(--afer-secondary-absolute), transparent 80%);
 
-// Sombra de sección
+// Sombra de secciÃ³n
 box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
 ```
 
 ### 6.2 Sombras en modo oscuro
 
 ```scss
-// Sombra más intensa necesaria en fondo oscuro
+// Sombra mÃ¡s intensa necesaria en fondo oscuro
 box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
 ```
 
 ---
 
-## 7. Componentes — Patrones y Estilos
+## 7. Componentes â€” Patrones y Estilos
 
 ### 7.1 Product Card (original)
 
 **Estructura**:
 ```
 article.product-card
-├── .product-card__header (brand + SKU)
-├── a.product-card__link
-│   ├── .product-card__visual
-│   │   ├── img.product-card__image
-│   │   └── .product-card__labels
-│   └── .product-card__info
-│       ├── .product-card__tags
-│       ├── h3.product-card__title
-│       └── .product-card__price
-└── .product-card__actions
-    ├── button.product-card__add
-    └── button.product-card__favorite
+â”œâ”€â”€ .product-card__header (brand + SKU)
+â”œâ”€â”€ a.product-card__link
+â”‚   â”œâ”€â”€ .product-card__visual
+â”‚   â”‚   â”œâ”€â”€ img.product-card__image
+â”‚   â”‚   â””â”€â”€ .product-card__labels
+â”‚   â””â”€â”€ .product-card__info
+â”‚       â”œâ”€â”€ .product-card__tags
+â”‚       â”œâ”€â”€ h3.product-card__title
+â”‚       â””â”€â”€ .product-card__price
+â””â”€â”€ .product-card__actions
+    â”œâ”€â”€ button.product-card__add
+    â””â”€â”€ button.product-card__favorite
 ```
 
-**Características clave**:
+**CaracterÃ­sticas clave**:
 - Layout vertical (flex-column)
 - Aspect ratio de imagen: `1.2 / 1`
 - Labels en la parte inferior de la imagen (NUEVO, TENDENCIA, DESTACADO)
-- Botón agregar sólido en modo claro, glass en modo oscuro
+- BotÃ³n agregar sÃ³lido en modo claro, glass en modo oscuro
 - Hover: `border-color: var(--afer-secondary)`, sin shadow en la card
 
 ### 7.2 Product Card V2 (horizontal)
@@ -248,42 +261,42 @@ article.product-card
 **Estructura**:
 ```
 article.product-card
-├── .product-card__left (imagen)
-│   ├── .product-card__badges-top (brand + SKU)
-│   └── .product-card__img-container
-└── .product-card__right (info)
-    ├── .product-card__info-top
-    │   ├── .product-card__status-row (badges)
-    │   ├── .product-card__category
-    │   └── h3.product-card__title
-    └── .product-card__bottom
-        ├── .product-card__price-wrapper
-        └── .product-card__actions
+â”œâ”€â”€ .product-card__left (imagen)
+â”‚   â”œâ”€â”€ .product-card__badges-top (brand + SKU)
+â”‚   â””â”€â”€ .product-card__img-container
+â””â”€â”€ .product-card__right (info)
+    â”œâ”€â”€ .product-card__info-top
+    â”‚   â”œâ”€â”€ .product-card__status-row (badges)
+    â”‚   â”œâ”€â”€ .product-card__category
+    â”‚   â””â”€â”€ h3.product-card__title
+    â””â”€â”€ .product-card__bottom
+        â”œâ”€â”€ .product-card__price-wrapper
+        â””â”€â”€ .product-card__actions
 ```
 
-**Características clave**:
+**CaracterÃ­sticas clave**:
 - Layout horizontal (220px height)
 - Imagen a la izquierda (160px width)
 - Badges de estado arriba de la imagen
 - Altura fija en desktop, auto en responsive
-- Mismo patrón de botón glass en modo oscuro
+- Mismo patrÃ³n de botÃ³n glass en modo oscuro
 
 ### 7.3 Product Card Mini
 
 **Estructura**:
 ```
 article.product-mini
-├── .product-mini__img-container
-├── .product-mini__info
-│   ├── h3.product-mini__title
-│   └── .product-mini__price
-└── button.btn-quick-add (posicionado absolute)
+â”œâ”€â”€ .product-mini__img-container
+â”œâ”€â”€ .product-mini__info
+â”‚   â”œâ”€â”€ h3.product-mini__title
+â”‚   â””â”€â”€ .product-mini__price
+â””â”€â”€ button.btn-quick-add (posicionado absolute)
 ```
 
-**Características clave**:
+**CaracterÃ­sticas clave**:
 - Layout vertical compacto
 - Aspect ratio de imagen: `1 / 1`
-- Botón quick-add flotante (bottom-right)
+- BotÃ³n quick-add flotante (bottom-right)
 - Min-width: `120px`
 - Usado en carruseles
 
@@ -292,16 +305,16 @@ article.product-mini
 **Estructura**:
 ```
 .brand-card
-├── a.brand-card__link
-│   ├── .brand-card__visual (logo)
-│   │   ├── img.brand-card__image
-│   │   └── .brand-card__badge
-│   └── .brand-card__info
-│       ├── h3.brand-card__name
-│       └── p.brand-card__description
+â”œâ”€â”€ a.brand-card__link
+â”‚   â”œâ”€â”€ .brand-card__visual (logo)
+â”‚   â”‚   â”œâ”€â”€ img.brand-card__image
+â”‚   â”‚   â””â”€â”€ .brand-card__badge
+â”‚   â””â”€â”€ .brand-card__info
+â”‚       â”œâ”€â”€ h3.brand-card__name
+â”‚       â””â”€â”€ p.brand-card__description
 ```
 
-**Características clave**:
+**CaracterÃ­sticas clave**:
 - Aspect ratio de visual: `1.5 / 1`
 - Fondo siempre blanco para logos (`#ffffff`)
 - Mismo border-radius que product-card
@@ -311,13 +324,13 @@ article.product-mini
 **Estructura**:
 ```
 .category-card
-├── .category-card__icon-wrapper
-│   └── img.category-card__icon
-├── span.category-card__name
-└── .category-card__indicator (oculto)
+â”œâ”€â”€ .category-card__icon-wrapper
+â”‚   â””â”€â”€ img.category-card__icon
+â”œâ”€â”€ span.category-card__name
+â””â”€â”€ .category-card__indicator (oculto)
 ```
 
-**Características clave**:
+**CaracterÃ­sticas clave**:
 - Icono circular de 64px
 - Border-bottom de 4px para estado activo
 - Padding: `16px 20px`
@@ -325,7 +338,7 @@ article.product-mini
 
 ### 7.6 Hero Slider
 
-**Características**:
+**CaracterÃ­sticas**:
 - Altura: `clamp(260px, 38vw, 680px)`
 - Items activos: 75% width, scale(1)
 - Items prev/next: 70% width, opacity 0.5, blur
@@ -337,13 +350,13 @@ article.product-mini
 **Estructura**:
 ```
 section.product-section
-├── .product-section__header
-│   ├── h2.product-section__title
-│   ├── .product-section__accent
-│   └── a.product-section__link
-├── .product-section__container
-│   └── .product-section__content (--grid | --carousel | --original)
-└── .product-section__footer
+â”œâ”€â”€ .product-section__header
+â”‚   â”œâ”€â”€ h2.product-section__title
+â”‚   â”œâ”€â”€ .product-section__accent
+â”‚   â””â”€â”€ a.product-section__link
+â”œâ”€â”€ .product-section__container
+â”‚   â””â”€â”€ .product-section__content (--grid | --carousel | --original)
+â””â”€â”€ .product-section__footer
 ```
 
 **Layouts soportados**:
@@ -352,21 +365,21 @@ section.product-section
 - `original`: Grid compacto de 3 o 4 columnas tradicionales (minmax 250px).
 
 ### 7.8 Featured Product Grid (Especial Ecommerce)
-- Fondo de sección: `--afer-surface`
-- Border-radius inferior de la sección completa: `0 0 30px 30px`
+- Fondo de secciÃ³n: `--afer-surface`
+- Border-radius inferior de la secciÃ³n completa: `0 0 30px 30px`
 - Utiliza tarjetas `product-card-v2` internamente.
 - Grid estructurado a dos columnas en desktop: `minmax(350px, 1fr)`
 
 ### 7.9 Brand Carousel Section (Especial Ecommerce)
-- Todas las tarjetas de marcas en carrusel poseen tamaño fijo rígido: `170x140px` en desktop, y `140x115px` en mobile.
-- Logotipo de marca con `aspect-ratio: 1.5 / 1`, truncado estricto a 1 sola línea del título y descripción del fabricante.
-- Header con patrón accent line sólida al igual que el listado de productos.
+- Todas las tarjetas de marcas en carrusel poseen tamaÃ±o fijo rÃ­gido: `170x140px` en desktop, y `140x115px` en mobile.
+- Logotipo de marca con `aspect-ratio: 1.5 / 1`, truncado estricto a 1 sola lÃ­nea del tÃ­tulo y descripciÃ³n del fabricante.
+- Header con patrÃ³n accent line sÃ³lida al igual que el listado de productos.
 
 ---
 
 ## 8. Sistema de Badges y Tags
 
-### 8.1 Badge de Marca / Categoría
+### 8.1 Badge de Marca / CategorÃ­a
 
 ```scss
 color: var(--afer-secondary);
@@ -408,7 +421,7 @@ border: 1px solid color-mix(in srgb, var(--afer-secondary), transparent 80%);
 
 ## 9. Botones
 
-### 9.1 Botón Agregar (primario)
+### 9.1 BotÃ³n Agregar (primario)
 
 ```scss
 background: var(--afer-secondary-absolute);
@@ -431,7 +444,7 @@ letter-spacing: 0.5px;
 }
 ```
 
-### 9.2 Modo oscuro — Botón Glass
+### 9.2 Modo oscuro â€” BotÃ³n Glass
 
 ```scss
 :host-context([data-theme='dark']) & {
@@ -448,7 +461,7 @@ letter-spacing: 0.5px;
 }
 ```
 
-### 9.3 Botón Favorito
+### 9.3 BotÃ³n Favorito
 
 ```scss
 background: color-mix(in srgb, var(--afer-secondary), transparent 90%);
@@ -464,7 +477,7 @@ padding: 6px;
 }
 ```
 
-### 9.4 Botón Quick-Add (mini card - Especial Ecommerce)
+### 9.4 BotÃ³n Quick-Add (mini card - Especial Ecommerce)
 
 ```scss
 position: absolute;
@@ -484,7 +497,7 @@ box-shadow: 0 2px 6px color-mix(in srgb, var(--afer-secondary), transparent 85%)
 
 ---
 
-## 10. Auth — Inputs y Botones
+## 10. Auth â€” Inputs y Botones
 
 ### 10.1 Auth Input
 
@@ -590,32 +603,32 @@ transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 
 ---
 
-## 11. Dark Mode — Reglas y Patrones
+## 11. Dark Mode â€” Reglas y Patrones
 
 ### 11.1 Principio fundamental
 
-**NO hay transiciones al cambiar de tema**. Los cambios de color son instantáneos. Solo se animan interacciones de usuario (hover, click, etc.).
+**NO hay transiciones al cambiar de tema**. Los cambios de color son instantÃ¡neos. Solo se animan interacciones de usuario (hover, click, etc.).
 
 ```scss
 // CORRECTO: Solo animar interacciones
 transition: transform 0.3s ease, box-shadow 0.3s ease;
 
 // INCORRECTO: No animar cambio de tema
-transition: all 0.3s ease; // Esto animaría el cambio de tema
+transition: all 0.3s ease; // Esto animarÃ­a el cambio de tema
 ```
 
-### 11.2 Patrón de implementación
+### 11.2 PatrÃ³n de implementaciÃ³n
 
 ```scss
 :host-context([data-theme='dark']) .element {
-  // Estilos específicos para modo oscuro
+  // Estilos especÃ­ficos para modo oscuro
 }
 ```
 
-### 11.3 Patrón de Adaptación en Superficies, Bordes y Sombras
+### 11.3 PatrÃ³n de AdaptaciÃ³n en Superficies, Bordes y Sombras
 - **Superficies**: En modo claro usa `var(--afer-surface)`. En modo oscuro incrementa el contraste sutilmente usando `color-mix(in srgb, var(--afer-surface), #000 15%)`.
 - **Bordes**: Reemplaza el borde gris sutil del modo claro por `color-mix(in srgb, var(--afer-hover), transparent 30%)` en modo oscuro.
-- **Sombras**: Las sombras en modo oscuro requieren mayor intensidad y profundidad física: `box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3)`.
+- **Sombras**: Las sombras en modo oscuro requieren mayor intensidad y profundidad fÃ­sica: `box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3)`.
 
 ### 11.4 Filtros de Imagen (Especial Ecommerce)
 - **Modo Claro**: `filter: drop-shadow(0 4px 18px rgb(0 0 0 / 0.1))`
@@ -629,8 +642,8 @@ transition: all 0.3s ease; // Esto animaría el cambio de tema
 
 | Breakpoint | Valor | Uso |
 |------------|-------|-----|
-| Mobile | `480px` | Ajustes finos de móvil |
-| Mobile large | `600px` | Galería, lightbox |
+| Mobile | `480px` | Ajustes finos de mÃ³vil |
+| Mobile large | `600px` | GalerÃ­a, lightbox |
 | Tablet | `768px` | Cambio de layout principal |
 | Tablet large | `900px` | Product detail grid |
 | Desktop small | `992px` | Grid de 3 columnas |
@@ -657,15 +670,15 @@ border-radius: clamp(12px, 1.5vw, 16px);
 padding: clamp(8px, 1.5vw, 10px) 16px;
 ```
 
-### 12.3 Patrón Mobile para Tarjetas (Especial Ecommerce)
-En pantallas ultra-pequeñas (móvil `<480px`), la estructura interna debe compactarse para maximizar el área visible de venta:
+### 12.3 PatrÃ³n Mobile para Tarjetas (Especial Ecommerce)
+En pantallas ultra-pequeÃ±as (mÃ³vil `<480px`), la estructura interna debe compactarse para maximizar el Ã¡rea visible de venta:
 ```scss
 @media (max-width: 480px) {
   &__header { padding: 8px 12px 4px; }
   &__info { padding: 10px 12px; }
   &__actions { padding: 4px 12px 10px; }
   
-  font-size: 0.7rem; // Escala tipográfica adaptada
+  font-size: 0.7rem; // Escala tipogrÃ¡fica adaptada
   svg { width: 14px; height: 14px; } // Iconos ajustados a 14px
 }
 ```
@@ -676,24 +689,24 @@ En pantallas ultra-pequeñas (móvil `<480px`), la estructura interna debe compa
 
 ### 13.1 Easing functions
 ```scss
-cubic-bezier(0.4, 0, 0.2, 1) // Estándar para micro-interacciones
-cubic-bezier(0.2, 0.8, 0.2, 1) // Slider (curva elástica de desaceleración)
+cubic-bezier(0.4, 0, 0.2, 1) // EstÃ¡ndar para micro-interacciones
+cubic-bezier(0.2, 0.8, 0.2, 1) // Slider (curva elÃ¡stica de desaceleraciÃ³n)
 ```
 
 ### 13.2 Duraciones
 
-| Duración | Uso |
+| DuraciÃ³n | Uso |
 |----------|-----|
 | `0.15s - 0.2s` | Micro-interacciones, focus states |
 | `0.2s - 0.3s` | Hover states, border changes |
-| `0.3s` | Transformaciones estándar (elevación) |
+| `0.3s` | Transformaciones estÃ¡ndar (elevaciÃ³n) |
 | `0.4s - 0.5s` | Image zoom, transformaciones grandes |
 | `0.7s` | Slider transitions |
 
 ### 13.3 Patrones de hover
 - **Card Hover**: `border-color: var(--afer-secondary)`. **NO** agregar sombras adicionales que incrementen ruido en grillas densas.
 - **Imagen Hover**: `transform: scale(1.08)` de zoom sutil.
-- **Icono Hover (Especial Ecommerce)**: `transform: rotate(-10deg) scale(1.1)` para aportar dinamismo y juego físico al usuario.
+- **Icono Hover (Especial Ecommerce)**: `transform: rotate(-10deg) scale(1.1)` para aportar dinamismo y juego fÃ­sico al usuario.
 
 ### 13.4 Active states
 ```scss
@@ -708,7 +721,7 @@ cubic-bezier(0.2, 0.8, 0.2, 1) // Slider (curva elástica de desaceleración)
 transition: all 0.3s ease;
 transition: background 0.3s ease, color 0.3s ease;
 
-// HACER: Solo animar interacciones específicas
+// HACER: Solo animar interacciones especÃ­ficas
 transition: transform 0.3s ease, box-shadow 0.3s ease;
 ```
 
@@ -725,14 +738,14 @@ transition: transform 0.3s ease, box-shadow 0.3s ease;
 ```
 
 ### 14.2 Touch targets
-- **Mínimo físico**: `44px` en móviles para botones interactivos.
-- **Estándar general**: `52px` en escritorios.
-- **Botones de control de cantidad (Especial Ecommerce)**: `40px` en desktop y un mínimo de `32px` en mobile.
+- **MÃ­nimo fÃ­sico**: `44px` en mÃ³viles para botones interactivos.
+- **EstÃ¡ndar general**: `52px` en escritorios.
+- **Botones de control de cantidad (Especial Ecommerce)**: `40px` en desktop y un mÃ­nimo de `32px` en mobile.
 
 ### 14.3 Aria labels
 ```html
 <button aria-label="Agregar a favoritos">...</button>
-<button aria-label="Añadir al carrito">...</button>
+<button aria-label="AÃ±adir al carrito">...</button>
 ```
 
 ### 14.4 Safe areas
@@ -745,25 +758,25 @@ padding: max(1rem, env(safe-area-inset-left))
 
 ---
 
-## 15. Home Page — Estructura y Flujo (Especial Ecommerce)
+## 15. Home Page â€” Estructura y Flujo (Especial Ecommerce)
 
-### 15.1 Orden Canónico de Secciones
-El layout de la Home Page principal debe respetar estrictamente la jerarquía visual de ventas para optimizar la conversión:
+### 15.1 Orden CanÃ³nico de Secciones
+El layout de la Home Page principal debe respetar estrictamente la jerarquÃ­a visual de ventas para optimizar la conversiÃ³n:
 1. **Hero Slider** (`app-hero-slider`): Banners principales interactivos.
-2. **Category Carousel** (`app-category-carousel`): Iconos circulares de acceso rápido.
+2. **Category Carousel** (`app-category-carousel`): Iconos circulares de acceso rÃ¡pido.
 3. **Featured Product Grid** (`app-featured-product-grid`): Ofertas de muy alta relevancia (tarjetas V2).
 4. **Productos Destacados** (`app-product-section`): Carrusel horizontal fluido de tarjetas mini.
 5. **Tendencias** (`app-product-section`): Grilla interactiva de 8 tarjetas V2 horizontales.
-6. **Novedades** (`app-product-section`): Grilla compacta de 8 tarjetas verticales clásicas.
+6. **Novedades** (`app-product-section`): Grilla compacta de 8 tarjetas verticales clÃ¡sicas.
 7. **Brands Section** (`app-brand-section`): Carrusel con logos homologados de fabricantes.
 
-### 15.2 Espaciado de Sección a Sección
-Para evitar saltos visuales incómodos, la separación entre bloques es totalmente limpia:
+### 15.2 Espaciado de SecciÃ³n a SecciÃ³n
+Para evitar saltos visuales incÃ³modos, la separaciÃ³n entre bloques es totalmente limpia:
 - El contenedor principal de la home (`home-main-container`) posee un `gap: 0` estricto.
-- Cada sección independiente añade un padding interno estándar de `2.5rem 1rem` vertical para manejar los espacios homogéneamente.
+- Cada secciÃ³n independiente aÃ±ade un padding interno estÃ¡ndar de `2.5rem 1rem` vertical para manejar los espacios homogÃ©neamente.
 
-### 15.3 Card style por sección
-| Sección | Layout | Card Style | Cantidad recomendada |
+### 15.3 Card style por secciÃ³n
+| SecciÃ³n | Layout | Card Style | Cantidad recomendada |
 |---------|--------|------------|----------------------|
 | Featured Grid | Grid | v2 (horizontal) | 6 |
 | Destacados | Carousel | mini | 20 |
@@ -772,38 +785,38 @@ Para evitar saltos visuales incómodos, la separación entre bloques es totalmen
 
 ---
 
-## 16. Product Detail — Layout (Especial Ecommerce)
+## 16. Product Detail â€” Layout (Especial Ecommerce)
 
 ### 16.1 Estructura Visual
 ```
 .product-detail
-├── .product-detail__top (grid responsive 2 columnas en desktop)
-│   ├── .product-gallery (Columna Izquierda - Galería)
-│   │   ├── .product-gallery__main (Visualizador principal)
-│   │   └── .product-gallery__thumbnails (Miniaturas alineadas abajo)
-│   └── .product-info (Columna Derecha - Información)
-│       ├── .product-info__header (Categorías, badges de marca)
-│       ├── .product-title (Nombre del producto)
-│       ├── .product-pricing (Precios con peso tipográfico 900)
-│       └── .product-actions (Selector cantidad, agregar carrito, favoritos)
-└── .product-detail__bottom
-    └── .product-detail__tabs (Tabs navegables: Descripción, Especificaciones Técnicas)
+â”œâ”€â”€ .product-detail__top (grid responsive 2 columnas en desktop)
+â”‚   â”œâ”€â”€ .product-gallery (Columna Izquierda - GalerÃ­a)
+â”‚   â”‚   â”œâ”€â”€ .product-gallery__main (Visualizador principal)
+â”‚   â”‚   â””â”€â”€ .product-gallery__thumbnails (Miniaturas alineadas abajo)
+â”‚   â””â”€â”€ .product-info (Columna Derecha - InformaciÃ³n)
+â”‚       â”œâ”€â”€ .product-info__header (CategorÃ­as, badges de marca)
+â”‚       â”œâ”€â”€ .product-title (Nombre del producto)
+â”‚       â”œâ”€â”€ .product-pricing (Precios con peso tipogrÃ¡fico 900)
+â”‚       â””â”€â”€ .product-actions (Selector cantidad, agregar carrito, favoritos)
+â””â”€â”€ .product-detail__bottom
+    â””â”€â”€ .product-detail__tabs (Tabs navegables: DescripciÃ³n, Especificaciones TÃ©cnicas)
 ```
 
-### 16.2 Galería
+### 16.2 GalerÃ­a
 - Miniaturas posicionadas horizontalmente debajo del visor principal.
-- Visor con flechas circulares de navegación superpuestas.
+- Visor con flechas circulares de navegaciÃ³n superpuestas.
 - Lightbox a pantalla completa con centrado y safe-area paddings activos en mobile.
 
 ### 16.3 Acciones
-- **Controles interactivos**: Selector de cantidad interactivo + botón de agregar al carrito + botón de favoritos en una sola fila.
-- **Patrón responsive**: En móviles, la fila se comporta de forma elástica (`flex-wrap nowrap` con gap reducido y `overflow-x hidden`) para evitar desbordes y colisiones.
+- **Controles interactivos**: Selector de cantidad interactivo + botÃ³n de agregar al carrito + botÃ³n de favoritos en una sola fila.
+- **PatrÃ³n responsive**: En mÃ³viles, la fila se comporta de forma elÃ¡stica (`flex-wrap nowrap` con gap reducido y `overflow-x hidden`) para evitar desbordes y colisiones.
 
 ---
 
 ## 17. Skeleton / Loading States
 
-### 17.1 Patrón de uso
+### 17.1 PatrÃ³n de uso
 ```html
 <skeleton-card [count]="6" />
 ```
@@ -822,7 +835,7 @@ animation: shimmer 1.5s infinite;
 
 ---
 
-## 18. Z-index — Escala
+## 18. Z-index â€” Escala
 
 | Valor | Uso |
 |-------|-----|
@@ -836,61 +849,61 @@ animation: shimmer 1.5s infinite;
 
 ## 19. Anti-patrones (NO HACER)
 
-- ❌ **Colores**: No utilizar colores hardcodeados (excepto blanco/negro puro de contraste). Toda superficie y texto debe heredar de `--afer-*`.
-- ❌ **Transiciones**: Prohibido usar `transition: all` o animar propiedades de color en cambio de tema (provoca parpadeos).
-- ❌ **Pseudo-elementos**: No emplear `::before` o `::after` con fines meramente decorativos abstractos (líneas de adorno flotantes, círculos difuminados de fondo).
-- ❌ **Diseño Visual**: Mantener el diseño limpio y profesional, sin degradados exagerados en fondos ni elementos flotantes de relleno. Debe sentirse hecho a mano y premium.
-- ❌ **Layout**: No usar anchos fijos sin responsive. No utilizar `!important` a menos que sea una clase utilitaria estrictamente global (como `.hide-mobile`).
-- ❌ **Componentes**: No mezclar o duplicar estilos de diferentes cards (ej: intentar forzar estilos de `product-card-mini` en una `product-card` normal).
+- âŒ **Colores**: No utilizar colores hardcodeados (excepto blanco/negro puro de contraste). Toda superficie y texto debe heredar de `--afer-*`.
+- âŒ **Transiciones**: Prohibido usar `transition: all` o animar propiedades de color en cambio de tema (provoca parpadeos).
+- âŒ **Pseudo-elementos**: No emplear `::before` o `::after` con fines meramente decorativos abstractos (lÃ­neas de adorno flotantes, cÃ­rculos difuminados de fondo).
+- âŒ **DiseÃ±o Visual**: Mantener el diseÃ±o limpio y profesional, sin degradados exagerados en fondos ni elementos flotantes de relleno. Debe sentirse hecho a mano y premium.
+- âŒ **Layout**: No usar anchos fijos sin responsive. No utilizar `!important` a menos que sea una clase utilitaria estrictamente global (como `.hide-mobile`).
+- âŒ **Componentes**: No mezclar o duplicar estilos de diferentes cards (ej: intentar forzar estilos de `product-card-mini` en una `product-card` normal).
 
 ---
 
-## 20. Referencia Rápida — Valores Comunes
+## 20. Referencia RÃ¡pida â€” Valores Comunes
 
 | Propiedad | Valor | Contexto |
 |-----------|-------|----------|
 | Border card | `1px solid rgba(128, 128, 128, 0.15)` | Todas las cards |
 | Hover border | `var(--afer-secondary)` | Cards interactivas |
 | Card radius | `clamp(12px, 1.5vw, 16px)` | Product, brand cards |
-| Badge radius | `12px` | Pills de marca/categoría |
+| Badge radius | `12px` | Pills de marca/categorÃ­a |
 | Button radius | `clamp(10px, 1.5vw, 14px) 0` | Agregar al carrito |
-| Auth input radius | `10px 0` (asimétrico) | Inputs de login, register, forgot-password |
-| Auth button radius | `10px 0` (asimétrico) | Botones submit de auth |
-| Font weight bold | `800 - 900` | Títulos, badges, precios |
+| Auth input radius | `10px 0` (asimÃ©trico) | Inputs de login, register, forgot-password |
+| Auth button radius | `10px 0` (asimÃ©trico) | Botones submit de auth |
+| Font weight bold | `800 - 900` | TÃ­tulos, badges, precios |
 | Font weight normal | `400 - 600` | Body text |
-| Gap estándar | `12px - 16px` | Entre elementos de card |
+| Gap estÃ¡ndar | `12px - 16px` | Entre elementos de card |
 | Padding card | `12px 16px` | Info sections de cards |
 | Image aspect | `1.2 / 1` | Product card original |
 | Image aspect | `1 / 1` | Product card mini |
-| Hover transform | `translateY(-3px)` | Elevación estándar |
+| Hover transform | `translateY(-3px)` | ElevaciÃ³n estÃ¡ndar |
 | Hover scale | `scale(1.08)` | Zoom de imagen |
 | Active scale | `scale(0.98)` | Feedback de click |
 
 ---
 
-## 21. Checklist de Implementación
+## 21. Checklist de ImplementaciÃ³n
 
 ### Antes de crear un nuevo componente visual:
-- [ ] ¿Existe un componente similar que pueda reutilizar?
-- [ ] ¿Estoy usando las variables CSS correctas?
-- [ ] ¿El componente funciona en modo claro y oscuro?
-- [ ] ¿Tiene responsive design para todos los breakpoints?
-- [ ] ¿Los focus states son visibles?
-- [ ] ¿Los touch targets son >= 44px en mobile?
-- [ ] ¿Estoy siguiendo la convención BEM?
-- [ ] ¿Las transiciones NO animan el cambio de tema?
-- [ ] ¿Los colores usan variables, no hardcodeados?
-- [ ] ¿El componente tiene skeleton loading state?
+- [ ] Â¿Existe un componente similar que pueda reutilizar?
+- [ ] Â¿Estoy usando las variables CSS correctas?
+- [ ] Â¿El componente funciona en modo claro y oscuro?
+- [ ] Â¿Tiene responsive design para todos los breakpoints?
+- [ ] Â¿Los focus states son visibles?
+- [ ] Â¿Los touch targets son >= 44px en mobile?
+- [ ] Â¿Estoy siguiendo la convenciÃ³n BEM?
+- [ ] Â¿Las transiciones NO animan el cambio de tema?
+- [ ] Â¿Los colores usan variables, no hardcodeados?
+- [ ] Â¿El componente tiene skeleton loading state?
 
 ### Antes de modificar un componente existente:
-- [ ] ¿El cambio es consistente con el sistema de diseño?
-- [ ] ¿Se mantiene la funcionalidad en ambos temas?
-- [ ] ¿Se mantiene el responsive design?
-- [ ] ¿No se rompen los hover/active states existentes?
+- [ ] Â¿El cambio es consistente con el sistema de diseÃ±o?
+- [ ] Â¿Se mantiene la funcionalidad en ambos temas?
+- [ ] Â¿Se mantiene el responsive design?
+- [ ] Â¿No se rompen los hover/active states existentes?
 
 ---
 
-## 22. Naming Conventions — CSS & BEM
+## 22. Naming Conventions â€” CSS & BEM
 
 ### 22.1 BEM modificado
 - **Bloque (Block)**: Representa el contenedor principal del componente. Se escribe en kebab-case.
@@ -902,7 +915,7 @@ animation: shimmer 1.5s infinite;
   .product-card__header { }
   .product-card__image { }
   ```
-- **Modificador (Modifier)**: Representa un estado o variación del bloque o elemento. Se concatena con doble guion medio (`--`).
+- **Modificador (Modifier)**: Representa un estado o variaciÃ³n del bloque o elemento. Se concatena con doble guion medio (`--`).
   ```scss
   .product-card__favorite--active { }
   .label--new { }
@@ -914,16 +927,16 @@ animation: shimmer 1.5s infinite;
   :host-context([data-theme='dark']) .mi-elemento { }
   ```
 - **Clases utilitarias**: Escribir siempre en kebab-case (`.hide-mobile`, `.text-clamp`).
-- **Estructura de archivos**: Cada componente visual debe seguir la jerarquía estricta:
+- **Estructura de archivos**: Cada componente visual debe seguir la jerarquÃ­a estricta:
   ```
   component-name/
-  ├── component-name.ts
-  ├── component-name.html
-  ├── component-name.scss
-  └── component-name.spec.ts
+  â”œâ”€â”€ component-name.ts
+  â”œâ”€â”€ component-name.html
+  â”œâ”€â”€ component-name.scss
+  â””â”€â”€ component-name.spec.ts
   ```
 
 ---
 
-*Última actualización: Mayo 2026*
-*Este documento es vivo y debe actualizarse con cada cambio significativo al sistema de diseño.*
+*Ãšltima actualizaciÃ³n: Mayo 2026*
+*Este documento es vivo y debe actualizarse con cada cambio significativo al sistema de diseÃ±o.*

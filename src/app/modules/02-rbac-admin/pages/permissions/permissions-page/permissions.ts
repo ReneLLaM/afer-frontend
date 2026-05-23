@@ -12,24 +12,25 @@ import {
   DataTableComponent,
   type TableMeta,
   type SortEvent,
-} from '../../../../shared/components/data-table/data-table';
-import { PaginationComponent } from '../../../../shared/components/pagination/pagination';
-import { Breadcrumb } from '../../../../shared/components/breadcrumb/breadcrumb';
-import { AdminListToolbarComponent } from '../../../../shared/components/admin-list-toolbar/admin-list-toolbar';
-import { TableFilterSelectComponent } from '../../../../shared/components/table-filter-select/table-filter-select';
-import { HasPermissionDirective } from '../../../../shared/directives/has-permission.directive';
-import { AdminPermissionsService } from '../../services/admin-permissions.service';
-import { DialogService } from '../../../../shared/services/dialog.service';
-import { PERMISSIONS, PermissionAction, PermissionModule } from '../../../../core/constants/permissions';
+} from '../../../../../shared/components/data-table/data-table';
+import { PaginationComponent } from '../../../../../shared/components/pagination/pagination';
+import { Breadcrumb } from '../../../../../shared/components/breadcrumb/breadcrumb';
+import { AdminListToolbarComponent } from '../../../../../shared/components/admin-list-toolbar/admin-list-toolbar';
+import { TableFilterSelectComponent } from '../../../../../shared/components/table-filter-select/table-filter-select';
+import { HasPermissionDirective } from '../../../../../shared/directives/has-permission.directive';
+import { AdminPermissionsService } from '../../../services/admin-permissions.service';
+import { DialogService } from '../../../../../shared/services/dialog.service';
+import { PERMISSIONS, PermissionAction, PermissionModule } from '../../../../../core/constants/permissions';
 import {
+  areSameQueryParams,
   buildListQueryPatch,
   readListParams,
   sortDirectionFromOrder,
   toApiOffset,
-} from '../../../../shared/utils/list-query.utils';
-import { toListMeta } from '../../../../shared/models/list-meta.model';
-import { PERMISSION_TABLE_COLUMNS } from '../../../../shared/config/table-columns/permission.columns';
-import type { Permission } from '../../models/admin-permission.model';
+} from '../../../../../shared/utils/list-query.utils';
+import { toListMeta } from '../../../../../shared/models/list-meta.model';
+import { PERMISSION_TABLE_COLUMNS } from '../../../../../shared/config/table-columns/permission.columns';
+import type { Permission } from '../../../interfaces/admin-permission.interface';
 
 const DEFAULT_SORT_BY = 'module';
 const DEFAULT_ORDER: 'ASC' | 'DESC' = 'ASC';
@@ -171,10 +172,16 @@ export class PermissionsPage {
   });
 
   private navigateQuery(patch: Record<string, string | number | null | undefined>): void {
+    const nextQuery = buildListQueryPatch(this.queryParams(), patch);
+    const currentQuery = buildListQueryPatch(this.queryParams(), {});
+
+    if (areSameQueryParams(currentQuery, nextQuery)) return;
+
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: buildListQueryPatch(this.queryParams(), patch),
+      queryParams: nextQuery,
       queryParamsHandling: '',
+      replaceUrl: true,
     });
   }
 

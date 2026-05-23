@@ -1,5 +1,5 @@
-import { Role } from './admin-role.model';
-import { Permission } from './admin-permission.model';
+import { Role } from './admin-role.interface';
+import { Permission } from './admin-permission.interface';
 
 export interface User {
   id: string;

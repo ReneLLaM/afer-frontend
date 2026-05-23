@@ -18,7 +18,7 @@
     @for (breadcrumb of displayBreadcrumbs(); track breadcrumb.url; let last = $last) {
       <li class="breadcrumb__item" [class.breadcrumb__item--active]="last">
         @if (!last) {
-          <a [routerLink]="breadcrumb.url" class="breadcrumb__link">
+          <a [routerLink]="breadcrumb.url" queryParamsHandling="preserve" class="breadcrumb__link">
             {{ breadcrumb.label }}
           </a>
           <span class="breadcrumb__separator">

@@ -14,20 +14,20 @@
       -->
       <colgroup>
         @if (reorderable()) {
-          <col style="width: 44px;" />
+          <col style="width: 44px" />
         }
         @for (col of visibleColumns(); track col.key) {
           <col [style.width]="col.width" [style.min-width]="col.minWidth" />
         }
         @if (hasActionsColumn()) {
-          <col style="width: 130px;" />
+          <col style="width: 130px" />
         }
       </colgroup>
 
       <thead>
         <tr>
           @if (reorderable()) {
-            <th class="col-reorder" style="width: 44px;"></th>
+            <th class="col-reorder" style="width: 44px"></th>
           }
           @for (col of visibleColumns(); track col.key) {
             <th
@@ -46,18 +46,40 @@
                 @if (col.sortable) {
                   <span class="sort-icon" [class.sort-icon--active]="isSorted(col.key)">
                     @if (getSortDirection(col.key) === 'asc') {
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
                         <line x1="12" y1="19" x2="12" y2="5"></line>
                         <polyline points="5 12 12 5 19 12"></polyline>
                       </svg>
                     } @else if (getSortDirection(col.key) === 'desc') {
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <polyline points="19 12 12 19 5 12"></polyline>
                       </svg>
                     } @else {
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sort-icon__default">
-                        <path d="M7 15l5 5 5-5M7 9l5-5 5 5"/>
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="sort-icon__default"
+                      >
+                        <path d="M7 15l5 5 5-5M7 9l5-5 5 5" />
                       </svg>
                     }
                   </span>
@@ -74,14 +96,18 @@
       <tbody>
         @if (isLoading()) {
           <tr>
-            <td [attr.colspan]="columns().length + (hasActionsColumn() ? 1 : 0) + (reorderable() ? 1 : 0)" class="state-cell">
+            <td
+              [attr.colspan]="
+                columns().length + (hasActionsColumn() ? 1 : 0) + (reorderable() ? 1 : 0)
+              "
+              class="state-cell"
+            >
               <div class="loading-state">
                 <div class="spinner"></div>
                 <span>Cargando datos…</span>
               </div>
             </td>
           </tr>
-
         } @else if (hasData()) {
           @for (row of displayData(); track trackRow($index, row)) {
             <tr>
@@ -103,11 +129,11 @@
                       [ngTemplateOutletContext]="{
                         $implicit: getRaw(row, col.key),
                         row: row,
-                        col: col
+                        col: col,
                       }"
                     />
 
-                  <!-- 2. Imagen -->
+                    <!-- 2. Imagen -->
                   } @else if (isImageColumn(col)) {
                     <img
                       [class]="getImageClasses(col)"
@@ -116,7 +142,7 @@
                       loading="lazy"
                     />
 
-                  <!-- 3. Badge / estado -->
+                    <!-- 3. Badge / estado -->
                   } @else if (isBadgeColumn(col)) {
                     <span
                       class="cell-badge"
@@ -125,22 +151,36 @@
                       {{ getBadgeLabel(col, getRaw(row, col.key), row) }}
                     </span>
 
-                  <!-- 4. Boolean (Check/X) -->
+                    <!-- 4. Boolean (Check/X) -->
                   } @else if (isBooleanColumn(col)) {
                     <div class="cell-boolean" [class.cell-boolean--true]="getRaw(row, col.key)">
                       @if (getRaw(row, col.key)) {
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="3"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
                           <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                       } @else {
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="3"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
                           <line x1="18" y1="6" x2="6" y2="18"></line>
                           <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
                       }
                     </div>
 
-                  <!-- 5. Texto plano (default) -->
+                    <!-- 5. Texto plano (default) -->
                   } @else {
                     {{ formatValue(col, getRaw(row, col.key), row) }}
                   }
@@ -161,7 +201,12 @@
                           [title]="action.label"
                           (click)="action.callback(row)"
                         >
-                          <i [class]="action.icon"></i>
+                          <!-- Si el ícono pertenece a Remix Icon (empieza con ri-), se renderiza con <i>, de lo contrario como <mat-icon> -->
+                          @if (isRemixIcon(action.icon)) {
+                            <i [class]="action.icon" aria-hidden="true"></i>
+                          } @else {
+                            <mat-icon>{{ action.icon }}</mat-icon>
+                          }
                         </button>
                       }
                     }
@@ -173,12 +218,23 @@
               }
             </tr>
           }
-
         } @else {
           <tr>
-            <td [attr.colspan]="columns().length + (hasActionsColumn() ? 1 : 0) + (reorderable() ? 1 : 0)" class="state-cell">
+            <td
+              [attr.colspan]="
+                columns().length + (hasActionsColumn() ? 1 : 0) + (reorderable() ? 1 : 0)
+              "
+              class="state-cell"
+            >
               <div class="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="12" y1="8" x2="12" y2="12"></line>
                   <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -196,8 +252,8 @@
     <div class="data-table__footer">
       @if (meta()) {
         <span class="data-table__info">
-          Mostrando <strong>{{ data().length }}</strong>
-          de <strong>{{ meta()!.total }}</strong> registros
+          Mostrando <strong>{{ data().length }}</strong> de
+          <strong>{{ meta()!.total }}</strong> registros
         </span>
       } @else if (hasData()) {
         <span class="data-table__info">

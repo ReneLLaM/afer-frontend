@@ -1,4 +1,4 @@
-import { Permission } from './admin-permission.model';
+import { Permission } from './admin-permission.interface';
 
 export interface Role {
   id: string;

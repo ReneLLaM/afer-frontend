@@ -22,13 +22,14 @@ import { AdminRolesService } from '../../services/admin-roles.service';
 import { DialogService } from '../../../../shared/services/dialog.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions';
 import {
+  areSameQueryParams,
   buildListQueryPatch,
   readListParams,
   sortDirectionFromOrder,
   toApiOffset,
 } from '../../../../shared/utils/list-query.utils';
 import { toListMeta } from '../../../../shared/models/list-meta.model';
-import type { Role, RolesResponse } from '../../models/admin-role.model';
+import type { Role, RolesResponse } from '../../interfaces/admin-role.interface';
 
 const DEFAULT_SORT_BY = 'name';
 const DEFAULT_ORDER: 'ASC' | 'DESC' = 'ASC';
@@ -153,10 +154,16 @@ export class RolesPage {
   });
 
   private navigateQuery(patch: Record<string, string | number | null | undefined>): void {
+    const nextQuery = buildListQueryPatch(this.queryParams(), patch);
+    const currentQuery = buildListQueryPatch(this.queryParams(), {});
+
+    if (areSameQueryParams(currentQuery, nextQuery)) return;
+
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: buildListQueryPatch(this.queryParams(), patch),
+      queryParams: nextQuery,
       queryParamsHandling: '',
+      replaceUrl: true,
     });
   }
 

@@ -1,10 +1,11 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { SearchInputComponent } from '../search-input/search-input';
 
 @Component({
   selector: 'app-admin-list-toolbar',
   standalone: true,
-  imports: [SearchInputComponent],
+  imports: [SearchInputComponent, MatIconModule],
   templateUrl: './admin-list-toolbar.html',
   styleUrl: './admin-list-toolbar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

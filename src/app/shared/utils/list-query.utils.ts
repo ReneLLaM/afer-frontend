@@ -47,6 +47,31 @@ export function buildListQueryPatch(
   return updated;
 }
 
+export function areSameQueryParams(
+  a: Record<string, string | string[] | undefined>,
+  b: Record<string, string | string[] | undefined>,
+): boolean {
+  const normalize = (params: Record<string, string | string[] | undefined>): Record<string, string> => {
+    const normalized: Record<string, string> = {};
+
+    for (const [key, value] of Object.entries(params)) {
+      if (value === null || value === undefined || value === '') continue;
+      normalized[key] = Array.isArray(value) ? value[0] : String(value);
+    }
+
+    return normalized;
+  };
+
+  const left = normalize(a);
+  const right = normalize(b);
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
+
+  if (leftKeys.length !== rightKeys.length) return false;
+
+  return leftKeys.every((key) => right[key] === left[key]);
+}
+
 export function toApiOffset(page: number, limit: number): number {
   return (page - 1) * limit;
 }

@@ -8,14 +8,15 @@ import {
   effect,
   untracked,
 } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 
-export type SearchIconStyle = 'svg' | 'remix';
+export type SearchIconStyle = 'svg' | 'remix' | 'material';
 export type SearchSize = 'md' | 'lg';
 
 @Component({
   selector: 'app-search-input',
   standalone: true,
-  imports: [],
+  imports: [MatIconModule],
   templateUrl: './search-input.html',
   styleUrl: './search-input.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,7 +25,7 @@ export class SearchInputComponent {
   placeholder = input<string>('Buscar...');
   initialValue = input<string>('');
   debounceTime = input<number>(300);
-  icon = input<SearchIconStyle>('remix');
+  icon = input<SearchIconStyle>('svg');
   size = input<SearchSize>('md');
   fullWidth = input<boolean>(false);
 
@@ -36,11 +37,13 @@ export class SearchInputComponent {
   value = computed(() => this.internalValue());
   hasValue = computed(() => this.internalValue().trim().length > 0);
   useRemixIcon = computed(() => this.icon() === 'remix');
+  useMaterialIcon = computed(() => this.icon() === 'material');
 
   constructor() {
     effect(() => {
       const init = this.initialValue();
       untracked(() => {
+        if (this.internalValue() === init) return;
         this.internalValue.set(init);
         this.skipFirst = true;
       });

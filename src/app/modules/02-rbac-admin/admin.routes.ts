@@ -61,13 +61,13 @@ export const adminRoutes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('./pages/permissions/permissions').then(m => m.PermissionsPage),
+            loadComponent: () => import('./pages/permissions/permissions-page/permissions').then(m => m.PermissionsPage),
           },
           {
             path: ':term',
             data: { breadcrumb: 'Detalle' },
             loadComponent: () =>
-              import('./pages/permission-detail/permission-detail').then(m => m.PermissionDetailPage),
+              import('./pages/permissions/permission-detail/permission-detail').then(m => m.PermissionDetailPage),
           },
         ],
       },

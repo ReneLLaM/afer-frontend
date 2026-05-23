@@ -1,23 +1,25 @@
-<div class="admin-list-toolbar">
+<div class="admin-list-toolbar" [class.admin-list-toolbar--has-active]="hasActiveFilters()">
   <app-search-input
     class="admin-list-toolbar__search"
-    [placeholder]="searchPlaceholder()"
+    placeholder="Buscar por nombre"
     [initialValue]="search()"
     [fullWidth]="true"
-    icon="remix"
+    icon="svg"
     (searchChange)="searchChange.emit($event)"
   />
 
-  <div class="admin-list-toolbar__actions">
+  <div class="admin-list-toolbar__filters">
     <ng-content select="[filters]" />
+  </div>
 
+  <div class="admin-list-toolbar__clear-slot">
     @if (hasActiveFilters()) {
       <button
         type="button"
         class="admin-list-toolbar__clear"
         (click)="onClear()"
       >
-        <i class="ri-filter-off-line" aria-hidden="true"></i>
+        <mat-icon aria-hidden="true">delete_sweep</mat-icon>
         <span>Quitar filtros</span>
         @if (filterCount() > 0) {
           <span class="admin-list-toolbar__badge">{{ filterCount() }}</span>

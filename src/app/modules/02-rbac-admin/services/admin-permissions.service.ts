@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Permission, PermissionsResponse } from '../models/admin-permission.model';
+import { Permission, PermissionsResponse } from '../interfaces/admin-permission.interface';
 
 export interface AdminPermissionsQuery {
   limit?: number;

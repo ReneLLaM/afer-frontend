@@ -1,5 +1,5 @@
 import type { TableColumn } from '../../components/data-table/data-table';
-import type { Permission } from '../../../modules/02-rbac-admin/models/admin-permission.model';
+import type { Permission } from '../../../modules/02-rbac-admin/interfaces/admin-permission.interface';
 import { LocaleDatePipe } from '../../pipes/locale-date.pipe';
 import { ModuleLabelPipe } from '../../pipes/module-label.pipe';
 

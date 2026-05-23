@@ -1,53 +1,85 @@
 .admin-list-toolbar {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.65rem 0.75rem;
+  column-gap: 0.85rem;
+  row-gap: 0.65rem;
   margin-bottom: 1rem;
-  padding: 0.75rem;
-  border-radius: 12px;
+  padding: 0.75rem 0.8rem;
+  border-radius: 10px;
   border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 82%);
   background: var(--afer-surface);
 
+  &--has-active {
+    border-color: color-mix(in srgb, var(--afer-secondary-absolute), transparent 72%);
+  }
+
   &__search {
-    flex: 1 1 220px;
+    grid-column: 1;
+    justify-self: center;
+    width: 100%;
+    max-width: 520px;
     min-width: 0;
     display: block;
   }
 
-  &__actions {
+  &__filters {
+    grid-column: 2;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.65rem;
-    flex: 1 1 auto;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  &__clear-slot {
+    grid-column: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 148px;
+  }
+
+  &__clear-slot:empty {
     min-width: 0;
   }
 
   &__clear {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.35rem;
     height: 38px;
+    min-width: 142px;
     padding: 0 0.75rem;
-    border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 78%);
-    border-radius: 10px;
-    background: var(--afer-background);
+    border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 72%);
+    border-radius: 9px;
+    background: var(--afer-surface);
     color: var(--afer-text-secondary);
-    font-size: 0.78rem;
-    font-weight: 600;
+    font-size: 0.74rem;
+    font-weight: 700;
+    line-height: 1;
     cursor: pointer;
     white-space: nowrap;
-    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    transition:
+      border-color 0.12s ease,
+      color 0.12s ease,
+      background-color 0.12s ease;
 
-    i {
-      font-size: 1rem;
+    mat-icon {
+      width: 16px;
+      height: 16px;
+      font-size: 16px;
+      line-height: 16px;
+      color: currentColor;
     }
 
     &:hover {
       border-color: var(--afer-corporate);
       color: var(--afer-corporate);
-      background: color-mix(in srgb, var(--afer-corporate), transparent 92%);
+      background: color-mix(in srgb, var(--afer-corporate), transparent 94%);
     }
   }
 
@@ -55,48 +87,73 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 18px;
-    height: 18px;
+    min-width: 20px;
+    height: 20px;
     padding: 0 5px;
-    border-radius: 9px;
+    border-radius: 999px;
     background: var(--afer-corporate);
     color: #fff;
-    font-size: 0.65rem;
-    font-weight: 700;
+    font-size: 0.66rem;
+    font-weight: 800;
+    line-height: 1;
   }
 }
 
 :host-context([data-theme='dark']) .admin-list-toolbar {
-  border-color: color-mix(in srgb, var(--afer-hover), transparent 55%);
-  background: color-mix(in srgb, var(--afer-surface), var(--afer-background) 40%);
+  border-color: color-mix(in srgb, var(--afer-hover), transparent 50%);
+  background: var(--afer-surface);
+
+  &.admin-list-toolbar--has-active {
+    border-color: color-mix(in srgb, var(--afer-accent-absolute), transparent 30%);
+  }
 
   &__clear {
-    background: color-mix(in srgb, var(--afer-background), transparent 20%);
+    background: var(--afer-surface);
     border-color: color-mix(in srgb, var(--afer-hover), transparent 40%);
 
     &:hover {
-      background: color-mix(in srgb, var(--afer-corporate), transparent 88%);
+      background: color-mix(in srgb, var(--afer-corporate), transparent 90%);
     }
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .admin-list-toolbar {
-    flex-direction: column;
-    align-items: stretch;
+    grid-template-columns: 1fr;
+    justify-items: stretch;
 
     &__search,
-    &__actions {
-      flex: 1 1 100%;
+    &__filters,
+    &__clear-slot {
+      grid-column: 1;
       width: 100%;
+      min-width: 0;
     }
 
-    &__actions {
+    &__search {
+      justify-self: stretch;
+      max-width: none;
+    }
+
+    &__filters {
       justify-content: flex-start;
+    }
+
+    &__clear-slot {
+      justify-content: flex-start;
+    }
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-list-toolbar {
+    &__clear-slot {
+      justify-content: stretch;
     }
 
     &__clear {
       width: 100%;
+      min-width: 0;
       justify-content: center;
     }
   }

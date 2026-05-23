@@ -283,43 +283,49 @@ tbody tr:last-child td {
   max-width: none;
   text-align: center;
 
-  .actions-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
+.actions-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--dt-text-sub);
+  cursor: pointer;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 
-  .action-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--dt-text-sub);
-    cursor: pointer;
-
-    &:hover {
-      background: var(--dt-head-bg);
-      color: var(--dt-text);
-    }
-
-    &.btn-view:hover {
-      background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 88%);
-      color: var(--afer-secondary-absolute);
-    }
-    &.btn-edit:hover {
-      background: color-mix(in srgb, var(--afer-primary), transparent 88%);
-      color: var(--afer-primary);
-    }
-    &.btn-delete:hover {
-      background: color-mix(in srgb, var(--afer-corporate), transparent 88%);
-      color: var(--afer-corporate);
-    }
+  &:hover {
+    background: var(--dt-head-bg);
+    color: var(--dt-text);
   }
+
+  &.btn-view:hover {
+    background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 88%);
+    color: var(--afer-secondary-absolute);
+  }
+  &.btn-edit:hover {
+    background: color-mix(in srgb, var(--afer-primary), transparent 88%);
+    color: var(--afer-primary);
+  }
+  &.btn-delete:hover {
+    background: color-mix(in srgb, var(--afer-corporate), transparent 88%);
+    color: var(--afer-corporate);
+  }
+}
 }
 
 .state-cell {
@@ -337,6 +343,11 @@ tbody tr:last-child td {
   padding: 3rem 1.5rem;
   color: var(--dt-text-muted);
   font-size: 0.85rem;
+}
+
+.empty-state svg {
+  width: 28px;
+  height: 28px;
 }
 
 .spinner {

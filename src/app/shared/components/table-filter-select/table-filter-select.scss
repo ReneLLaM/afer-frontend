@@ -5,11 +5,23 @@
   min-width: 130px;
 
   &__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--afer-text-muted);
+  }
+
+  &__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--afer-secondary-absolute);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--afer-secondary-absolute), transparent 75%);
+    flex-shrink: 0;
   }
 
   &__control {
@@ -35,6 +47,17 @@
   }
 }
 
+.table-filter-select--active {
+  .table-filter-select__label {
+    color: var(--afer-secondary-absolute);
+  }
+
+  .table-filter-select__control {
+    border-color: color-mix(in srgb, var(--afer-secondary-absolute), transparent 45%);
+    background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 96%);
+  }
+}
+
 :host-context([data-theme='dark']) .table-filter-select__control {
   background: color-mix(in srgb, var(--afer-background), transparent 30%);
   border-color: color-mix(in srgb, var(--afer-hover), transparent 45%);
@@ -42,5 +65,22 @@
   option {
     background: var(--afer-surface);
     color: var(--afer-text-primary);
+  }
+}
+
+:host-context([data-theme='dark']) .table-filter-select--active {
+  .table-filter-select__label {
+    color: color-mix(in srgb, var(--afer-accent-absolute), #fff 12%);
+  }
+
+  .table-filter-select__dot {
+    background: var(--afer-accent-absolute);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--afer-accent-absolute), transparent 68%);
+  }
+
+  .table-filter-select__control {
+    border-color: color-mix(in srgb, var(--afer-accent-absolute), transparent 25%);
+    background: color-mix(in srgb, var(--afer-accent-absolute), transparent 88%);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--afer-accent-absolute), transparent 45%);
   }
 }

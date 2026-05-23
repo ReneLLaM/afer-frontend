@@ -19,9 +19,9 @@ export interface CrudTableActionsConfig<T> {
 }
 
 const DEFAULT_CRUD = {
-  view: { icon: 'ri-eye-line', label: 'Ver detalle', class: 'btn-view' },
-  edit: { icon: 'ri-edit-line', label: 'Editar', class: 'btn-edit' },
-  delete: { icon: 'ri-delete-bin-line', label: 'Eliminar', class: 'btn-delete' },
+  view: { icon: 'visibility', label: 'Ver detalle', class: 'btn-view' },
+  edit: { icon: 'edit', label: 'Editar', class: 'btn-edit' },
+  delete: { icon: 'delete', label: 'Eliminar', class: 'btn-delete' },
 } as const;
 
 /** Genera acciones CRUD estándar; la tabla filtra por `permission` automáticamente. */

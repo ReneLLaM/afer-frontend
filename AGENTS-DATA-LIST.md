@@ -1,31 +1,31 @@
-# Afer Bolivia — Data List Agent (Tabla, búsqueda, filtros, paginación)
+﻿# Afer Bolivia â€” Data List Agent (Tabla, bÃºsqueda, filtros, paginaciÃ³n)
 
-> **Propósito**: Patrón canónico para **listados administrativos** con URL como fuente de verdad, toolbar unificado y `app-data-table`. Complementa `AGENTS.md`, `AGENTS-RBAC.md` y `AGENTS-STYLES.md`.
+> **PropÃ³sito**: PatrÃ³n canÃ³nico para **listados administrativos** con URL como fuente de verdad, toolbar unificado y `app-data-table`. Complementa `AGENTS.md`, `AGENTS-RBAC.md` y `AGENTS-STYLES.md`.
 
 ---
 
-## 1. ¿Cuándo usar qué?
+## 1. Â¿CuÃ¡ndo usar quÃ©?
 
 | Contexto | Componentes |
 |----------|-------------|
-| **Admin** (usuarios, roles, permisos, productos…) | `app-admin-list-toolbar` + `app-data-table` + `app-pagination` |
-| **Tienda** (catálogo público) | Cards/grid + `app-pagination` (sin tabla) |
+| **Admin** (usuarios, roles, permisos, productosâ€¦) | `app-admin-list-toolbar` + `app-data-table` + `app-pagination` |
+| **Tienda** (catÃ¡logo pÃºblico) | Cards/grid + `app-pagination` (sin tabla) |
 | **Detalle admin** | Ruta hija (`/admin/permisos/:slug`) + card/panel |
 
 ---
 
 ## 2. Contrato de URL (query params)
 
-Parámetros estándar (siempre en la URL, **nunca** `queryParamsHandling: 'merge'`):
+ParÃ¡metros estÃ¡ndar (siempre en la URL, **nunca** `queryParamsHandling: 'merge'`):
 
-| Param | Default admin | Descripción |
+| Param | Default admin | DescripciÃ³n |
 |-------|---------------|-------------|
-| `page` | `1` | Página actual |
-| `limit` | `10` | Registros por página (`10`, `20`, `50`, `100`) |
-| `search` | — | Texto libre (trim en backend) |
-| `sortBy` | según entidad | Campo de orden |
-| `order` | `ASC` / `DESC` | Dirección |
-| `module`, `action`, … | — | Filtros custom por entidad |
+| `page` | `1` | PÃ¡gina actual |
+| `limit` | `10` | Registros por pÃ¡gina (`10`, `20`, `50`, `100`) |
+| `search` | â€” | Texto libre (trim en backend) |
+| `sortBy` | segÃºn entidad | Campo de orden |
+| `order` | `ASC` / `DESC` | DirecciÃ³n |
+| `module`, `action`, â€¦ | â€” | Filtros custom por entidad |
 
 ### Utilidades (`shared/utils/list-query.utils.ts`)
 
@@ -57,14 +57,15 @@ const offset = toApiOffset(page, limit);
 
 ---
 
-## 3. Búsqueda (`app-search-input`)
+## 3. BÃºsqueda (`app-search-input`)
 
 | Comportamiento | Valor |
 |----------------|-------|
 | Debounce | `300ms` (input `debounceTime`) |
 | Enter | Emite **inmediato** (sin esperar debounce) |
-| Limpiar (×) | Vacía input; el padre debe poner `search: null, page: 1` |
-| Icono admin | `icon="remix"` → `ri-search-line` |
+| Limpiar (Ã—) | VacÃ­a input; el padre debe poner `search: null, page: 1` |
+| Icono admin | `icon="svg"` (lupa interna) |
+| Espaciado lupa/input | `padding-left` del input >= `46px` para evitar solape |
 | Ancho toolbar | `fullWidth` en toolbar admin |
 
 ```html
@@ -72,7 +73,7 @@ const offset = toApiOffset(page, limit);
   placeholder="Buscar..."
   [initialValue]="search()"
   [fullWidth]="true"
-  icon="remix"
+  icon="svg"
   (searchChange)="onSearch($event)"
 />
 ```
@@ -81,7 +82,14 @@ const offset = toApiOffset(page, limit);
 
 ## 4. Toolbar (`app-admin-list-toolbar`)
 
-Compone búsqueda + `app-filter-bar` (contador y “Quitar filtros”).
+Compone bÃºsqueda + `app-filter-bar` (contador y â€œQuitar filtrosâ€).
+
+**DistribuciÃ³n obligatoria**:
+- Zona 1: bÃºsqueda (`admin-list-toolbar__search`)
+- Zona 2: filtros (`admin-list-toolbar__filters`)
+- Zona 3: acciÃ³n limpiar (`admin-list-toolbar__clear-slot`)
+- Desktop: 3 columnas (`search | filtros | limpiar`) centradas.
+- Tablet/mobile: baja a 1 columna sin dejar huecos cuando no hay filtros activos.
 
 ```html
 <app-admin-list-toolbar
@@ -94,7 +102,7 @@ Compone búsqueda + `app-filter-bar` (contador y “Quitar filtros”).
 >
   <div filters class="my-page__filters">
     <app-table-filter-select
-      label="Módulo"
+      label="MÃ³dulo"
       placeholder="Todos"
       [value]="moduleFilter()"
       [options]="moduleOptions"
@@ -110,7 +118,7 @@ Compone búsqueda + `app-filter-bar` (contador y “Quitar filtros”).
 
 ### Acciones CRUD integradas (ver / editar / eliminar)
 
-La tabla **oculta cada icono** si el usuario no tiene el permiso. No uses `authStore.hasPermission` en la página para los botones de fila.
+La tabla **oculta cada icono** si el usuario no tiene el permiso. No uses `authStore.hasPermission` en la pÃ¡gina para los botones de fila.
 
 ```typescript
 // En el .ts del listado
@@ -148,9 +156,9 @@ readonly tableCrud = {
 
 | Input | Uso |
 |-------|-----|
-| `[crud]` | Ver / editar / eliminar con RBAC automático |
+| `[crud]` | Ver / editar / eliminar con RBAC automÃ¡tico |
 | `[serverSort]="true"` | **Obligatorio** con API paginada (no reordena en cliente) |
-| `[showFooterInfo]="false"` | Con `app-pagination` (evita duplicar “Mostrando X de Y”) |
+| `[showFooterInfo]="false"` | Con `app-pagination` (evita duplicar â€œMostrando X de Yâ€) |
 | `trackByKey="id"` | Performance |
 | `[reorderable]="true"` | Preparado para marcas (columna drag, CDK futuro) |
 
@@ -161,7 +169,7 @@ readonly tableCrud = {
   key: 'slug',
   label: 'Slug',
   sortable: true,
-  wrap: true,              // texto multilínea en desktop
+  wrap: true,              // texto multilÃ­nea en desktop
   truncate: false,
   hideBelow: 'md',         // oculta en pantallas < 768px
   sticky: 'start',         // fija al scroll horizontal
@@ -175,17 +183,17 @@ readonly tableCrud = {
 
 ### Presets de columnas
 
-`shared/config/table-columns/` → `permission.columns.ts`, `product.columns.ts`, `brand.columns.ts`, etc.
+`shared/config/table-columns/` â†’ `permission.columns.ts`, `product.columns.ts`, `brand.columns.ts`, etc.
 
 ### Pipes reutilizables
 
-- `LocaleDatePipe` — fechas
-- `TruncatePipe` — textos largos
-- `ModuleLabelPipe` — módulos RBAC en español
+- `LocaleDatePipe` â€” fechas
+- `TruncatePipe` â€” textos largos
+- `ModuleLabelPipe` â€” mÃ³dulos RBAC en espaÃ±ol
 
 ---
 
-## 6. Paginación (`app-pagination`)
+## 6. PaginaciÃ³n (`app-pagination`)
 
 ```html
 <app-pagination
@@ -195,13 +203,13 @@ readonly tableCrud = {
 />
 ```
 
-`ListMeta`: `{ total, limit, page, totalPages }` — unificado en `shared/models/list-meta.model.ts`.
+`ListMeta`: `{ total, limit, page, totalPages }` â€” unificado en `shared/models/list-meta.model.ts`.
 
 **Reglas:**
 
-- `limitChange` → siempre resetear `page: 1`
-- `searchChange` / filtros → `page: 1`
-- Scroll al top: lo hace el componente al cambiar página
+- `limitChange` â†’ siempre resetear `page: 1`
+- `searchChange` / filtros â†’ `page: 1`
+- Scroll al top: lo hace el componente al cambiar pÃ¡gina
 
 ---
 
@@ -209,11 +217,11 @@ readonly tableCrud = {
 
 ```
 URL ?page=1&limit=10&search=foo&module=products&sortBy=slug&order=ASC
-  → readListParams()
-  → GET /api/permissions?limit=10&offset=0&search=foo&module=products&...
-  → app-data-table [data] [serverSort] [sortKey] [sortDir]
-  → app-pagination [meta]
-  → Ver detalle → /admin/permisos/:slug (GET /api/permissions/:term)
+  â†’ readListParams()
+  â†’ GET /api/permissions?limit=10&offset=0&search=foo&module=products&...
+  â†’ app-data-table [data] [serverSort] [sortKey] [sortDir]
+  â†’ app-pagination [meta]
+  â†’ Ver detalle â†’ /admin/permisos/:slug (GET /api/permissions/:term)
 ```
 
 ---
@@ -223,22 +231,22 @@ URL ?page=1&limit=10&search=foo&module=products&sortBy=slug&order=ASC
 | No hacer | Hacer |
 |----------|-------|
 | `sortedData` con sort de servidor | `[serverSort]="true"` |
-| Footer tabla + paginación duplicados | `[showFooterInfo]="false"` |
+| Footer tabla + paginaciÃ³n duplicados | `[showFooterInfo]="false"` |
 | Slugs hardcodeados `'users.create'` | `PERMISSIONS.USERS.CREATE` |
 | `@if (canX())` en iconos de fila | `[crud]` con `permission` en la tabla |
 | `@if (canX())` en botones de cabecera | `*hasPermission` + `admin-btn` |
 | `filter: brightness()` en hover | `admin-btn--primary` (tema claro/oscuro) |
 | Detalle centrado estrecho | Grid ancho completo (`permission-detail`) |
 | `queryParamsHandling: 'merge'` | `buildListQueryPatch` + `''` |
-| Dialog como único detalle | Ruta `/admin/.../:slug` + `queryParamsHandling: 'preserve'` |
+| Dialog como Ãºnico detalle | Ruta `/admin/.../:slug` + `queryParamsHandling: 'preserve'` |
 
 ---
 
-## 9. Migración rápida (antes → después)
+## 9. MigraciÃ³n rÃ¡pida (antes â†’ despuÃ©s)
 
-| Antes | Después |
+| Antes | DespuÃ©s |
 |-------|---------|
-| `updateQueryParams` manual en cada página | `buildListQueryPatch` |
+| `updateQueryParams` manual en cada pÃ¡gina | `buildListQueryPatch` |
 | Toolbar + clear duplicados | `app-admin-list-toolbar` |
 | `<select>` inline | `app-table-filter-select` |
 | `TableMeta` / `PaginationMeta` separados | `ListMeta` + `toListMeta()` |
@@ -246,9 +254,9 @@ URL ?page=1&limit=10&search=foo&module=products&sortBy=slug&order=ASC
 
 ---
 
-## 10. Toolbar — alineación de filtros
+## 10. Toolbar â€” alineaciÃ³n de filtros
 
-- Toolbar: `align-items: center` (búsqueda, selects y “Quitar filtros” a **38px** de alto).
+- Toolbar: `align-items: center` (bÃºsqueda, selects y â€œQuitar filtrosâ€ a **38px** de alto).
 - Filtros en slot `[filters]`:
 
 ```html
@@ -265,6 +273,14 @@ URL ?page=1&limit=10&search=foo&module=products&sortBy=slug&order=ASC
   gap: 0.65rem;
 }
 ```
+
+### 10.1 Estado activo en filtros (obligatorio)
+
+- Cada `app-table-filter-select` debe mostrar estado activo visual:
+  - Dot junto al label.
+  - Borde/fondo activo en el select.
+- En **dark mode** el activo debe reforzar contraste (label + dot + borde) para que se vea claramente sobre `--afer-surface`.
+- El toolbar tambiÃ©n debe reforzar borde cuando `hasActiveFilters` sea `true`.
 
 ## 11. Botones de cabecera (Seed, Crear)
 
@@ -285,7 +301,7 @@ Usar clases compartidas (`shared/styles/admin-buttons.scss`):
 - **No** usar `filter: brightness()` en hover (rompe dark mode).
 - Variantes: `--primary`, `--secondary`
 
-## 12. Página de detalle (ancho completo)
+## 12. PÃ¡gina de detalle (ancho completo)
 
 - **Sin** `max-width` centrado (usar `width: 100%` como el listado).
 - Ruta hija opcional en URL: `/admin/permisos/:slug` (slug en path, query del listado con `preserve`).
@@ -299,16 +315,16 @@ Usar clases compartidas (`shared/styles/admin-buttons.scss`):
 </div>
 ```
 
-## 13. Plantilla rápida — nuevo módulo admin
+## 13. Plantilla rÃ¡pida â€” nuevo mÃ³dulo admin
 
 1. Columnas en `shared/config/table-columns/{entity}.columns.ts`
-2. Página listado: `readListParams` + toolbar + tabla `[crud]` + paginación
+2. PÃ¡gina listado: `readListParams` + toolbar + tabla `[crud]` + paginaciÃ³n
 3. `@use admin-buttons` + `*hasPermission` en acciones de cabecera
 4. Detalle: ruta `:id` o `:slug`, panel ancho completo
-5. Constantes `PERMISSIONS.{MODULE}.*` — nunca strings sueltos
+5. Constantes `PERMISSIONS.{MODULE}.*` â€” nunca strings sueltos
 
 ## 14. Referencias cruzadas
 
-- **Arquitectura Angular** → `AGENTS.md`
-- **RBAC, guards, PERMISSIONS** → `AGENTS-RBAC.md`
-- **Estilos toolbar/tabla (`--dt-*`, search focus)** → `AGENTS-STYLES.md`
+- **Arquitectura Angular** â†’ `AGENTS.md`
+- **RBAC, guards, PERMISSIONS** â†’ `AGENTS-RBAC.md`
+- **Estilos toolbar/tabla (`--dt-*`, search focus)** â†’ `AGENTS-STYLES.md`
