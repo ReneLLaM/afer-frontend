@@ -151,6 +151,7 @@ readonly tableCrud = {
 - Iconos por defecto: `ri-eye-line`, `ri-edit-line`, `ri-delete-bin-line`
 - Alternativa manual: `[actions]` con `permission` en cada `TableAction`
 - Helper: `buildCrudTableActions()` en `modules/02-rbac-admin/utils/admin-table-actions.utils.ts`
+- Si el listado muestra soft-deleted (`showDeleted`), las acciones `edit` y `delete` deben ocultarse por fila usando `show: (row) => !row.deletedAt` o equivalente.
 
 ### Inputs clave
 

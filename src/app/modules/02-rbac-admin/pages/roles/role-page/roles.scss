@@ -57,6 +57,20 @@
         background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 94%);
       }
     }
+
+    &--success {
+      background: color-mix(in srgb, #21a366, #ffffff 6%);
+      color: #ffffff;
+      border-color: color-mix(in srgb, #21a366, #000000 8%);
+
+      &:hover:not(:disabled) {
+        background: color-mix(in srgb, #21a366, #ffffff 12%);
+      }
+
+      &:active:not(:disabled) {
+        background: color-mix(in srgb, #21a366, #000000 10%);
+      }
+    }
   }
 
   &__header {
@@ -70,6 +84,107 @@
   &__header-actions {
     display: flex;
     gap: 0.75rem;
+  }
+
+  &__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.65rem;
+  }
+
+  &__filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 150px;
+  }
+
+  &__filter-field--active {
+    .roles-page__filter-label {
+      color: var(--afer-secondary-absolute);
+    }
+
+    .roles-page__filter-select {
+      border-color: color-mix(in srgb, var(--afer-secondary-absolute), transparent 45%);
+      background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 96%);
+    }
+  }
+
+  &__filter-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--afer-text-muted);
+  }
+
+  &__filter-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--afer-secondary-absolute);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--afer-secondary-absolute), transparent 75%);
+    flex-shrink: 0;
+  }
+
+  &__filter-select {
+    height: 38px;
+    padding: 0 0.65rem;
+    border: 1.5px solid color-mix(in srgb, var(--afer-text-muted), transparent 82%);
+    border-radius: 10px;
+    background: var(--afer-background);
+    color: var(--afer-text-primary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    min-width: 150px;
+
+    &:hover {
+      border-color: color-mix(in srgb, var(--afer-text-muted), transparent 65%);
+    }
+
+    &:focus {
+      border-color: var(--afer-secondary-absolute);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--afer-secondary-absolute), transparent 94%);
+    }
+  }
+
+  &__filter-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 38px;
+    padding: 0 0.8rem;
+    border-radius: 10px;
+    border: 1.5px solid color-mix(in srgb, var(--afer-text-muted), transparent 82%);
+    background: var(--afer-background);
+    color: var(--afer-text-secondary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+
+    input {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--afer-secondary-absolute);
+      cursor: pointer;
+    }
+
+    &:hover {
+      border-color: color-mix(in srgb, var(--afer-text-muted), transparent 65%);
+    }
+  }
+
+  &__filter-check--active {
+    color: var(--afer-secondary-absolute);
+    border-color: color-mix(in srgb, var(--afer-secondary-absolute), transparent 45%);
+    background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 96%);
   }
 
   &__title {
@@ -156,6 +271,59 @@
   }
 }
 
+:host-context([data-theme='dark']) .roles-page .admin-btn--success {
+  background: color-mix(in srgb, #21a366, transparent 18%);
+  color: #ffffff;
+  border-color: color-mix(in srgb, #21a366, #000000 10%);
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, #21a366, #ffffff 10%);
+  }
+
+  &:active:not(:disabled) {
+    background: color-mix(in srgb, #21a366, #000000 12%);
+  }
+}
+
+:host-context([data-theme='dark']) .roles-page {
+  .roles-page__filter-select,
+  .roles-page__filter-check {
+    background: color-mix(in srgb, var(--afer-background), transparent 30%);
+    border-color: color-mix(in srgb, var(--afer-hover), transparent 45%);
+  }
+
+  .roles-page__filter-select {
+    option {
+      background: var(--afer-surface);
+      color: var(--afer-text-primary);
+    }
+  }
+
+  .roles-page__filter-field--active {
+    .roles-page__filter-label {
+      color: color-mix(in srgb, var(--afer-accent-absolute), #fff 12%);
+    }
+
+    .roles-page__filter-dot {
+      background: var(--afer-accent-absolute);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--afer-accent-absolute), transparent 68%);
+    }
+
+    .roles-page__filter-select {
+      border-color: color-mix(in srgb, var(--afer-accent-absolute), transparent 25%);
+      background: color-mix(in srgb, var(--afer-accent-absolute), transparent 88%);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--afer-accent-absolute), transparent 45%);
+    }
+  }
+
+  .roles-page__filter-check--active {
+    color: var(--afer-accent-absolute);
+    border-color: color-mix(in srgb, var(--afer-accent-absolute), transparent 25%);
+    background: color-mix(in srgb, var(--afer-accent-absolute), transparent 88%);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--afer-accent-absolute), transparent 45%);
+  }
+}
+
 @media (max-width: 767px) {
   .roles-page {
     padding: 0.75rem 1rem;
@@ -166,9 +334,17 @@
       gap: 1rem;
     }
 
-    &__toolbar {
+    &__header-actions,
+    &__filters {
       flex-direction: column;
       align-items: stretch;
+    }
+
+    &__filter-field,
+    &__filter-select,
+    &__filter-check {
+      width: 100%;
+      min-width: 0;
     }
   }
 }

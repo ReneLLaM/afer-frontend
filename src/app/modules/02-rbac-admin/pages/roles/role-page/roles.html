@@ -21,7 +21,12 @@
         <span>Sincronizar Seed</span>
       </button>
 
-      <button *hasPermission="PERMISSIONS.ROLES.CREATE" class="admin-btn admin-btn--secondary" type="button">
+      <button
+        *hasPermission="PERMISSIONS.ROLES.CREATE"
+        class="admin-btn admin-btn--success"
+        type="button"
+        (click)="onCreateRole()"
+      >
         <i class="ri-add-line"></i>
         <span>Crear Rol</span>
       </button>
@@ -30,12 +35,47 @@
 
   <app-admin-list-toolbar
     [search]="search()"
-    searchPlaceholder="Buscar roles..."
+    searchPlaceholder="Buscar por nombre, slug o descripción..."
     [hasActiveFilters]="hasActiveFilters()"
     [filterCount]="activeFilterCount()"
     (searchChange)="onSearch($event)"
     (clearFilters)="onClearFilters()"
-  />
+  >
+    <div filters class="roles-page__filters">
+      <label
+        class="roles-page__filter-field"
+        [class.roles-page__filter-field--active]="roleTypeFilter() !== 'all'"
+      >
+        <span class="roles-page__filter-label">
+          Tipo de rol
+          @if (roleTypeFilter() !== 'all') {
+            <span class="roles-page__filter-dot" aria-hidden="true"></span>
+          }
+        </span>
+        <select
+          class="roles-page__filter-select"
+          [value]="roleTypeFilter()"
+          (change)="onRoleTypeFilter($any($event.target).value)"
+        >
+          <option value="all">Todos</option>
+          <option value="system">Del sistema</option>
+          <option value="user">Personalizados</option>
+        </select>
+      </label>
+
+      <label
+        class="roles-page__filter-check"
+        [class.roles-page__filter-check--active]="showDeleted()"
+      >
+        <input
+          type="checkbox"
+          [checked]="showDeleted()"
+          (change)="onShowDeletedChange($any($event.target).checked)"
+        />
+        <span>Mostrar eliminados</span>
+      </label>
+    </div>
+  </app-admin-list-toolbar>
 
   @if (error()) {
     <div class="roles-page__error">{{ error() }}</div>

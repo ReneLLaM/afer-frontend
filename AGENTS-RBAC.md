@@ -107,6 +107,15 @@ modules/
 | Store | kebab-case + `.store.ts` | `admin-ui.store.ts` |
 | Utilidad | kebab-case + `.utils.ts` | `permission.utils.ts` |
 
+### 2.2 Densidad visual del admin
+
+- En `02-rbac-admin/`, formularios y vistas de detalle deben usar estilos compactos.
+- Evitar `gap`, `margin-bottom` y paddings grandes si no aportan claridad real.
+- Preferir panels, chips y bloques informativos mÃ¡s densos antes que layouts con mucho aire.
+- Evitar degradados decorativos en pantallas admin; usar color sÃ³lido, borde y contraste.
+- En registros soft-deleted mostrados con `showDeleted`, ocultar o deshabilitar acciones destructivas y de ediciÃ³n. Un registro eliminado no debe ofrecer `Editar` ni `Eliminar` en la UI.
+- Las vistas detalle admin con auditorÃ­a deben preferir un bloque de `Trazabilidad` con eventos `Creado`, `Actualizado` y `Eliminado`, mostrando responsable y fecha juntos.
+
 ---
 
 ## 3. Constantes de permisos
@@ -736,19 +745,28 @@ export const adminRoutes: Routes = [
         path: 'roles',
         canActivate: [permissionGuard],
         data: { permission: PERMISSIONS.ROLES.READ },
-        loadComponent: () => import('./pages/roles/roles-list/roles-list').then(m => m.RolesListPage),
-      },
-      {
-        path: 'roles/crear',
-        canActivate: [permissionGuard],
-        data: { permission: PERMISSIONS.ROLES.CREATE },
-        loadComponent: () => import('./pages/roles/role-create/role-create').then(m => m.RoleCreatePage),
-      },
-      {
-        path: 'roles/:id/editar',
-        canActivate: [permissionGuard],
-        data: { permission: PERMISSIONS.ROLES.UPDATE },
-        loadComponent: () => import('./pages/roles/role-edit/role-edit').then(m => m.RoleEditPage),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/roles/role-page/roles').then(m => m.RolesPage),
+          },
+          {
+            path: 'crear',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.ROLES.CREATE },
+            loadComponent: () => import('./pages/roles/role-create/role-create').then(m => m.RoleCreatePage),
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./pages/roles/role-detail/role-detail').then(m => m.RoleDetailPage),
+          },
+          {
+            path: ':id/editar',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.ROLES.UPDATE },
+            loadComponent: () => import('./pages/roles/role-edit/role-edit').then(m => m.RoleEditPage),
+          },
+        ],
       },
 
       // Permisos
@@ -867,6 +885,14 @@ export class AdminLayout {
 - ✅ Filtrar sidebar por `hasModulePermission`
 - ✅ El backend SIEMPRE valida (ya lo hace con `@Auth(PERMISSIONS.X.Y)`)
 - ✅ Mostrar feedback cuando una acción es rechazada (toast de error)
+- ✅ En `roles`, navegar `Ver/Crear/Editar` a páginas reales; evitar dialogs para CRUD principal
+- ✅ En `roles`, mostrar toast de éxito en crear, actualizar, eliminar y sincronizar seed
+- ✅ En `roles`, refrescar el listado después de eliminar o sincronizar aunque la query no cambie
+- ✅ En `roles`, devolver desde backend el shape de `findOne()` también en `create()` y `update()`
+- ✅ En `roles`, usar `permissionSlugs` en detalle/create/edit para preselección confiable
+- ✅ En `roles`, tratar `slug` como derivado del `name`; si cambia el nombre, cambia el slug
+- ✅ En filtros booleanos por query string (`isSystem`, `showDeleted`), normalizar explícitamente `true/false`
+- ✅ Los roles `isSystem` no se editan ni eliminan en UI ni backend
 
 ### 14.2 DON'T
 

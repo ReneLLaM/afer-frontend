@@ -20,6 +20,7 @@ import { AdminListToolbar } from '../../../components/admin-list-toolbar/admin-l
 import { HasPermissionDirective } from '../../../directives/has-permission.directive';
 import { AdminRolesService } from '../../../services/admin-roles.service';
 import { DialogService } from '../../../../../shared/services/dialog.service';
+import { ToastService } from '../../../../../shared/services/toast.service';
 import { PERMISSIONS } from '../../../../../core/constants/permissions';
 import {
   areSameQueryParams,
@@ -29,12 +30,14 @@ import {
   toApiOffset,
 } from '../../../utils/admin-list-query.utils';
 import { toListMeta } from '../../../../../shared/interfaces/list-meta.interface';
-import type { Role, RolesResponse } from '../../../interfaces/admin-role.interface';
+import { LocaleDatePipe } from '../../../../../shared/pipes/locale-date.pipe';
+import type { AdminRoleListItem, AdminRolesResponse } from '../../../interfaces/admin-role.interface';
 
 const DEFAULT_SORT_BY = 'name';
 const DEFAULT_ORDER: 'ASC' | 'DESC' = 'ASC';
+const localeDate = new LocaleDatePipe();
 
-const EMPTY_RESPONSE: RolesResponse = {
+const EMPTY_RESPONSE: AdminRolesResponse = {
   data: [],
   meta: { total: 0, limit: 10, offset: 0, page: 1, totalPages: 1 },
 };
@@ -58,6 +61,7 @@ export class RolesPage {
   private readonly router = inject(Router);
   private readonly service = inject(AdminRolesService);
   private readonly dialogService = inject(DialogService);
+  private readonly toastService = inject(ToastService);
 
   readonly PERMISSIONS = PERMISSIONS;
 
@@ -71,47 +75,76 @@ export class RolesPage {
   search = computed(() => this.listParams().search);
   sortBy = computed(() => this.listParams().sortBy);
   order = computed(() => this.listParams().order);
+  roleTypeFilter = computed<'all' | 'system' | 'user'>(() => {
+    const value = this.queryParams()['roleType'];
+    return value === 'system' || value === 'user' ? value : 'all';
+  });
+  showDeleted = computed(() => this.queryParams()['showDeleted'] === 'true');
   sortDirection = computed(() => sortDirectionFromOrder(this.order()));
 
-  columns: TableColumn<Role>[] = [
-    { key: 'name', label: 'Nombre', sortable: true, minWidth: '120px' },
+  columns: TableColumn<AdminRoleListItem>[] = [
+    { key: 'name', label: 'Nombre', sortable: true, minWidth: '160px' },
     { key: 'slug', label: 'Slug', sortable: true, minWidth: '160px' },
     {
       key: 'description',
       label: 'Descripción',
-      minWidth: '200px',
+      minWidth: '240px',
       format: (v) => (v ? String(v) : '—'),
-      hideBelow: 'sm',
+    },
+    {
+      key: 'permissions',
+      label: 'Permisos',
+      width: '110px',
+      align: 'center',
+      format: (value) => `${Array.isArray(value) ? value.length : 0}`,
     },
     { key: 'isSystem', label: 'Sistema', type: 'boolean', width: '100px', align: 'center' },
+    {
+      key: 'audit',
+      label: 'Creado por',
+      minWidth: '180px',
+      format: (_value, row) => row.audit.createdBy?.fullName || 'Sistema',
+    },
+    {
+      key: 'createdAt',
+      label: 'Creado',
+      sortable: true,
+      width: '118px',
+      pipe: localeDate,
+      pipeArgs: ['short'],
+    },
   ];
 
   readonly tableCrud = {
     view: {
       permission: PERMISSIONS.ROLES.READ,
-      onClick: (r: Role) => this.viewRole(r),
+      onClick: (r: AdminRoleListItem) => this.viewRole(r),
     },
     edit: {
       permission: PERMISSIONS.ROLES.UPDATE,
-      show: (r: Role) => !r.isSystem,
-      onClick: (r: Role) => this.editRole(r),
+      show: (r: AdminRoleListItem) => !r.isSystem && !r.deletedAt,
+      onClick: (r: AdminRoleListItem) => this.editRole(r),
     },
     delete: {
       permission: PERMISSIONS.ROLES.DELETE,
-      show: (r: Role) => !r.isSystem,
-      onClick: (r: Role) => this.deleteRole(r),
+      show: (r: AdminRoleListItem) => !r.isSystem && !r.deletedAt,
+      onClick: (r: AdminRoleListItem) => this.deleteRole(r),
     },
   };
 
   loading = signal(false);
   error = signal<string | null>(null);
+  refreshTick = signal(0);
 
   requestParams$ = toObservable(
     computed(() =>
       JSON.stringify({
         page: this.page(),
         limit: this.limit(),
+        refreshTick: this.refreshTick(),
         search: this.search() || undefined,
+        roleType: this.roleTypeFilter() !== 'all' ? this.roleTypeFilter() : undefined,
+        showDeleted: this.showDeleted() ? 'true' : undefined,
         sortBy: this.sortBy() || undefined,
         order: this.order() || undefined,
       }),
@@ -124,6 +157,11 @@ export class RolesPage {
         limit: parsed.limit,
         offset: toApiOffset(parsed.page, parsed.limit),
         search: parsed.search,
+        roleType:
+          parsed.roleType === 'system' || parsed.roleType === 'user'
+            ? parsed.roleType
+            : undefined,
+        showDeleted: parsed.showDeleted === 'true' ? true : undefined,
         sortBy: parsed.sortBy || DEFAULT_SORT_BY,
         order: (parsed.order || DEFAULT_ORDER) as 'ASC' | 'DESC',
       };
@@ -145,11 +183,15 @@ export class RolesPage {
   data = computed(() => this.response().data);
   meta = computed<TableMeta>(() => toListMeta(this.response().meta));
 
-  hasActiveFilters = computed(() => !!this.search() || !!this.sortBy());
+  hasActiveFilters = computed(
+    () => !!this.search() || !!this.sortBy() || this.roleTypeFilter() !== 'all' || this.showDeleted(),
+  );
   activeFilterCount = computed(() => {
     let n = 0;
     if (this.search()) n++;
     if (this.sortBy()) n++;
+    if (this.roleTypeFilter() !== 'all') n++;
+    if (this.showDeleted()) n++;
     return n;
   });
 
@@ -171,6 +213,12 @@ export class RolesPage {
     this.navigateQuery({ search: value, page: 1 });
   }
 
+  onCreateRole(): void {
+    this.router.navigate(['/admin/roles/crear'], {
+      queryParams: this.queryParams(),
+    });
+  }
+
   onSort(event: SortEvent): void {
     this.navigateQuery({
       sortBy: event.direction ? event.key : null,
@@ -186,8 +234,20 @@ export class RolesPage {
     this.navigateQuery({ limit, page: 1 });
   }
 
+  onRoleTypeFilter(value: 'all' | 'system' | 'user'): void {
+    this.navigateQuery({ roleType: value === 'all' ? null : value, page: 1 });
+  }
+
+  onShowDeletedChange(checked: boolean): void {
+    this.navigateQuery({ showDeleted: checked ? 'true' : null, page: 1 });
+  }
+
   onClearFilters(): void {
-    this.navigateQuery({ search: null, sortBy: null, order: null });
+    this.navigateQuery({ search: null, sortBy: null, order: null, roleType: null, showDeleted: null });
+  }
+
+  private refreshList(): void {
+    this.refreshTick.update((value) => value + 1);
   }
 
   onSeedRoles(): void {
@@ -205,7 +265,8 @@ export class RolesPage {
           this.service.seed().subscribe({
             next: () => {
               this.loading.set(false);
-              this.navigateQuery({ page: this.page() });
+              this.toastService.success('Roles sincronizados', 'Los roles base fueron actualizados correctamente.');
+              this.refreshList();
             },
             error: (err) => {
               this.loading.set(false);
@@ -216,20 +277,22 @@ export class RolesPage {
       });
   }
 
-  private viewRole(role: Role): void {
-    this.dialogService.confirm({
-      title: `Detalle: ${role.name}`,
-      message: `Slug: ${role.slug}\n\nDescripción: ${role.description || 'Sin descripción'}`,
-      confirmText: 'Cerrar',
-      type: 'confirm',
+  private viewRole(role: AdminRoleListItem): void {
+    this.router.navigate(['/admin/roles', role.id], {
+      queryParams: this.queryParams(),
     });
   }
 
-  private editRole(role: Role): void {
-    console.log('Editar rol', role);
+  private editRole(role: AdminRoleListItem): void {
+    this.router.navigate(['/admin/roles', role.id, 'editar'], {
+      queryParams: {
+        ...this.queryParams(),
+        returnTo: 'list',
+      },
+    });
   }
 
-  private deleteRole(role: Role): void {
+  private deleteRole(role: AdminRoleListItem): void {
     this.dialogService
       .confirm({
         title: 'Eliminar Rol',
@@ -240,7 +303,10 @@ export class RolesPage {
       .then((confirmed) => {
         if (confirmed) {
           this.service.delete(role.id).subscribe({
-            next: () => this.navigateQuery({ page: this.page() }),
+            next: () => {
+              this.toastService.success('Rol eliminado', `El rol "${role.name}" fue eliminado correctamente.`);
+              this.refreshList();
+            },
             error: (err) => this.error.set(err.message || 'Error al eliminar rol'),
           });
         }

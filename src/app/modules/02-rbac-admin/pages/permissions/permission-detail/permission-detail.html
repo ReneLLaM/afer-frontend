@@ -4,7 +4,7 @@
   <header class="permission-detail__top">
     <button type="button" class="permission-detail__back admin-btn admin-btn--secondary" (click)="goBack()">
       <i class="ri-arrow-left-line"></i>
-      Volver al listado
+      <span>← Volver al listado</span>
     </button>
   </header>
 
@@ -19,7 +19,7 @@
     <div class="permission-detail__panel permission-detail__panel--state permission-detail__panel--error">
       <i class="ri-error-warning-line"></i>
       <p>{{ error() }}</p>
-      <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">Volver</button>
+      <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">← Volver</button>
     </div>
   } @else if (permission(); as p) {
     <section class="permission-detail__hero">

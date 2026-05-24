@@ -24,9 +24,8 @@
       @for (item of filteredItems(); track item.route) {
         <a
           [routerLink]="item.route"
-          routerLinkActive="sidebar__link--active"
-          [routerLinkActiveOptions]="{ exact: true }"
           class="sidebar__link"
+          [class.sidebar__link--active]="isItemActive(item.route)"
           (click)="closeMobile()"
           [title]="isCollapsed() ? item.label : ''"
         >

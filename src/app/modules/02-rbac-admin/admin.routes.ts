@@ -52,7 +52,29 @@ export const adminRoutes: Routes = [
         path: 'roles',
         canActivate: [permissionGuard],
         data: { permission: PERMISSIONS.ROLES.READ, breadcrumb: 'Roles' },
-        loadComponent: () => import('./pages/roles/role-page/roles').then(m => m.RolesPage),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/roles/role-page/roles').then(m => m.RolesPage),
+          },
+          {
+            path: 'crear',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.ROLES.CREATE, breadcrumb: 'Crear' },
+            loadComponent: () => import('./pages/roles/role-create/role-create').then(m => m.RoleCreatePage),
+          },
+          {
+            path: ':id/editar',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.ROLES.UPDATE, breadcrumb: 'Editar' },
+            loadComponent: () => import('./pages/roles/role-edit/role-edit').then(m => m.RoleEditPage),
+          },
+          {
+            path: ':id',
+            data: { breadcrumb: 'Detalle' },
+            loadComponent: () => import('./pages/roles/role-detail/role-detail').then(m => m.RoleDetailPage),
+          },
+        ],
       },
       {
         path: 'permisos',

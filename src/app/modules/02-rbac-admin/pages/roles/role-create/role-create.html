@@ -1,0 +1,136 @@
+<div class="role-create">
+  <breadcrumb />
+
+  <header class="role-create__top">
+    <button type="button" class="role-create__back admin-btn admin-btn--secondary" (click)="goBack()">
+      <i class="ri-arrow-left-line"></i>
+      <span>← Volver al listado</span>
+    </button>
+  </header>
+
+  <section class="role-create__hero">
+    <div>
+      <span class="role-create__eyebrow">Nuevo rol</span>
+      <h1 class="role-create__title">Crear Rol</h1>
+      <p class="role-create__subtitle">Define el nombre, la descripción y los permisos que tendrá este rol.</p>
+    </div>
+
+    <div class="role-create__hero-actions">
+      <span class="role-create__counter">
+        <i class="ri-key-2-line"></i>
+        {{ selectedCount() }} permisos seleccionados
+      </span>
+    </div>
+  </section>
+
+  @if (submitError()) {
+    <div class="role-create__alert role-create__alert--error">{{ submitError() }}</div>
+  }
+
+  <form class="role-create__grid" [formGroup]="form" (ngSubmit)="submit()">
+    <section class="role-create__panel role-create__panel--main">
+      <h2 class="role-create__panel-title">Datos del rol</h2>
+
+      <label class="role-create__field">
+        <span>Nombre</span>
+        <input type="text" formControlName="name" placeholder="Ej. Gestor Comercial" />
+        @if (form.controls.name.touched && form.controls.name.invalid) {
+          <small>El nombre es obligatorio.</small>
+        }
+      </label>
+
+      <label class="role-create__field">
+        <span>Descripción</span>
+        <textarea
+          formControlName="description"
+          rows="4"
+          placeholder="Describe para qué sirve este rol dentro del sistema"
+        ></textarea>
+        @if (form.controls.description.touched && form.controls.description.invalid) {
+          <small>La descripción es obligatoria.</small>
+        }
+      </label>
+    </section>
+
+    <aside class="role-create__panel role-create__panel--side">
+      <h2 class="role-create__panel-title">Resumen</h2>
+
+      <dl class="role-create__summary">
+        <div>
+          <dt>Nombre</dt>
+          <dd>{{ form.controls.name.value || 'Sin definir' }}</dd>
+        </div>
+        <div>
+          <dt>Permisos</dt>
+          <dd>{{ selectedCount() }}</dd>
+        </div>
+        <div>
+          <dt>Origen</dt>
+          <dd>Personalizado</dd>
+        </div>
+      </dl>
+
+      <div class="role-create__submit-box">
+        <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving() || loadingPermissions()">
+          <i class="ri-save-line"></i>
+          <span>{{ saving() ? 'Creando...' : 'Crear rol' }}</span>
+        </button>
+      </div>
+    </aside>
+
+    <section class="role-create__panel role-create__panel--full">
+      <div class="role-create__permissions-header">
+        <div>
+          <h2 class="role-create__panel-title">Permisos del rol</h2>
+          <p class="role-create__permissions-help">Selecciona los permisos que se asignarán al nuevo rol.</p>
+        </div>
+      </div>
+
+      @if (loadingPermissions()) {
+        <div class="role-create__state">Cargando permisos...</div>
+      } @else if (loadError()) {
+        <div class="role-create__state role-create__state--error">{{ loadError() }}</div>
+      } @else {
+        <div class="role-create__permission-groups">
+          @for (group of permissionGroups(); track group.module) {
+            <article class="role-create__permission-group">
+              <label class="role-create__group-head">
+                <div>
+                  <strong>{{ group.module | permissionModuleLabel }}</strong>
+                  <small>{{ group.permissions.length }} permisos</small>
+                </div>
+                <span class="role-create__group-toggle">
+                  <input
+                    type="checkbox"
+                    [checked]="isModuleSelected(group.module)"
+                    (change)="toggleModule(group.module, $any($event.target).checked)"
+                  />
+                  <span>Todo el módulo</span>
+                </span>
+              </label>
+
+              <div class="role-create__permission-list">
+                @for (permission of group.permissions; track permission.slug) {
+                  <label class="role-create__permission-item" [class.role-create__permission-item--selected]="isSelected(permission.slug)">
+                    <input
+                      type="checkbox"
+                      [checked]="isSelected(permission.slug)"
+                      (change)="togglePermission(permission.slug, $any($event.target).checked)"
+                    />
+
+                    <div class="role-create__permission-copy">
+                      <span class="role-create__permission-name">{{ permission.name }}</span>
+                      <span class="role-create__permission-meta">
+                        {{ permission.action | permissionActionLabel }} · <code>{{ permission.slug }}</code>
+                      </span>
+                    </div>
+                  </label>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  </form>
+</div>

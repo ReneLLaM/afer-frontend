@@ -88,8 +88,9 @@ th {
     }
 
     &.sorted {
-      color: var(--dt-text);
-      box-shadow: inset 0 -2px 0 var(--dt-accent);
+      color: #fff;
+      background: var(--afer-secondary-absolute);
+      box-shadow: none;
     }
   }
 }
@@ -111,9 +112,10 @@ th {
   }
 
   &--active {
-    color: var(--dt-accent);
+    color: #fff;
   }
 }
+
 
 td {
   padding: 0.7rem 1rem;
@@ -313,17 +315,35 @@ tbody tr:last-child td {
     color: var(--dt-text);
   }
 
-  &.btn-view:hover {
-    background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 88%);
+  &.btn-view {
     color: var(--afer-secondary-absolute);
   }
-  &.btn-edit:hover {
-    background: color-mix(in srgb, var(--afer-primary), transparent 88%);
-    color: var(--afer-primary);
+
+  &.btn-view:hover {
+    color: var(--afer-secondary-absolute);
   }
+
+  &.btn-edit {
+    color: var(--afer-primary-absolute);
+  }
+
+  &.btn-edit:hover {
+    background: color-mix(in srgb, var(--afer-primary-absolute), transparent 88%);
+    color: var(--afer-primary-absolute);
+  }
+
+  &.btn-delete {
+    color: var(--afer-corporate);
+  }
+
   &.btn-delete:hover {
     background: color-mix(in srgb, var(--afer-corporate), transparent 88%);
     color: var(--afer-corporate);
+  }
+
+  &.btn-view:hover {
+    background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 88%);
+    color: var(--afer-secondary-absolute);
   }
 }
 }

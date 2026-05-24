@@ -1,5 +1,5 @@
 import { Component, inject, input, output, computed, signal, ChangeDetectionStrategy } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthStore } from '../../../../modules/01-identity/auth/store/auth.store';
 import { ThemeService } from '../../../../core/services/theme.service';
@@ -8,7 +8,7 @@ import type { AdminNavItem } from '../../admin-nav.config';
 @Component({
   selector: 'admin-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, MatIconModule],
+  imports: [RouterLink, MatIconModule],
   templateUrl: './admin-sidebar.html',
   styleUrl: './admin-sidebar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,6 +51,15 @@ export class AdminSidebar {
 
   navigateToStore(): void {
     this.router.navigate(['/']);
+  }
+
+  isItemActive(route: string): boolean {
+    return this.router.isActive(route, {
+      paths: 'subset',
+      queryParams: 'ignored',
+      fragment: 'ignored',
+      matrixParams: 'ignored',
+    });
   }
 
   logout(): void {

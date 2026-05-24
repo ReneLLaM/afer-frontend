@@ -1,7 +1,7 @@
 <div class="admin-list-toolbar" [class.admin-list-toolbar--has-active]="hasActiveFilters()">
   <app-search-input
     class="admin-list-toolbar__search"
-    placeholder="Buscar por nombre"
+    [placeholder]="searchPlaceholder()"
     [initialValue]="search()"
     [fullWidth]="true"
     icon="svg"

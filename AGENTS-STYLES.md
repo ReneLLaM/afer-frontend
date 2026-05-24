@@ -160,6 +160,14 @@ overflow: hidden;
 | xl | `40px` | Padding de pÃ¡gina |
 | 2xl | `60px+` | SeparaciÃ³n de bloques principales |
 
+### 4.1.1 Regla de compacidad en admin
+
+- En pantallas admin de formularios y detalle, preferir densidad compacta.
+- No aÃ±adir `margin`, `padding` o `gap` grandes por defecto.
+- Usar primero rangos `xs`, `sm` y `md`; `lg` solo si mejora legibilidad de forma clara.
+- Headers, cards, grids y grupos de campos admin deben sentirse cerrados y eficientes, no aireados.
+- Si una vista admin ya funciona, no expandir espaciado salvo requerimiento explÃ­cito.
+
 ### 4.2 Contenedores
 
 ```scss
@@ -811,6 +819,8 @@ Para evitar saltos visuales incÃ³modos, la separaciÃ³n entre bloques es tota
 ### 16.3 Acciones
 - **Controles interactivos**: Selector de cantidad interactivo + botÃ³n de agregar al carrito + botÃ³n de favoritos en una sola fila.
 - **PatrÃ³n responsive**: En mÃ³viles, la fila se comporta de forma elÃ¡stica (`flex-wrap nowrap` con gap reducido y `overflow-x hidden`) para evitar desbordes y colisiones.
+- En vistas admin, evitar degradados decorativos en fondos, heroes, panels o chips. Preferir color plano, contraste y borde para dar presencia visual.
+- Cuando una vista detalle admin muestre auditorÃ­a, preferir un bloque de trazabilidad con tarjetas o paneles por evento (`Creado`, `Actualizado`, `Eliminado`) y cada evento debe mostrar responsable + fecha en el mismo bloque.
 
 ---
 

@@ -21,7 +21,7 @@
     transform: translateY(-50%);
     width: 18px;
     height: 18px;
-    color: var(--afer-text-muted);
+    color: color-mix(in srgb, var(--afer-text-secondary), var(--afer-text-muted) 45%);
     pointer-events: none;
     z-index: 3;
     display: flex;
@@ -51,7 +51,7 @@
     padding: 0 40px 0 12px;
     position: relative;
     z-index: 1;
-    border: 1.5px solid color-mix(in srgb, var(--afer-text-muted), transparent 85%);
+    border: 1.5px solid color-mix(in srgb, var(--afer-text-secondary), transparent 74%);
     border-radius: 10px;
     background: var(--afer-surface);
     color: var(--afer-text-primary);
@@ -64,18 +64,18 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
     &::placeholder {
-      color: var(--afer-text-muted);
-      opacity: 0.55;
+      color: color-mix(in srgb, var(--afer-text-secondary), var(--afer-text-muted) 55%);
+      opacity: 0.8;
       font-weight: 400;
     }
 
     &:hover {
-      border-color: color-mix(in srgb, var(--afer-text-muted), transparent 70%);
+      border-color: color-mix(in srgb, var(--afer-text-secondary), transparent 58%);
     }
 
     &:focus {
       border-color: var(--afer-secondary-absolute);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--afer-secondary-absolute), transparent 94%);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--afer-secondary-absolute), transparent 92%);
     }
 
     &::-webkit-search-decoration,
@@ -100,8 +100,8 @@
     width: 22px;
     height: 22px;
     border: none;
-    background: color-mix(in srgb, var(--afer-text-muted), transparent 92%);
-    color: var(--afer-text-muted);
+    background: color-mix(in srgb, var(--afer-text-secondary), transparent 91%);
+    color: color-mix(in srgb, var(--afer-text-secondary), var(--afer-text-muted) 40%);
     cursor: pointer;
     border-radius: 6px;
     transition: all 0.2s ease;
@@ -121,6 +121,31 @@
     &:active {
       transform: scale(0.95);
     }
+  }
+}
+
+:host-context([data-theme='dark']) .search-input {
+  &__icon {
+    color: var(--afer-text-muted);
+  }
+
+  &__input {
+    border-color: color-mix(in srgb, var(--afer-text-muted), transparent 85%);
+    background: var(--afer-surface);
+
+    &::placeholder {
+      color: var(--afer-text-muted);
+      opacity: 0.55;
+    }
+
+    &:hover {
+      border-color: color-mix(in srgb, var(--afer-text-muted), transparent 70%);
+    }
+  }
+
+  &__clear {
+    background: color-mix(in srgb, var(--afer-text-muted), transparent 92%);
+    color: var(--afer-text-muted);
   }
 }
 

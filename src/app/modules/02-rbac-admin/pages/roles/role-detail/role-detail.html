@@ -1,0 +1,209 @@
+<div class="role-detail">
+  <breadcrumb />
+
+  <header class="role-detail__top">
+    <div class="role-detail__top-actions">
+      <button type="button" class="role-detail__back admin-btn admin-btn--secondary" (click)="goBack()">
+        <i class="ri-arrow-left-line"></i>
+        <span>← Volver al listado</span>
+      </button>
+
+      @if (role(); as currentRole) {
+        <div class="role-detail__top-actions-group">
+          <button
+            *hasPermission="PERMISSIONS.ROLES.UPDATE"
+            type="button"
+            class="admin-btn admin-btn--primary"
+            [disabled]="currentRole.isSystem || !!currentRole.deletedAt"
+            (click)="editRole()"
+          >
+            <i class="ri-edit-line"></i>
+            Editar
+          </button>
+
+          <button
+            *hasPermission="PERMISSIONS.ROLES.DELETE"
+            type="button"
+            class="admin-btn admin-btn--danger"
+            [disabled]="currentRole.isSystem || !!currentRole.deletedAt"
+            (click)="deleteRole()"
+          >
+            <i class="ri-delete-bin-line"></i>
+            Eliminar
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="role-detail__panel role-detail__panel--state">
+      <div class="role-detail__loading">
+        <div class="role-detail__spinner"></div>
+        <span>Cargando rol...</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="role-detail__panel role-detail__panel--state role-detail__panel--error">
+      <i class="ri-error-warning-line"></i>
+      <p>{{ error() }}</p>
+      <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">← Volver</button>
+    </div>
+  } @else if (role(); as r) {
+    <section class="role-detail__hero">
+      <div class="role-detail__hero-main">
+        <span class="role-detail__eyebrow">Rol de acceso</span>
+        <h1 class="role-detail__title">{{ r.name }}</h1>
+        <code class="role-detail__slug">{{ r.slug }}</code>
+      </div>
+
+      <div class="role-detail__hero-badges">
+        <span class="role-detail__chip" [class.role-detail__chip--system]="r.isSystem" [class.role-detail__chip--custom]="!r.isSystem">
+          <i [class]="r.isSystem ? 'ri-shield-star-line' : 'ri-user-settings-line'"></i>
+          {{ r.isSystem ? 'Rol del sistema' : 'Rol personalizado' }}
+        </span>
+        <span class="role-detail__chip role-detail__chip--permissions">
+          <i class="ri-key-2-line"></i>
+          {{ permissionsCount() }} permisos
+        </span>
+      </div>
+    </section>
+
+    <div class="role-detail__grid">
+      <article class="role-detail__panel role-detail__panel--wide">
+        <h2 class="role-detail__panel-title">
+          <i class="ri-information-line"></i>
+          Información general
+        </h2>
+        <dl class="role-detail__meta role-detail__meta--two-columns">
+          <div>
+            <dt>Nombre</dt>
+            <dd>{{ r.name }}</dd>
+          </div>
+          <div>
+            <dt>Slug</dt>
+            <dd><code>{{ r.slug }}</code></dd>
+          </div>
+          <div class="role-detail__meta-full">
+            <dt>Descripción</dt>
+            <dd class="role-detail__description">{{ r.description || 'Sin descripción registrada.' }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="role-detail__panel">
+        <h2 class="role-detail__panel-title">
+          <i class="ri-shield-check-line"></i>
+          Estado
+        </h2>
+        <dl class="role-detail__meta">
+          <div>
+            <dt>Tipo de rol</dt>
+            <dd>{{ r.isSystem ? 'Rol del sistema' : 'Rol personalizado' }}</dd>
+          </div>
+          <div>
+            <dt>isSystem</dt>
+            <dd>{{ r.isSystem ? 'true' : 'false' }}</dd>
+          </div>
+          <div>
+            <dt>Total de permisos</dt>
+            <dd>{{ permissionsCount() }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="role-detail__panel role-detail__panel--full">
+        <h2 class="role-detail__panel-title">
+          <i class="ri-history-line"></i>
+          Trazabilidad
+        </h2>
+        <div class="role-detail__timeline">
+          <article class="role-detail__event role-detail__event--created">
+            <div class="role-detail__event-head">
+              <span class="role-detail__event-badge">Creado</span>
+              <i class="ri-add-circle-line"></i>
+            </div>
+            <dl class="role-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>{{ r.audit.createdBy?.fullName || 'Sistema' }}</dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ r.createdAt | localeDate:'medium' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="role-detail__event role-detail__event--updated">
+            <div class="role-detail__event-head">
+              <span class="role-detail__event-badge">Actualizado</span>
+              <i class="ri-refresh-line"></i>
+            </div>
+            <dl class="role-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>{{ r.audit.updatedBy?.fullName || 'Sin cambios registrados' }}</dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ r.updatedAt ? (r.updatedAt | localeDate:'medium') : 'Sin actualizaciones' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="role-detail__event role-detail__event--deleted">
+            <div class="role-detail__event-head">
+              <span class="role-detail__event-badge">Eliminado</span>
+              <i class="ri-delete-bin-line"></i>
+            </div>
+            <dl class="role-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>{{ r.audit.deletedBy?.fullName || 'No eliminado' }}</dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ r.deletedAt ? (r.deletedAt | localeDate:'medium') : 'No eliminado' }}</dd>
+              </div>
+            </dl>
+          </article>
+        </div>
+      </article>
+
+      <article class="role-detail__panel role-detail__panel--full">
+        <h2 class="role-detail__panel-title">
+          <i class="ri-lock-password-line"></i>
+          permissions
+        </h2>
+
+        @if (r.permissions.length > 0) {
+          <div class="role-detail__permissions">
+            @for (permission of r.permissions; track permission) {
+              <span class="role-detail__permission-item">{{ permission }}</span>
+            }
+          </div>
+        } @else {
+          <p class="role-detail__empty">[]</p>
+        }
+      </article>
+
+      <article class="role-detail__panel role-detail__panel--full">
+        <h2 class="role-detail__panel-title">
+          <i class="ri-list-check-3"></i>
+          permissionSlugs
+        </h2>
+
+        @if (r.permissionSlugs.length > 0) {
+          <div class="role-detail__permissions">
+            @for (permissionSlug of r.permissionSlugs; track permissionSlug) {
+              <span class="role-detail__permission-item">{{ permissionSlug }}</span>
+            }
+          </div>
+        } @else {
+          <p class="role-detail__empty">[]</p>
+        }
+      </article>
+    </div>
+  }
+</div>
