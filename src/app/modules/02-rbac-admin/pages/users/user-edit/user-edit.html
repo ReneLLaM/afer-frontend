@@ -17,12 +17,6 @@
       </p>
     </div>
 
-    <div class="user-create__hero-actions">
-      <span class="user-create__counter">
-        <i class="ri-shield-user-line"></i>
-        {{ selectedCount() }} roles · {{ selectedPermissionCount() }} permisos extra
-      </span>
-    </div>
   </section>
 
   @if (submitError()) {
@@ -84,31 +78,6 @@
       </section>
 
       <aside class="user-create__panel user-create__panel--side">
-        <h2 class="user-create__panel-title">Resumen</h2>
-
-        <dl class="user-create__summary">
-          <div>
-            <dt>Nombre</dt>
-            <dd>{{ form.controls.fullName.value || 'Sin definir' }}</dd>
-          </div>
-          <div>
-            <dt>Correo</dt>
-            <dd>{{ form.controls.email.value || 'Sin definir' }}</dd>
-          </div>
-          <div>
-            <dt>Estado</dt>
-            <dd>{{ form.controls.status.value }}</dd>
-          </div>
-          <div>
-            <dt>Roles</dt>
-            <dd>{{ selectedCount() }}</dd>
-          </div>
-          <div>
-            <dt>Permisos extra</dt>
-            <dd>{{ selectedPermissionCount() }}</dd>
-          </div>
-        </dl>
-
         <div class="user-create__submit-box">
           <button
             type="submit"

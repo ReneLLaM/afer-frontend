@@ -1,7 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { environment } from '../../../../../environments/environment';
-
-const imgUrl = environment.imgUrl;
 
 @Pipe({
   name: 'productImage',
@@ -13,13 +10,13 @@ export class ProductImagePipe implements PipeTransform {
     }
 
     if (typeof value === 'string') {
-      return `${imgUrl}/${value}`;
+      return value;
     }
 
     const image = value.at(0);
 
     if (image && image !== '') {
-      return `${image}`; //todo añadir url de claudinary
+      return image;
     }
 
     return `assets/images/placeholder.png`;

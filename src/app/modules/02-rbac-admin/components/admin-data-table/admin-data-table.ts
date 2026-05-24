@@ -132,6 +132,9 @@ export class DataTable<T = any> {
   sortChange = output<SortEvent>();
   rowReorder = output<{ fromIndex: number; toIndex: number; row: T }>();
 
+  private draggedRowKey: unknown = null;
+  private dragOverRowKey: unknown = null;
+
   isLoading = computed(() => this.loading());
   hasData = computed(() => this.data().length > 0);
 
@@ -298,5 +301,68 @@ export class DataTable<T = any> {
 
   hasVisibleActionsForRow(row: T): boolean {
     return this.resolvedActions().some((a) => this.isActionVisible(a, row));
+  }
+
+  isDraggingRow(index: number): boolean {
+    return this.draggedRowKey === this.trackRow(index, this.displayData()[index] as T);
+  }
+
+  isDragOverRow(index: number): boolean {
+    return this.dragOverRowKey === this.trackRow(index, this.displayData()[index] as T);
+  }
+
+  onRowDragStart(event: DragEvent, index: number): void {
+    if (!this.reorderable()) return;
+
+    const row = this.displayData()[index];
+    if (!row) return;
+
+    this.draggedRowKey = this.trackRow(index, row);
+    this.dragOverRowKey = null;
+    event.dataTransfer?.setData('text/plain', String(index));
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
+
+  onRowDragOver(event: DragEvent): void {
+    if (!this.reorderable() || this.draggedRowKey === null) return;
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  onRowDragEnter(index: number): void {
+    if (!this.reorderable() || this.draggedRowKey === null) return;
+
+    const rows = this.displayData();
+    const targetRow = rows[index];
+    if (!targetRow) return;
+
+    const targetKey = this.trackRow(index, targetRow);
+    this.dragOverRowKey = targetKey;
+
+    if (targetKey === this.draggedRowKey) return;
+
+    const fromIndex = rows.findIndex((row, rowIndex) => this.trackRow(rowIndex, row) === this.draggedRowKey);
+    const toIndex = rows.findIndex((row, rowIndex) => this.trackRow(rowIndex, row) === targetKey);
+    if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return;
+
+    this.rowReorder.emit({ fromIndex, toIndex, row: rows[fromIndex] as T });
+  }
+
+  onRowDrop(event: DragEvent, toIndex: number): void {
+    if (!this.reorderable()) return;
+
+    event.preventDefault();
+    void toIndex;
+    this.draggedRowKey = null;
+    this.dragOverRowKey = null;
+  }
+
+  onRowDragEnd(): void {
+    this.draggedRowKey = null;
+    this.dragOverRowKey = null;
   }
 }

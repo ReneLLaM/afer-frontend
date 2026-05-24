@@ -77,15 +77,15 @@
         </h2>
         <dl class="role-detail__meta role-detail__meta--two-columns">
           <div>
-            <dt>Nombre</dt>
+            <dt>Nombre:</dt>
             <dd>{{ r.name }}</dd>
           </div>
           <div>
-            <dt>Slug</dt>
+            <dt>Slug:</dt>
             <dd><code>{{ r.slug }}</code></dd>
           </div>
           <div class="role-detail__meta-full">
-            <dt>Descripción</dt>
+            <dt>Descripcion:</dt>
             <dd class="role-detail__description">{{ r.description || 'Sin descripción registrada.' }}</dd>
           </div>
         </dl>
@@ -98,15 +98,15 @@
         </h2>
         <dl class="role-detail__meta">
           <div>
-            <dt>Tipo de rol</dt>
+            <dt>Tipo de rol:</dt>
             <dd>{{ r.isSystem ? 'Rol del sistema' : 'Rol personalizado' }}</dd>
           </div>
           <div>
-            <dt>isSystem</dt>
+            <dt>isSystem:</dt>
             <dd>{{ r.isSystem ? 'true' : 'false' }}</dd>
           </div>
           <div>
-            <dt>Total de permisos</dt>
+            <dt>Total de permisos:</dt>
             <dd>{{ permissionsCount() }}</dd>
           </div>
         </dl>
@@ -238,15 +238,7 @@
                         {{ permission.name }}
                       </a>
                     </strong>
-                    <code class="role-detail__permission-slug">
-                      <a
-                        [routerLink]="['/admin/permisos', permission.id || permission.slug]"
-                        queryParamsHandling="preserve"
-                        class="role-detail__entity-link role-detail__entity-link--code"
-                      >
-                        {{ permission.slug }}
-                      </a>
-                    </code>
+                    <code class="role-detail__permission-slug">{{ permission.slug }}</code>
 
                     @if (permission.description) {
                       <p class="role-detail__permission-description">{{ permission.description }}</p>

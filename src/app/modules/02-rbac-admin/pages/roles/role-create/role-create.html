@@ -15,12 +15,6 @@
       <p class="role-create__subtitle">Define el nombre, la descripción y los permisos que tendrá este rol.</p>
     </div>
 
-    <div class="role-create__hero-actions">
-      <span class="role-create__counter">
-        <i class="ri-key-2-line"></i>
-        {{ selectedCount() }} permisos seleccionados
-      </span>
-    </div>
   </section>
 
   @if (submitError()) {
@@ -53,23 +47,6 @@
     </section>
 
     <aside class="role-create__panel role-create__panel--side">
-      <h2 class="role-create__panel-title">Resumen</h2>
-
-      <dl class="role-create__summary">
-        <div>
-          <dt>Nombre</dt>
-          <dd>{{ form.controls.name.value || 'Sin definir' }}</dd>
-        </div>
-        <div>
-          <dt>Permisos</dt>
-          <dd>{{ selectedCount() }}</dd>
-        </div>
-        <div>
-          <dt>Origen</dt>
-          <dd>Personalizado</dd>
-        </div>
-      </dl>
-
       <div class="role-create__submit-box">
         <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving() || loadingPermissions()">
           <i class="ri-save-line"></i>

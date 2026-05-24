@@ -8,7 +8,7 @@
   </header>
 
   <app-admin-list-toolbar
-    search=""
+    [search]="search()"
     [searchPlaceholder]="'Buscar ' + title().toLowerCase() + '...'"
     [hasActiveFilters]="false"
     [filterCount]="0"
@@ -18,12 +18,16 @@
 
   <app-data-table
     [columns]="columns()"
-    [data]="data"
-    [loading]="false"
+    [data]="data()"
+    [loading]="loading()"
     [serverSort]="true"
     [reorderable]="reorderable()"
     [emptyMessage]="emptyMessage()"
   />
 
-  <app-pagination [meta]="meta" />
+  <app-pagination
+    [meta]="meta()"
+    (pageChange)="onPageChange($event)"
+    (limitChange)="onLimitChange($event)"
+  />
 </div>

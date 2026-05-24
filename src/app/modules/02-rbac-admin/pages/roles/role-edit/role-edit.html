@@ -16,14 +16,9 @@
     <section class="role-edit__hero">
       <div>
         <span class="role-edit__eyebrow">Editar rol</span>
-        <h1 class="role-edit__title">{{ roleName() }}</h1>
+        <h1 class="role-edit__title">Editar Rol</h1>
         <p class="role-edit__subtitle">Actualiza la información del rol y sus permisos asignados.</p>
       </div>
-
-      <span class="role-edit__counter">
-        <i class="ri-key-2-line"></i>
-        {{ selectedCount() }} permisos seleccionados
-      </span>
     </section>
 
     @if (submitError()) {
@@ -52,23 +47,6 @@
       </section>
 
       <aside class="role-edit__panel role-edit__panel--side">
-        <h2 class="role-edit__panel-title">Resumen</h2>
-
-        <dl class="role-edit__summary">
-          <div>
-            <dt>Nombre</dt>
-            <dd>{{ form.controls.name.value || 'Sin definir' }}</dd>
-          </div>
-          <div>
-            <dt>Permisos</dt>
-            <dd>{{ selectedCount() }}</dd>
-          </div>
-          <div>
-            <dt>Origen</dt>
-            <dd>Personalizado</dd>
-          </div>
-        </dl>
-
         <div class="role-edit__submit-box">
           <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving()">
             <i class="ri-save-line"></i>

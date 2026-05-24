@@ -1,4 +1,4 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { Breadcrumb } from '../../../../shared/components/breadcrumb/breadcrumb';
 import {
   DataTable,
@@ -23,10 +23,26 @@ export class AdminCatalogStubPage {
   columns = input.required<TableColumn[]>();
   reorderable = input<boolean>(false);
   emptyMessage = input<string>('Próximamente: conecta el servicio de listado.');
+  search = input<string>('');
+  data = input<unknown[]>([]);
+  meta = input<ListMeta>({ total: 0, limit: 10, page: 1, totalPages: 1 });
+  loading = input<boolean>(false);
 
-  readonly data: unknown[] = [];
-  readonly meta: ListMeta = { total: 0, limit: 10, page: 1, totalPages: 1 };
+  searchChange = output<string>();
+  pageChange = output<number>();
+  limitChange = output<number>();
 
-  onSearch(_value: string): void {}
+  onSearch(value: string): void {
+    this.searchChange.emit(value);
+  }
+
   onClearFilters(): void {}
+
+  onPageChange(page: number): void {
+    this.pageChange.emit(page);
+  }
+
+  onLimitChange(limit: number): void {
+    this.limitChange.emit(limit);
+  }
 }

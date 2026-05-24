@@ -85,19 +85,19 @@
         </h2>
         <dl class="user-detail__meta user-detail__meta--two-columns">
           <div>
-            <dt>Nombre completo</dt>
+            <dt>Nombre completo:</dt>
             <dd>{{ u.fullName }}</dd>
           </div>
           <div>
-            <dt>Correo electrónico</dt>
+            <dt>Correo electronico:</dt>
             <dd><code>{{ u.email }}</code></dd>
           </div>
           <div>
-            <dt>Teléfono</dt>
+            <dt>Telefono:</dt>
             <dd>{{ u.phone || 'No registrado' }}</dd>
           </div>
           <div>
-            <dt>Género</dt>
+            <dt>Genero:</dt>
             <dd>{{ u.gender ? genderLabel[u.gender] : 'No registrado' }}</dd>
           </div>
         </dl>
@@ -110,23 +110,23 @@
         </h2>
         <dl class="user-detail__meta">
           <div>
-            <dt>Estado</dt>
+            <dt>Estado:</dt>
             <dd>{{ statusLabel[u.status] }}</dd>
           </div>
           <div>
-            <dt>Email verificado</dt>
+            <dt>Email verificado:</dt>
             <dd>{{ u.emailVerifiedAt ? 'Sí' : 'No' }}</dd>
           </div>
           <div>
-            <dt>Login con Google</dt>
+            <dt>Login con Google:</dt>
             <dd>{{ u.isGoogleUser ? 'Sí' : 'No' }}</dd>
           </div>
           <div>
-            <dt>Contraseña local</dt>
+            <dt>Contrasena local:</dt>
             <dd>{{ u.hasPassword ? 'Sí' : 'No' }}</dd>
           </div>
           <div>
-            <dt>Último acceso</dt>
+            <dt>Ultimo acceso:</dt>
             <dd>{{ u.lastLoginAt ? (u.lastLoginAt | localeDate:'long') : 'Sin registros' }}</dd>
           </div>
         </dl>
@@ -231,11 +231,7 @@
                         {{ role.name }}
                       </a>
                     </strong>
-                    <small>
-                      <a [routerLink]="['/admin/roles', role.id]" queryParamsHandling="preserve" class="user-detail__entity-link user-detail__entity-link--subtle">
-                        {{ role.slug }}
-                      </a>
-                    </small>
+                    <small class="user-detail__entity-subtle">{{ role.slug }}</small>
                   </div>
 
                   <div class="user-detail__accordion-meta">
@@ -305,15 +301,7 @@
                                   {{ permission.name }}
                                 </a>
                               </strong>
-                              <code class="user-detail__permission-slug">
-                                <a
-                                  [routerLink]="['/admin/permisos', permissionDetailTerm(permission)]"
-                                  queryParamsHandling="preserve"
-                                  class="user-detail__entity-link user-detail__entity-link--code"
-                                >
-                                  {{ permission.slug }}
-                                </a>
-                              </code>
+                              <code class="user-detail__permission-slug">{{ permission.slug }}</code>
 
                               @if (permission.description) {
                                 <p class="user-detail__permission-description">{{ permission.description }}</p>
@@ -385,15 +373,7 @@
                         {{ permission.name }}
                       </a>
                     </strong>
-                    <code class="user-detail__permission-slug">
-                      <a
-                        [routerLink]="['/admin/permisos', permissionDetailTerm(permission)]"
-                        queryParamsHandling="preserve"
-                        class="user-detail__entity-link user-detail__entity-link--code"
-                      >
-                        {{ permission.slug }}
-                      </a>
-                    </code>
+                    <code class="user-detail__permission-slug">{{ permission.slug }}</code>
 
                     <dl class="user-detail__permission-dates">
                       <div>

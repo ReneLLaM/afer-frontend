@@ -1,0 +1,133 @@
+<div class="banners-page">
+  <breadcrumb />
+
+  <header class="banners-page__header">
+    <div class="banners-page__header-content">
+      <h1 class="banners-page__title">Banners</h1>
+      <p class="banners-page__subtitle">
+        Gestiona banners con estado, vigencia e imagen principal desde un listado limpio.
+      </p>
+    </div>
+
+    <div class="banners-page__header-actions">
+      <button
+        *hasPermission="PERMISSIONS.BANNERS.UPDATE"
+        class="admin-btn admin-btn--secondary"
+        type="button"
+        [disabled]="reorderMode() || !!reorderBlockedReason() || reordering()"
+        [attr.title]="reorderBlockedReason()"
+        (click)="startReorderMode()"
+      >
+        <i class="ri-draggable"></i>
+        <span>Reordenar</span>
+      </button>
+
+      <button
+        *hasPermission="PERMISSIONS.BANNERS.CREATE"
+        class="admin-btn admin-btn--primary"
+        type="button"
+        (click)="onCreateBanner()"
+      >
+        <i class="ri-add-line"></i>
+        <span>Crear Banner</span>
+      </button>
+    </div>
+  </header>
+
+  <app-admin-list-toolbar
+    [search]="search()"
+    searchPlaceholder="Buscar banners..."
+    [hasActiveFilters]="hasActiveFilters()"
+    [filterCount]="activeFilterCount()"
+    (searchChange)="onSearch($event)"
+    (clearFilters)="onClearFilters()"
+  >
+    <div filters class="banners-page__filters">
+      <label
+        class="banners-page__filter-field"
+        [class.banners-page__filter-field--active]="!!isActiveFilter()"
+      >
+        <span class="banners-page__filter-label">
+          Estado
+          @if (isActiveFilter()) {
+            <span class="banners-page__filter-dot" aria-hidden="true"></span>
+          }
+        </span>
+        <select
+          class="banners-page__filter-select"
+          [value]="isActiveFilter()"
+          (change)="onIsActiveFilter($any($event.target).value)"
+        >
+          <option value="">Todos</option>
+          <option value="true">Activos</option>
+          <option value="false">Inactivos</option>
+        </select>
+      </label>
+
+      <label
+        class="banners-page__filter-check"
+        [class.banners-page__filter-check--active]="showDeleted()"
+      >
+        <input
+          type="checkbox"
+          [checked]="showDeleted()"
+          (change)="onShowDeletedChange($any($event.target).checked)"
+        />
+        <span>Mostrar eliminados</span>
+      </label>
+    </div>
+  </app-admin-list-toolbar>
+
+  @if (error()) {
+    <div class="banners-page__error">{{ error() }}</div>
+  }
+
+  @if (reorderMode()) {
+    <section class="banners-page__reorder-panel banners-page__reorder-panel--active">
+      <div class="banners-page__reorder-copy">
+        <strong>Modo reordenar activo</strong>
+        <p>Arrastra las filas y confirma con Aceptar. Los banners eliminados no participan.</p>
+      </div>
+
+      <div class="banners-page__reorder-actions">
+        <button class="admin-btn admin-btn--secondary" type="button" [disabled]="reordering()" (click)="cancelReorderMode()">
+          <i class="ri-close-line"></i>
+          <span>Cancelar</span>
+        </button>
+
+        <button class="admin-btn admin-btn--primary" type="button" [disabled]="!canSaveReorder() || reordering()" (click)="saveReorder()">
+          <i class="ri-check-line"></i>
+          <span>{{ reordering() ? 'Guardando...' : 'Aceptar' }}</span>
+        </button>
+      </div>
+    </section>
+  } @else {
+    @if (reorderBlockedReason()) {
+      <div class="banners-page__reorder-note">
+        <span>{{ reorderBlockedReason() }}</span>
+      </div>
+    }
+  }
+
+  <app-data-table
+    [columns]="columns"
+    [data]="tableData()"
+    [loading]="loading() || reordering()"
+    [serverSort]="true"
+    [showFooterInfo]="false"
+    trackByKey="id"
+    [sortKey]="sortBy()"
+    [sortDir]="sortDirection()"
+    [crud]="tableCrud"
+    [reorderable]="reorderMode()"
+    emptyMessage="No se encontraron banners"
+    (sortChange)="onSort($event)"
+    (rowReorder)="onRowReorder($event)"
+  />
+
+  <app-pagination
+    [meta]="meta()"
+    (pageChange)="onPageChange($event)"
+    (limitChange)="onLimitChange($event)"
+  />
+</div>

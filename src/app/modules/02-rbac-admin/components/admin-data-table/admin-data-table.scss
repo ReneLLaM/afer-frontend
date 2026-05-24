@@ -141,6 +141,22 @@ td {
   }
 }
 
+.banner-schedule-date {
+  font-weight: 700;
+}
+
+.banner-schedule-date--success {
+  color: #1f8c59;
+}
+
+.banner-schedule-date--danger {
+  color: #c23c3c;
+}
+
+.banner-schedule-date--info {
+  color: var(--afer-secondary-absolute);
+}
+
 .col-sticky-start,
 .col-sticky-end {
   position: sticky;
@@ -185,6 +201,26 @@ tbody tr:last-child td {
   text-align: center;
   color: var(--dt-text-muted);
   vertical-align: middle;
+  cursor: grab;
+}
+
+.data-table--reorderable tbody tr {
+  cursor: grab;
+  transition: transform 0.14s ease, opacity 0.14s ease, box-shadow 0.14s ease;
+}
+
+.data-table--reorderable tbody tr:active,
+.data-table--reorderable .cell-reorder:active {
+  cursor: grabbing;
+}
+
+.data-table--reorderable tbody tr.row-dragging td {
+  opacity: 0.48;
+}
+
+.data-table--reorderable tbody tr.row-drag-over td {
+  background: color-mix(in srgb, var(--dt-accent), transparent 90%);
+  box-shadow: inset 0 2px 0 color-mix(in srgb, var(--dt-accent), transparent 12%);
 }
 
 .cell-image {
@@ -333,12 +369,12 @@ tbody tr:last-child td {
   }
 
   &.btn-delete {
-    color: var(--afer-corporate);
+    color: #d94c4c;
   }
 
   &.btn-delete:hover {
-    background: color-mix(in srgb, var(--afer-corporate), transparent 88%);
-    color: var(--afer-corporate);
+    background: color-mix(in srgb, #d94c4c, transparent 88%);
+    color: #d94c4c;
   }
 
   &.btn-view:hover {

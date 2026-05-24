@@ -1,0 +1,329 @@
+<div class="banner-detail">
+  <breadcrumb />
+
+  <header class="banner-detail__top">
+    <div class="banner-detail__top-actions">
+      <button type="button" class="banner-detail__back admin-btn admin-btn--secondary" (click)="goBack()">
+        <i class="ri-arrow-left-line"></i>
+        <span>Volver</span>
+      </button>
+
+      @if (banner(); as currentBanner) {
+        <div class="banner-detail__top-actions-group">
+          <button
+            *hasPermission="PERMISSIONS.BANNERS.UPDATE"
+            type="button"
+            class="admin-btn admin-btn--primary"
+            [disabled]="!!currentBanner.deletedAt"
+            (click)="editBanner()"
+          >
+            <i class="ri-edit-line"></i>
+            Editar
+          </button>
+
+          <button
+            *hasPermission="PERMISSIONS.BANNERS.DELETE"
+            type="button"
+            class="admin-btn admin-btn--danger"
+            [disabled]="!!currentBanner.deletedAt"
+            (click)="deleteBanner()"
+          >
+            <i class="ri-delete-bin-line"></i>
+            Eliminar
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="banner-detail__panel banner-detail__panel--state">
+      <div class="banner-detail__loading">
+        <div class="banner-detail__spinner"></div>
+        <span>Cargando banner...</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="banner-detail__panel banner-detail__panel--state banner-detail__panel--error">
+      <i class="ri-error-warning-line"></i>
+      <p>{{ error() }}</p>
+      <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">Volver</button>
+    </div>
+  } @else if (banner(); as b) {
+    <section class="banner-detail__hero">
+      <div class="banner-detail__hero-main">
+        <span class="banner-detail__eyebrow">Banner publicitario</span>
+        <h1 class="banner-detail__title">{{ b.title }}</h1>
+        <p class="banner-detail__hero-caption">Titulo del banner</p>
+
+        <p class="banner-detail__hero-description">
+          {{ b.description || 'Este banner no tiene una descripcion registrada por ahora.' }}
+        </p>
+
+        <div class="banner-detail__hero-inline-meta">
+          <span class="banner-detail__hero-inline-label">CTA:</span>
+          <strong class="banner-detail__hero-inline-value">{{ b.ctaLabel || 'Sin CTA' }}</strong>
+        </div>
+      </div>
+
+      <div class="banner-detail__hero-badges">
+        <span class="banner-detail__chip" [class.banner-detail__chip--active]="b.isActive" [class.banner-detail__chip--inactive]="!b.isActive">
+          <i [class]="b.isActive ? 'ri-checkbox-circle-line' : 'ri-close-circle-line'"></i>
+          {{ b.isActive ? 'Activo' : 'Inactivo' }}
+        </span>
+        <span class="banner-detail__chip banner-detail__chip--order">
+          <i class="ri-list-ordered-2"></i>
+          Orden {{ b.order }}
+        </span>
+        <span class="banner-detail__chip banner-detail__chip--count">
+          <i class="ri-links-line"></i>
+          {{ b.categoriesCount + b.brandsCount + b.productsCount }} relaciones
+        </span>
+        @if (b.deletedAt) {
+          <span class="banner-detail__chip banner-detail__chip--deleted">
+            <i class="ri-delete-bin-line"></i>
+            Eliminado
+          </span>
+        }
+      </div>
+    </section>
+
+    <div class="banner-detail__grid">
+      <article class="banner-detail__panel banner-detail__panel--wide">
+        <h2 class="banner-detail__panel-title">
+          <i class="ri-image-line"></i>
+          Imagen principal
+        </h2>
+
+        <div class="banner-detail__image-wrap">
+          <img [src]="b.imageUrl" [alt]="b.title" class="banner-detail__image" />
+        </div>
+      </article>
+
+      <article class="banner-detail__panel">
+        <h2 class="banner-detail__panel-title">
+          <i class="ri-information-line"></i>
+          Información general
+        </h2>
+
+        <dl class="banner-detail__field-list">
+          <div class="banner-detail__field banner-detail__field--stacked">
+            <dt class="banner-detail__field-label">Titulo:</dt>
+            <dd class="banner-detail__field-value banner-detail__field-value--title">{{ b.title }}</dd>
+          </div>
+
+          <div class="banner-detail__field">
+            <dt class="banner-detail__field-label">CTA:</dt>
+            <dd class="banner-detail__field-value">{{ b.ctaLabel || 'Sin CTA' }}</dd>
+          </div>
+
+          <div class="banner-detail__field banner-detail__field--stacked">
+            <dt class="banner-detail__field-label">Descripcion:</dt>
+            <dd class="banner-detail__field-value banner-detail__field-value--prose">
+              {{ b.description || 'Sin descripcion registrada.' }}
+            </dd>
+          </div>
+
+          <div class="banner-detail__field banner-detail__field--stacked">
+            <dt class="banner-detail__field-label">Clave de imagen:</dt>
+            <dd class="banner-detail__field-value banner-detail__field-value--code"><code>{{ b.imageKey }}</code></dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="banner-detail__panel banner-detail__panel--wide">
+        <h2 class="banner-detail__panel-title">
+          <i class="ri-time-line"></i>
+          Vigencia y estado
+        </h2>
+
+        <p class="banner-detail__panel-note">
+          Estado de vigencia actual:
+          <strong
+            [class.banner-detail__field-value--active]="isScheduleActive()"
+            [class.banner-detail__field-value--expired]="isScheduleExpired()"
+            [class.banner-detail__field-value--upcoming]="isScheduleUpcoming()"
+          >{{ scheduleLabel() }}</strong>
+        </p>
+
+        <dl class="banner-detail__field-list banner-detail__field-list--split">
+          <div class="banner-detail__field">
+            <dt class="banner-detail__field-label">Estado:</dt>
+            <dd class="banner-detail__field-value">{{ b.isActive ? 'Activo' : 'Inactivo' }}</dd>
+          </div>
+          <div class="banner-detail__field">
+            <dt class="banner-detail__field-label">Orden:</dt>
+            <dd class="banner-detail__field-value">{{ b.order }}</dd>
+          </div>
+          <div class="banner-detail__field">
+            <dt class="banner-detail__field-label">Inicio:</dt>
+            <dd
+              class="banner-detail__field-value"
+              [class.banner-detail__field-value--active]="isScheduleActive()"
+              [class.banner-detail__field-value--expired]="isScheduleExpired()"
+              [class.banner-detail__field-value--upcoming]="isScheduleUpcoming()"
+            >{{ b.startsAt ? (b.startsAt | localeDate:'long') : 'Desde ahora' }}</dd>
+          </div>
+          <div class="banner-detail__field">
+            <dt class="banner-detail__field-label">Fin:</dt>
+            <dd
+              class="banner-detail__field-value"
+              [class.banner-detail__field-value--active]="isScheduleActive()"
+              [class.banner-detail__field-value--expired]="isScheduleExpired()"
+              [class.banner-detail__field-value--upcoming]="isScheduleUpcoming()"
+            >{{ b.endsAt ? (b.endsAt | localeDate:'long') : 'Sin vencimiento' }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="banner-detail__panel">
+        <h2 class="banner-detail__panel-title">
+          <i class="ri-links-line"></i>
+          Segmentación
+        </h2>
+
+        <dl class="banner-detail__field-list">
+          <div class="banner-detail__field">
+            <dt class="banner-detail__field-label">Categorias:</dt>
+            <dd class="banner-detail__field-value">{{ b.categoriesCount }}</dd>
+          </div>
+          <div class="banner-detail__field">
+            <dt class="banner-detail__field-label">Marcas:</dt>
+            <dd class="banner-detail__field-value">{{ b.brandsCount }}</dd>
+          </div>
+          <div class="banner-detail__field">
+            <dt class="banner-detail__field-label">Productos:</dt>
+            <dd class="banner-detail__field-value">{{ b.productsCount }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="banner-detail__panel banner-detail__panel--full">
+        <h2 class="banner-detail__panel-title">
+          <i class="ri-node-tree"></i>
+          Relaciones
+        </h2>
+
+        <div class="banner-detail__relations-grid">
+          @for (group of relationGroups(); track group.label) {
+            <section class="banner-detail__relation-card">
+              <header class="banner-detail__relation-head">
+                <strong>{{ group.label }}</strong>
+                <span>{{ group.items.length }}</span>
+              </header>
+
+              @if (group.items.length > 0) {
+                <div class="banner-detail__relation-list">
+                  @for (item of group.items; track item.id) {
+                    <article class="banner-detail__relation-item">
+                      <strong>
+                        <a
+                          [routerLink]="[group.route]"
+                          [queryParams]="{ search: item.query }"
+                          queryParamsHandling="merge"
+                          class="banner-detail__entity-link"
+                        >
+                          {{ item.title }}
+                        </a>
+                      </strong>
+
+                      @if (item.subtitle) {
+                        <small class="banner-detail__entity-subtle">{{ item.subtitle }}</small>
+                      }
+                    </article>
+                  }
+                </div>
+              } @else {
+                <p class="banner-detail__empty">Sin relaciones asignadas.</p>
+              }
+            </section>
+          }
+        </div>
+      </article>
+
+      <article class="banner-detail__panel banner-detail__panel--full">
+        <h2 class="banner-detail__panel-title">
+          <i class="ri-history-line"></i>
+          Trazabilidad
+        </h2>
+
+        <div class="banner-detail__timeline">
+          <article class="banner-detail__event banner-detail__event--created">
+            <div class="banner-detail__event-head">
+              <span class="banner-detail__event-badge">Creado</span>
+              <i class="ri-add-circle-line"></i>
+            </div>
+            <dl class="banner-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (b.audit.createdBy; as createdBy) {
+                    <a [routerLink]="['/admin/usuarios', createdBy.id]" queryParamsHandling="preserve" class="banner-detail__inline-link">
+                      {{ createdBy.fullName }}
+                    </a>
+                  } @else {
+                    Sistema
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ b.createdAt | localeDate:'long' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="banner-detail__event banner-detail__event--updated">
+            <div class="banner-detail__event-head">
+              <span class="banner-detail__event-badge">Actualizado</span>
+              <i class="ri-refresh-line"></i>
+            </div>
+            <dl class="banner-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (b.audit.updatedBy; as updatedBy) {
+                    <a [routerLink]="['/admin/usuarios', updatedBy.id]" queryParamsHandling="preserve" class="banner-detail__inline-link">
+                      {{ updatedBy.fullName }}
+                    </a>
+                  } @else {
+                    Sin cambios registrados
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ b.updatedAt ? (b.updatedAt | localeDate:'long') : 'Sin actualizaciones' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="banner-detail__event banner-detail__event--deleted">
+            <div class="banner-detail__event-head">
+              <span class="banner-detail__event-badge">Eliminado</span>
+              <i class="ri-delete-bin-line"></i>
+            </div>
+            <dl class="banner-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (b.audit.deletedBy; as deletedBy) {
+                    <a [routerLink]="['/admin/usuarios', deletedBy.id]" queryParamsHandling="preserve" class="banner-detail__inline-link">
+                      {{ deletedBy.fullName }}
+                    </a>
+                  } @else {
+                    No eliminado
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ b.deletedAt ? (b.deletedAt | localeDate:'long') : 'No eliminado' }}</dd>
+              </div>
+            </dl>
+          </article>
+        </div>
+      </article>
+    </div>
+  }
+</div>

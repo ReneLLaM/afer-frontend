@@ -40,7 +40,30 @@ export const adminRoutes: Routes = [
         path: 'banners',
         canActivate: [permissionGuard],
         data: { permission: PERMISSIONS.BANNERS.READ, breadcrumb: 'Banners' },
-        loadComponent: () => import('./pages/banners-admin/banners-admin').then(m => m.BannersAdminPage),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/banners-admin/banners-admin').then(m => m.BannersAdminPage),
+          },
+          {
+            path: 'crear',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.BANNERS.CREATE, breadcrumb: 'Crear' },
+            loadComponent: () => import('./pages/banners-admin/banner-create/banner-create').then(m => m.BannerCreatePage),
+          },
+          {
+            path: ':id/editar',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.BANNERS.UPDATE, breadcrumb: 'Editar' },
+            loadComponent: () => import('./pages/banners-admin/banner-edit/banner-edit').then(m => m.BannerEditPage),
+          },
+          {
+            path: ':id',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.BANNERS.READ, breadcrumb: 'Detalle' },
+            loadComponent: () => import('./pages/banners-admin/banner-detail/banner-detail').then(m => m.BannerDetailPage),
+          },
+        ],
       },
       {
         path: 'usuarios',

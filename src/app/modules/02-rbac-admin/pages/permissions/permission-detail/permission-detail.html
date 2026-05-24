@@ -58,11 +58,11 @@
         </h2>
         <dl class="permission-detail__meta">
           <div>
-            <dt>ID interno</dt>
+            <dt>ID interno:</dt>
             <dd><code>{{ p.id }}</code></dd>
           </div>
           <div>
-            <dt>Slug</dt>
+            <dt>Slug:</dt>
             <dd><code>{{ p.slug }}</code></dd>
           </div>
         </dl>
@@ -75,11 +75,11 @@
         </h2>
         <dl class="permission-detail__meta">
           <div>
-            <dt>Creado</dt>
+            <dt>Creado:</dt>
             <dd>{{ p.createdAt | localeDate:'medium' }}</dd>
           </div>
           <div>
-            <dt>Módulo · Acción</dt>
+            <dt>Modulo · Accion:</dt>
             <dd>{{ p.module | permissionModuleLabel }} · {{ p.action | permissionActionLabel }}</dd>
           </div>
         </dl>

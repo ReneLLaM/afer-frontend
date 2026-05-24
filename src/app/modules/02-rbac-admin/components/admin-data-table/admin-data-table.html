@@ -110,7 +110,16 @@
           </tr>
         } @else if (hasData()) {
           @for (row of displayData(); track trackRow($index, row)) {
-            <tr>
+            <tr
+              [attr.draggable]="reorderable() ? true : null"
+              [class.row-dragging]="isDraggingRow($index)"
+              [class.row-drag-over]="isDragOverRow($index)"
+              (dragstart)="onRowDragStart($event, $index)"
+              (dragover)="onRowDragOver($event)"
+              (dragenter)="onRowDragEnter($index)"
+              (drop)="onRowDrop($event, $index)"
+              (dragend)="onRowDragEnd()"
+            >
               @if (reorderable()) {
                 <td class="cell-reorder" aria-label="Reordenar">
                   <i class="ri-draggable" aria-hidden="true"></i>

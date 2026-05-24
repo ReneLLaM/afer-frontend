@@ -3,6 +3,8 @@ export interface BannerResponse {
   title:       string;
   description: string;
   image:       string;
+  imageKey?:   string;
+  imageUrl?:   string;
   ctaLabel:    string;
   order:       number;
   isActive:    boolean;

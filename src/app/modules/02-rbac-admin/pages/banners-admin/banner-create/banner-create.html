@@ -1,0 +1,253 @@
+<div class="banner-create">
+  <breadcrumb />
+
+  <header class="banner-create__top">
+    <button type="button" class="banner-create__back admin-btn admin-btn--secondary" (click)="goBack()">
+      <i class="ri-arrow-left-line"></i>
+      <span>Volver</span>
+    </button>
+  </header>
+
+  <section class="banner-create__hero">
+    <div>
+      <span class="banner-create__eyebrow">Nuevo banner</span>
+      <h1 class="banner-create__title">Crear Banner</h1>
+      <p class="banner-create__subtitle">
+        Lo nuevo entra primero. Luego podrás reordenar manualmente desde el listado.
+      </p>
+    </div>
+
+    <div class="banner-create__hero-badge">
+      <i class="ri-sort-desc"></i>
+      <span>Se publica arriba del todo</span>
+    </div>
+  </section>
+
+  @if (submitError()) {
+    <div class="banner-create__alert banner-create__alert--error">{{ submitError() }}</div>
+  }
+
+  <form class="banner-create__grid" [formGroup]="form" (ngSubmit)="submit()">
+    <section class="banner-create__panel banner-create__panel--main">
+      <div class="banner-create__panel-head">
+        <h2 class="banner-create__panel-title">Contenido</h2>
+        <label class="banner-create__check banner-create__check--compact">
+          <input type="checkbox" formControlName="isActive" />
+          <span>Activo</span>
+        </label>
+      </div>
+
+      <div class="banner-create__compact-grid">
+        <label class="banner-create__field banner-create__field--title">
+          <span>Titulo *</span>
+          <input type="text" formControlName="title" placeholder="Ej. Descuentos en electrodomésticos" />
+          @if (form.controls.title.touched && form.controls.title.invalid) {
+            <small>El titulo es obligatorio.</small>
+          }
+        </label>
+
+        <label class="banner-create__field">
+          <span>CTA</span>
+          <input type="text" formControlName="ctaLabel" placeholder="Ej. Ver productos" />
+        </label>
+      </div>
+
+      <label class="banner-create__field">
+        <span>Descripcion</span>
+        <textarea formControlName="description" rows="4" placeholder="Describe brevemente el mensaje principal del banner"></textarea>
+      </label>
+
+      <app-date-range-field
+        label="Vigencia"
+        hint="Sin inicio: vigente desde ahora. Sin fin: sin vencimiento."
+        [startValue]="startsAt()"
+        [endValue]="endsAt()"
+        (rangeChange)="onDateRangeChange($event)"
+      />
+
+      @if (hasDateRangeError()) {
+        <div class="banner-create__inline-error">
+          La fecha de fin no puede ser anterior a la fecha de inicio.
+        </div>
+      }
+    </section>
+
+    <aside class="banner-create__panel banner-create__panel--side">
+      <h2 class="banner-create__panel-title">Imagen principal *</h2>
+
+      <input
+        #fileInput
+        type="file"
+        class="banner-create__file-input"
+        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+        (change)="onImageChange($event)"
+      />
+
+      <div
+        class="banner-create__dropzone"
+        [class.banner-create__dropzone--active]="isDragOver()"
+        [class.banner-create__dropzone--has-image]="previewUrl()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+        (click)="openFileDialog()"
+      >
+        @if (previewUrl()) {
+          <div class="banner-create__preview">
+            <img [src]="previewUrl()" alt="Vista previa del banner" />
+          </div>
+        } @else {
+          <div class="banner-create__drop-copy">
+            <i class="ri-image-add-line"></i>
+            <strong>Arrastra tu imagen aquí</strong>
+            <span>o haz clic para seleccionar un archivo</span>
+            <small>JPG, PNG o WEBP. Máximo 1 MB.</small>
+          </div>
+        }
+      </div>
+
+      @if (imageError()) {
+        <div class="banner-create__image-error">{{ imageError() }}</div>
+      }
+
+      <div class="banner-create__file-meta">
+        <span class="banner-create__file-label">Archivo</span>
+        <strong>{{ selectedImageName() }}</strong>
+      </div>
+    </aside>
+
+    <section class="banner-create__panel banner-create__panel--full">
+      <div class="banner-create__panel-head banner-create__panel-head--stack">
+        <div>
+          <h2 class="banner-create__panel-title">Segmentación opcional</h2>
+          <p class="banner-create__panel-copy">
+            Puedes relacionar el banner con categorías, marcas o productos específicos.
+          </p>
+        </div>
+      </div>
+
+      <div class="banner-create__relations-grid">
+        <article class="banner-create__relation-card">
+          <div class="banner-create__relation-head">
+            <h3>Categorías</h3>
+            <span>{{ selectedCategoryIds().length }}</span>
+          </div>
+          <input
+            type="search"
+            class="banner-create__search"
+            placeholder="Buscar categoría..."
+            [value]="categorySearch()"
+            (input)="categorySearch.set($any($event.target).value)"
+          />
+          <div class="banner-create__selected-chips">
+            @for (item of selectedCategoriesPreview(); track item.id) {
+              <button type="button" class="banner-create__chip" (click)="removeCategory(item.id)">
+                <span>{{ item.name }}</span>
+                <i class="ri-close-line"></i>
+              </button>
+            }
+            @if (selectedCategoriesPreview().length === 0) {
+              <span class="banner-create__empty-chip">Sin categorías seleccionadas</span>
+            }
+          </div>
+          <div class="banner-create__option-list">
+            @for (item of filteredCategories(); track item.id) {
+              <label class="banner-create__option-item">
+                <input
+                  type="checkbox"
+                  [checked]="isCategorySelected(item.id)"
+                  (change)="toggleCategory(item.id, $any($event.target).checked)"
+                />
+                <span [style.paddingLeft.rem]="item.level * 0.75">{{ item.name }}</span>
+              </label>
+            }
+          </div>
+        </article>
+
+        <article class="banner-create__relation-card">
+          <div class="banner-create__relation-head">
+            <h3>Marcas</h3>
+            <span>{{ selectedBrandIds().length }}</span>
+          </div>
+          <input
+            type="search"
+            class="banner-create__search"
+            placeholder="Buscar marca..."
+            [value]="brandSearch()"
+            (input)="brandSearch.set($any($event.target).value)"
+          />
+          <div class="banner-create__selected-chips">
+            @for (item of selectedBrandsPreview(); track item.id) {
+              <button type="button" class="banner-create__chip" (click)="removeBrand(item.id)">
+                <span>{{ item.name }}</span>
+                <i class="ri-close-line"></i>
+              </button>
+            }
+            @if (selectedBrandsPreview().length === 0) {
+              <span class="banner-create__empty-chip">Sin marcas seleccionadas</span>
+            }
+          </div>
+          <div class="banner-create__option-list">
+            @for (item of filteredBrands(); track item.id) {
+              <label class="banner-create__option-item">
+                <input
+                  type="checkbox"
+                  [checked]="isBrandSelected(item.id)"
+                  (change)="toggleBrand(item.id, $any($event.target).checked)"
+                />
+                <span>{{ item.name }}</span>
+              </label>
+            }
+          </div>
+        </article>
+
+        <article class="banner-create__relation-card">
+          <div class="banner-create__relation-head">
+            <h3>Productos</h3>
+            <span>{{ selectedProductIds().length }}</span>
+          </div>
+          <input
+            type="search"
+            class="banner-create__search"
+            placeholder="Buscar producto..."
+            [value]="productSearch()"
+            (input)="productSearch.set($any($event.target).value)"
+          />
+          <div class="banner-create__selected-chips">
+            @for (item of selectedProductsPreview(); track item.id) {
+              <button type="button" class="banner-create__chip" (click)="removeProduct(item.id)">
+                <span>{{ item.title }}</span>
+                <i class="ri-close-line"></i>
+              </button>
+            }
+            @if (selectedProductsPreview().length === 0) {
+              <span class="banner-create__empty-chip">Sin productos seleccionados</span>
+            }
+          </div>
+          <div class="banner-create__option-list">
+            @for (item of productOptions(); track item.id) {
+              <label class="banner-create__option-item banner-create__option-item--product">
+                <input
+                  type="checkbox"
+                  [checked]="isProductSelected(item.id)"
+                  (change)="toggleProduct(item.id, $any($event.target).checked)"
+                />
+                <span>
+                  <strong>{{ item.title }}</strong>
+                  <small>{{ item.sku }}</small>
+                </span>
+              </label>
+            }
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="banner-create__panel banner-create__panel--submit">
+      <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving() || hasDateRangeError()">
+        <i class="ri-save-line"></i>
+        <span>{{ saving() ? 'Creando...' : 'Crear banner' }}</span>
+      </button>
+    </section>
+  </form>
+</div>

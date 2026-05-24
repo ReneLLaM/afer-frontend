@@ -372,20 +372,24 @@
     }
 
     div {
+      padding: 0.58rem 0;
+      border-bottom: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 88%);
+
       dt {
         font-size: 0.65rem;
-        font-weight: 700;
+        font-weight: 900;
         text-transform: uppercase;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.05em;
         color: var(--afer-text-muted);
-        margin-bottom: 0.2rem;
+        margin-bottom: 0.22rem;
       }
 
       dd {
         margin: 0;
-        font-size: 0.88rem;
+        font-size: 0.9rem;
         color: var(--afer-text-primary);
-        line-height: 1.45;
+        line-height: 1.48;
+        font-weight: 600;
 
         code {
           font-size: 0.78rem;
