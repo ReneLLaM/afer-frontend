@@ -1,0 +1,285 @@
+<div class="user-create">
+  <breadcrumb />
+
+  <header class="user-create__top">
+    <button type="button" class="user-create__back admin-btn admin-btn--secondary" (click)="goBack()">
+      <i class="ri-arrow-left-line"></i>
+      <span>Volver</span>
+    </button>
+  </header>
+
+  <section class="user-create__hero">
+    <div>
+      <span class="user-create__eyebrow">Nuevo usuario</span>
+      <h1 class="user-create__title">Crear Usuario</h1>
+      <p class="user-create__subtitle">
+        El usuario creado desde admin quedará con correo verificado y podrá iniciar sesión de inmediato.
+      </p>
+    </div>
+
+    <div class="user-create__hero-actions">
+      <span class="user-create__counter">
+        <i class="ri-shield-user-line"></i>
+        {{ selectedCount() }} roles · {{ selectedPermissionCount() }} permisos extra
+      </span>
+    </div>
+  </section>
+
+  @if (submitError()) {
+    <div class="user-create__alert user-create__alert--error">{{ submitError() }}</div>
+  }
+
+  <form class="user-create__grid" [formGroup]="form" (ngSubmit)="submit()">
+    <section class="user-create__panel user-create__panel--main">
+      <h2 class="user-create__panel-title">Datos del usuario</h2>
+
+      <label class="user-create__field">
+        <span>Nombre completo *</span>
+        <input type="text" formControlName="fullName" placeholder="Ej. Juan Perez" />
+        @if (form.controls.fullName.touched && form.controls.fullName.invalid) {
+          <small>El nombre completo es obligatorio.</small>
+        }
+      </label>
+
+      <label class="user-create__field">
+        <span>Correo electrónico *</span>
+        <input type="email" formControlName="email" placeholder="usuario@correo.com" />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <small>Ingresa un correo válido.</small>
+        }
+      </label>
+
+      <label class="user-create__field">
+        <span>Contraseña *</span>
+        <input type="password" formControlName="password" placeholder="Debe incluir mayúscula, minúscula y número" />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <small>La contraseña debe tener mínimo 6 caracteres, mayúscula, minúscula y número.</small>
+        }
+      </label>
+
+      <label class="user-create__field">
+        <span>Teléfono</span>
+        <input type="text" formControlName="phone" placeholder="Ej. 70000000" />
+      </label>
+
+      <label class="user-create__field">
+        <span>Género</span>
+        <select formControlName="gender">
+          <option value="">Sin definir</option>
+          @for (option of genderOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+    </section>
+
+    <aside class="user-create__panel user-create__panel--side">
+      <h2 class="user-create__panel-title">Resumen</h2>
+
+      <dl class="user-create__summary">
+        <div>
+          <dt>Nombre</dt>
+          <dd>{{ form.controls.fullName.value || 'Sin definir' }}</dd>
+        </div>
+        <div>
+          <dt>Correo</dt>
+          <dd>{{ form.controls.email.value || 'Sin definir' }}</dd>
+        </div>
+        <div>
+          <dt>Roles</dt>
+          <dd>{{ selectedCount() }}</dd>
+        </div>
+        <div>
+          <dt>Permisos extra</dt>
+          <dd>{{ selectedPermissionCount() }}</dd>
+        </div>
+        <div>
+          <dt>Verificación</dt>
+          <dd>Automática desde admin</dd>
+        </div>
+      </dl>
+
+      <div class="user-create__submit-box">
+        <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving() || loadingRoles()">
+          <i class="ri-save-line"></i>
+          <span>{{ saving() ? 'Creando...' : 'Crear usuario' }}</span>
+        </button>
+      </div>
+    </aside>
+
+    <section class="user-create__panel user-create__panel--full">
+      <div class="user-create__roles-header">
+        <div>
+          <h2 class="user-create__panel-title">Roles iniciales</h2>
+          <p class="user-create__roles-help">
+            Selecciona los roles que se asignarán al usuario desde el momento de creación.
+          </p>
+        </div>
+      </div>
+
+      @if (loadingRoles()) {
+        <div class="user-create__state">Cargando roles...</div>
+      } @else if (loadError()) {
+        <div class="user-create__state user-create__state--error">{{ loadError() }}</div>
+      } @else {
+        <div class="user-create__role-list">
+          @for (role of roles(); track role.id) {
+            <label class="user-create__role-item" [class.user-create__role-item--selected]="isSelected(role.id)">
+              <input type="checkbox" [checked]="isSelected(role.id)" (change)="toggleRole(role.id, $any($event.target).checked)" />
+
+              <div class="user-create__role-copy">
+                <span class="user-create__role-name">{{ role.name }}</span>
+                <span class="user-create__role-meta">
+                  <code>{{ role.slug }}</code>
+                  <span>{{ role.isSystem ? 'Sistema' : 'Personalizado' }}</span>
+                </span>
+
+                @if (isSelected(role.id)) {
+                  @for (selectedRole of selectedRoleConfigs(); track selectedRole.roleId) {
+                    @if (selectedRole.roleId === role.id) {
+                      <div class="user-create__role-inline-config">
+                        <div class="user-create__role-inline-head">
+                          <div>
+                            <span class="user-create__accordion-kicker">Vigencia y alcance</span>
+                            <p class="user-create__accordion-copy">
+                              Si no eliges inicio, vale desde ahora. Si no eliges fin, no vence.
+                            </p>
+                          </div>
+
+                          <span class="user-create__role-pill user-create__role-pill--count">
+                            {{ selectedRole.detail?.permissionSlugs?.length || 0 }} permisos
+                          </span>
+                        </div>
+
+                        <div class="user-create__role-inline-range">
+                          <app-date-range-field
+                            label="Vigencia del rol"
+                            startPlaceholder="Inicio del rol"
+                            endPlaceholder="Fin del rol"
+                            [startValue]="selectedRole.startsAt"
+                            [endValue]="selectedRole.expiresAt"
+                            (rangeChange)="onRoleRangeChange(selectedRole.roleId, $event)"
+                          />
+                        </div>
+
+                        @if (loadingRoleDetails()[selectedRole.roleId]) {
+                          <div class="user-create__state">Cargando permisos del rol...</div>
+                        } @else if (selectedRole.permissionGroups.length > 0) {
+                          <details class="user-create__role-permissions-accordion">
+                            <summary class="user-create__role-permissions-summary">
+                              <span>Ver permisos del rol</span>
+                              <i class="ri-arrow-down-s-line"></i>
+                            </summary>
+
+                            <div class="user-create__role-permissions-body">
+                              @for (group of selectedRole.permissionGroups; track group.module) {
+                                <section class="user-create__permission-module-group">
+                                  <header class="user-create__permission-module-head">
+                                    <span class="user-create__permission-module-title">
+                                      {{ group.module | permissionModuleLabel }}
+                                    </span>
+                                  </header>
+
+                                  <div class="user-create__permission-grid">
+                                    @for (permission of group.permissions; track permission.id) {
+                                      <article class="user-create__permission-card">
+                                        <div class="user-create__permission-card-head">
+                                          <span
+                                            class="user-create__permission-action-badge"
+                                            [class.user-create__permission-action-badge--create]="permission.action === 'create'"
+                                            [class.user-create__permission-action-badge--read]="permission.action === 'read'"
+                                            [class.user-create__permission-action-badge--update]="permission.action === 'update'"
+                                            [class.user-create__permission-action-badge--delete]="permission.action === 'delete'"
+                                            [class.user-create__permission-action-badge--assign]="permission.action === 'assign_access'"
+                                          >
+                                            {{ permission.action | permissionActionLabel }}
+                                          </span>
+                                        </div>
+
+                                        <strong class="user-create__permission-card-name">{{ permission.name }}</strong>
+                                        <code class="user-create__permission-card-slug">{{ permission.slug }}</code>
+                                      </article>
+                                    }
+                                  </div>
+                                </section>
+                              }
+                            </div>
+                          </details>
+                        } @else {
+                          <p class="user-create__roles-help">Este rol no tiene permisos asociados.</p>
+                        }
+                      </div>
+                    }
+                  }
+                }
+              </div>
+            </label>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="user-create__panel user-create__panel--full">
+      <div class="user-create__roles-header">
+        <div>
+          <h2 class="user-create__panel-title">Permisos extra</h2>
+          <p class="user-create__roles-help">
+            Asigna permisos adicionales independientes de los roles y define su vigencia.
+          </p>
+        </div>
+      </div>
+
+      @if (loadingPermissions()) {
+        <div class="user-create__state">Cargando permisos...</div>
+      } @else if (loadError()) {
+        <div class="user-create__state user-create__state--error">{{ loadError() }}</div>
+      } @else {
+        <div class="user-create__permission-groups">
+          @for (group of permissionGroups(); track group.module) {
+            <article class="user-create__permission-group">
+              <div class="user-create__group-head">
+                <div>
+                  <strong>{{ group.module | permissionModuleLabel }}</strong>
+                  <small>{{ group.permissions.length }} permisos</small>
+                </div>
+              </div>
+
+              <div class="user-create__permission-list">
+                @for (permission of group.permissions; track permission.id) {
+                  <label
+                    class="user-create__permission-item"
+                    [class.user-create__permission-item--selected]="isPermissionSelected(permission.id)"
+                  >
+                    <input
+                      type="checkbox"
+                      [checked]="isPermissionSelected(permission.id)"
+                      (change)="togglePermission(permission.id, $any($event.target).checked)"
+                    />
+
+                    <div class="user-create__permission-copy">
+                      <span class="user-create__permission-name">{{ permission.name }}</span>
+                      <span class="user-create__permission-meta">
+                        {{ permission.action | permissionActionLabel }} · <code>{{ permission.slug }}</code>
+                      </span>
+
+                      @if (isPermissionSelected(permission.id)) {
+                        <app-date-range-field
+                          label="Vigencia del permiso"
+                          startPlaceholder="Inicio del permiso"
+                          endPlaceholder="Fin del permiso"
+                          [startValue]="getPermissionDate(permission.id, 'startsAt')"
+                          [endValue]="getPermissionDate(permission.id, 'expiresAt')"
+                          (rangeChange)="onPermissionRangeChange(permission.id, $event)"
+                        />
+                      }
+                    </div>
+                  </label>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  </form>
+</div>

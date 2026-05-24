@@ -1,0 +1,188 @@
+:host {
+  display: block;
+}
+
+.date-range-field-shell {
+  display: grid;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.65rem 0.7rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 78%);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--afer-surface), var(--afer-background) 18%);
+}
+
+.date-range-field-shell__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.date-range-field-shell__label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--afer-text-primary);
+}
+
+.date-range-field-shell__hint {
+  font-size: 0.72rem;
+  color: var(--afer-text-muted);
+}
+
+.date-range-field {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: end;
+}
+
+.date-range-field__separator-wrap {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+}
+
+.date-range-field__item {
+  display: grid;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.date-range-field__input-wrap {
+  position: relative;
+}
+
+.date-range-field__item-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--afer-text-muted);
+}
+
+.date-range-field__separator {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--afer-text-muted);
+}
+
+.date-range-field__input {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 74%);
+  border-radius: 10px;
+  background: var(--afer-background);
+  color: var(--afer-text-primary);
+  font: inherit;
+  font-size: 0.86rem;
+  line-height: 1.1;
+  outline: none;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff, transparent 88%);
+
+  &:focus {
+    border-color: var(--afer-secondary-absolute);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--afer-secondary-absolute), transparent 92%);
+  }
+
+  &::-webkit-datetime-edit,
+  &::-webkit-datetime-edit-fields-wrapper,
+  &::-webkit-datetime-edit-text,
+  &::-webkit-datetime-edit-month-field,
+  &::-webkit-datetime-edit-day-field,
+  &::-webkit-datetime-edit-year-field {
+    color: var(--afer-text-primary);
+    padding: 0;
+  }
+}
+
+.date-range-field__range-btn {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 90%);
+  color: var(--afer-secondary-absolute);
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  &:hover {
+    background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 82%);
+  }
+}
+
+.date-range-field__picker-proxy-wrap {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  transform: translateX(-50%);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:host-context([data-theme='dark']) {
+  .date-range-field-shell {
+    background: color-mix(in srgb, var(--afer-surface), var(--afer-background) 30%);
+    border-color: color-mix(in srgb, var(--afer-hover), transparent 42%);
+  }
+
+  .date-range-field__input {
+    background: color-mix(in srgb, var(--afer-background), transparent 18%);
+    border-color: color-mix(in srgb, var(--afer-hover), transparent 36%);
+    box-shadow: none;
+
+    &::-webkit-calendar-picker-indicator {
+      filter: invert(0.88);
+      opacity: 0.86;
+    }
+  }
+
+  .date-range-field__range-btn {
+    background: color-mix(in srgb, var(--afer-accent-absolute), transparent 88%);
+    color: var(--afer-accent-absolute);
+
+    &:hover {
+      background: color-mix(in srgb, var(--afer-accent-absolute), transparent 80%);
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .date-range-field {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .date-range-field__separator-wrap {
+    justify-items: start;
+  }
+
+  .date-range-field__picker-proxy-wrap {
+    left: 0;
+    transform: none;
+  }
+
+  .date-range-field-shell__head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+}

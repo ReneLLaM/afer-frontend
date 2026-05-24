@@ -20,6 +20,8 @@ export interface RolePermissionSummary {
   id: string;
   name: string;
   slug: string;
+   module: string;
+   action: string;
   description: string | null;
 }
 
@@ -41,7 +43,7 @@ export interface AdminRoleListItem extends AdminRoleBase {
 
 export interface AdminRoleDetail extends AdminRoleBase {
   audit: AuditInfo;
-  permissions: string[];
+  permissions: RolePermissionSummary[];
   permissionSlugs: PermissionSlug[];
 }
 

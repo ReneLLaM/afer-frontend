@@ -1,0 +1,423 @@
+<div class="user-detail">
+  <breadcrumb />
+
+  <header class="user-detail__top">
+    <div class="user-detail__top-actions">
+      <button type="button" class="user-detail__back admin-btn admin-btn--secondary" (click)="goBack()">
+        <i class="ri-arrow-left-line"></i>
+        <span>Volver</span>
+      </button>
+
+      @if (user(); as currentUser) {
+        <div class="user-detail__top-actions-group">
+          <button
+            *hasPermission="[PERMISSIONS.USERS.UPDATE, PERMISSIONS.USERS.ASSIGN_ACCESS]; mode: 'any'"
+            type="button"
+            class="admin-btn admin-btn--secondary"
+            [disabled]="!!currentUser.deletedAt"
+            (click)="editUser()"
+          >
+            <i class="ri-pencil-line"></i>
+            Editar
+          </button>
+
+          <button
+            *hasPermission="PERMISSIONS.USERS.DELETE"
+            type="button"
+            class="admin-btn admin-btn--danger"
+            [disabled]="!!currentUser.deletedAt"
+            (click)="deleteUser()"
+          >
+            <i class="ri-delete-bin-line"></i>
+            Eliminar
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="user-detail__panel user-detail__panel--state">
+      <div class="user-detail__loading">
+        <div class="user-detail__spinner"></div>
+        <span>Cargando usuario...</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="user-detail__panel user-detail__panel--state user-detail__panel--error">
+      <i class="ri-error-warning-line"></i>
+      <p>{{ error() }}</p>
+      <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">Volver</button>
+    </div>
+  } @else if (user(); as u) {
+    <section class="user-detail__hero">
+      <div class="user-detail__hero-main">
+        <span class="user-detail__eyebrow">Usuario del sistema</span>
+        <h1 class="user-detail__title">{{ u.fullName }}</h1>
+        <code class="user-detail__slug">{{ u.email }}</code>
+      </div>
+
+      <div class="user-detail__hero-badges">
+        <span class="user-detail__chip user-detail__chip--status">
+          <i class="ri-user-star-line"></i>
+          {{ statusLabel[u.status] }}
+        </span>
+        <span class="user-detail__chip" [class.user-detail__chip--verified]="!!u.emailVerifiedAt" [class.user-detail__chip--pending]="!u.emailVerifiedAt">
+          <i [class]="u.emailVerifiedAt ? 'ri-mail-check-line' : 'ri-mail-close-line'"></i>
+          {{ u.emailVerifiedAt ? 'Email verificado' : 'Email pendiente' }}
+        </span>
+        <span class="user-detail__chip user-detail__chip--roles">
+          <i class="ri-shield-user-line"></i>
+          {{ rolesCount() }} roles
+        </span>
+        <span class="user-detail__chip user-detail__chip--permissions">
+          <i class="ri-key-2-line"></i>
+          {{ permissionsCount() }} permisos directos
+        </span>
+      </div>
+    </section>
+
+    <div class="user-detail__grid">
+      <article class="user-detail__panel user-detail__panel--wide">
+        <h2 class="user-detail__panel-title">
+          <i class="ri-information-line"></i>
+          Información general
+        </h2>
+        <dl class="user-detail__meta user-detail__meta--two-columns">
+          <div>
+            <dt>Nombre completo</dt>
+            <dd>{{ u.fullName }}</dd>
+          </div>
+          <div>
+            <dt>Correo electrónico</dt>
+            <dd><code>{{ u.email }}</code></dd>
+          </div>
+          <div>
+            <dt>Teléfono</dt>
+            <dd>{{ u.phone || 'No registrado' }}</dd>
+          </div>
+          <div>
+            <dt>Género</dt>
+            <dd>{{ u.gender ? genderLabel[u.gender] : 'No registrado' }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="user-detail__panel">
+        <h2 class="user-detail__panel-title">
+          <i class="ri-shield-check-line"></i>
+          Estado y acceso
+        </h2>
+        <dl class="user-detail__meta">
+          <div>
+            <dt>Estado</dt>
+            <dd>{{ statusLabel[u.status] }}</dd>
+          </div>
+          <div>
+            <dt>Email verificado</dt>
+            <dd>{{ u.emailVerifiedAt ? 'Sí' : 'No' }}</dd>
+          </div>
+          <div>
+            <dt>Login con Google</dt>
+            <dd>{{ u.isGoogleUser ? 'Sí' : 'No' }}</dd>
+          </div>
+          <div>
+            <dt>Contraseña local</dt>
+            <dd>{{ u.hasPassword ? 'Sí' : 'No' }}</dd>
+          </div>
+          <div>
+            <dt>Último acceso</dt>
+            <dd>{{ u.lastLoginAt ? (u.lastLoginAt | localeDate:'long') : 'Sin registros' }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="user-detail__panel user-detail__panel--full">
+        <h2 class="user-detail__panel-title">
+          <i class="ri-history-line"></i>
+          Trazabilidad
+        </h2>
+        <div class="user-detail__timeline">
+          <article class="user-detail__event user-detail__event--created">
+            <div class="user-detail__event-head">
+              <span class="user-detail__event-badge">Creado</span>
+              <i class="ri-add-circle-line"></i>
+            </div>
+            <dl class="user-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (u.audit.createdBy; as createdBy) {
+                    <a [routerLink]="['/admin/usuarios', createdBy.id]" queryParamsHandling="preserve" class="user-detail__inline-link">
+                      {{ createdBy.fullName }}
+                    </a>
+                  } @else {
+                    Sistema
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ u.createdAt | localeDate:'long' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="user-detail__event user-detail__event--updated">
+            <div class="user-detail__event-head">
+              <span class="user-detail__event-badge">Actualizado</span>
+              <i class="ri-refresh-line"></i>
+            </div>
+            <dl class="user-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (u.audit.updatedBy; as updatedBy) {
+                    <a [routerLink]="['/admin/usuarios', updatedBy.id]" queryParamsHandling="preserve" class="user-detail__inline-link">
+                      {{ updatedBy.fullName }}
+                    </a>
+                  } @else {
+                    Sin cambios registrados
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ u.updatedAt ? (u.updatedAt | localeDate:'long') : 'Sin actualizaciones' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="user-detail__event user-detail__event--deleted">
+            <div class="user-detail__event-head">
+              <span class="user-detail__event-badge">Eliminado</span>
+              <i class="ri-delete-bin-line"></i>
+            </div>
+            <dl class="user-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (u.audit.deletedBy; as deletedBy) {
+                    <a [routerLink]="['/admin/usuarios', deletedBy.id]" queryParamsHandling="preserve" class="user-detail__inline-link">
+                      {{ deletedBy.fullName }}
+                    </a>
+                  } @else {
+                    No eliminado
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ u.deletedAt ? (u.deletedAt | localeDate:'long') : 'No eliminado' }}</dd>
+              </div>
+            </dl>
+          </article>
+        </div>
+      </article>
+
+      <article class="user-detail__panel user-detail__panel--wide">
+        <h2 class="user-detail__panel-title">
+          <i class="ri-user-settings-line"></i>
+          Roles asignados
+        </h2>
+        @if (u.roles.length > 0) {
+          <div class="user-detail__accordions">
+            @for (role of u.roles; track role.id) {
+              <details class="user-detail__accordion" [open]="$first">
+                <summary class="user-detail__accordion-summary">
+                  <div class="user-detail__accordion-main">
+                    <strong>
+                      <a [routerLink]="['/admin/roles', role.id]" queryParamsHandling="preserve" class="user-detail__entity-link">
+                        {{ role.name }}
+                      </a>
+                    </strong>
+                    <small>
+                      <a [routerLink]="['/admin/roles', role.id]" queryParamsHandling="preserve" class="user-detail__entity-link user-detail__entity-link--subtle">
+                        {{ role.slug }}
+                      </a>
+                    </small>
+                  </div>
+
+                  <div class="user-detail__accordion-meta">
+                    <span class="user-detail__mini-chip" [class.user-detail__mini-chip--system]="role.isSystem">
+                      {{ role.isSystem ? 'Sistema' : 'Personalizado' }}
+                    </span>
+                    <span
+                      class="user-detail__mini-chip"
+                      [class.user-detail__mini-chip--expired]="role.isExpired"
+                      [class.user-detail__mini-chip--active]="!role.isExpired"
+                    >
+                      {{ role.isExpired ? 'Caducado' : 'Vigente' }}
+                    </span>
+                    <span class="user-detail__mini-chip user-detail__mini-chip--count">
+                      {{ role.permissions.length }} permisos
+                    </span>
+                    <i class="ri-arrow-down-s-line user-detail__accordion-icon"></i>
+                  </div>
+                </summary>
+
+                <div class="user-detail__accordion-content">
+                  <dl class="user-detail__permission-dates user-detail__permission-dates--role">
+                    <div>
+                      <dt>Inicio</dt>
+                      <dd>{{ role.assignedAt ? (role.assignedAt | localeDate:'long') : 'Sin registro' }}</dd>
+                    </div>
+                    <div>
+                      <dt>Fin</dt>
+                      <dd>{{ role.expiresAt ? (role.expiresAt | localeDate:'long') : 'Sin vencimiento' }}</dd>
+                    </div>
+                  </dl>
+
+                  @if (role.permissions.length > 0) {
+                    @for (group of rolePermissionGroups()[$index].groups; track trackPermissionGroup($index, group)) {
+                      <section class="user-detail__permission-group">
+                        <header class="user-detail__permission-group-head">
+                          <span class="user-detail__permission-group-title">
+                            {{ group.module | permissionModuleLabel }}
+                          </span>
+                          <span class="user-detail__mini-chip user-detail__mini-chip--count">
+                            {{ group.permissions.length }} permisos
+                          </span>
+                        </header>
+
+                        <div class="user-detail__permission-grid">
+                          @for (permission of group.permissions; track trackPermission($index, permission)) {
+                            <article class="user-detail__permission-card">
+                              <div class="user-detail__permission-head">
+                                <span
+                                  class="user-detail__permission-action"
+                                  [class.user-detail__permission-action--create]="permission.action === 'create'"
+                                  [class.user-detail__permission-action--read]="permission.action === 'read'"
+                                  [class.user-detail__permission-action--update]="permission.action === 'update'"
+                                  [class.user-detail__permission-action--delete]="permission.action === 'delete'"
+                                  [class.user-detail__permission-action--assign]="permission.action === 'assign_access'"
+                                >
+                                  {{ permission.action | permissionActionLabel }}
+                                </span>
+                              </div>
+
+                              <strong class="user-detail__permission-name">
+                                <a
+                                  [routerLink]="['/admin/permisos', permissionDetailTerm(permission)]"
+                                  queryParamsHandling="preserve"
+                                  class="user-detail__entity-link"
+                                >
+                                  {{ permission.name }}
+                                </a>
+                              </strong>
+                              <code class="user-detail__permission-slug">
+                                <a
+                                  [routerLink]="['/admin/permisos', permissionDetailTerm(permission)]"
+                                  queryParamsHandling="preserve"
+                                  class="user-detail__entity-link user-detail__entity-link--code"
+                                >
+                                  {{ permission.slug }}
+                                </a>
+                              </code>
+
+                              @if (permission.description) {
+                                <p class="user-detail__permission-description">{{ permission.description }}</p>
+                              }
+                            </article>
+                          }
+                        </div>
+                      </section>
+                    }
+                  } @else {
+                    <p class="user-detail__empty">Este rol no tiene permisos asociados.</p>
+                  }
+                </div>
+              </details>
+            }
+          </div>
+        } @else {
+          <p class="user-detail__empty">Sin roles asignados.</p>
+        }
+      </article>
+
+      <article class="user-detail__panel user-detail__panel--narrow">
+        <h2 class="user-detail__panel-title">
+          <i class="ri-lock-password-line"></i>
+          Permisos directos
+        </h2>
+        @if (u.permissions.length > 0) {
+          @for (group of directPermissionGroups(); track trackPermissionGroup($index, group)) {
+            <section class="user-detail__permission-group">
+              <header class="user-detail__permission-group-head">
+                <span class="user-detail__permission-group-title">
+                  {{ group.module | permissionModuleLabel }}
+                </span>
+                <span class="user-detail__mini-chip user-detail__mini-chip--count">
+                  {{ group.permissions.length }} permisos
+                </span>
+              </header>
+
+              <div class="user-detail__permission-grid">
+                @for (permission of group.permissions; track trackPermission($index, permission)) {
+                  <article class="user-detail__permission-card">
+                    <div class="user-detail__permission-head">
+                      <span
+                        class="user-detail__permission-action"
+                        [class.user-detail__permission-action--create]="permission.action === 'create'"
+                        [class.user-detail__permission-action--read]="permission.action === 'read'"
+                        [class.user-detail__permission-action--update]="permission.action === 'update'"
+                        [class.user-detail__permission-action--delete]="permission.action === 'delete'"
+                        [class.user-detail__permission-action--assign]="permission.action === 'assign_access'"
+                      >
+                        {{ permission.action | permissionActionLabel }}
+                      </span>
+
+                      <span
+                        class="user-detail__permission-expiry"
+                        [class.user-detail__permission-expiry--expired]="permission.isExpired"
+                        [class.user-detail__permission-expiry--active]="!permission.isExpired"
+                      >
+                        {{ permission.isExpired ? 'Caducado' : 'Vigente' }}
+                      </span>
+                    </div>
+
+                    <strong class="user-detail__permission-name">
+                      <a
+                        [routerLink]="['/admin/permisos', permissionDetailTerm(permission)]"
+                        queryParamsHandling="preserve"
+                        class="user-detail__entity-link"
+                      >
+                        {{ permission.name }}
+                      </a>
+                    </strong>
+                    <code class="user-detail__permission-slug">
+                      <a
+                        [routerLink]="['/admin/permisos', permissionDetailTerm(permission)]"
+                        queryParamsHandling="preserve"
+                        class="user-detail__entity-link user-detail__entity-link--code"
+                      >
+                        {{ permission.slug }}
+                      </a>
+                    </code>
+
+                    <dl class="user-detail__permission-dates">
+                      <div>
+                        <dt>Inicio</dt>
+                        <dd>{{ permission.grantedAt ? (permission.grantedAt | localeDate:'long') : 'Sin registro' }}</dd>
+                      </div>
+                      <div>
+                        <dt>Fin</dt>
+                        <dd>{{ permission.expiresAt ? (permission.expiresAt | localeDate:'long') : 'Sin vencimiento' }}</dd>
+                      </div>
+                    </dl>
+
+                    @if (permission.description) {
+                      <p class="user-detail__permission-description">{{ permission.description }}</p>
+                    }
+                  </article>
+                }
+              </div>
+            </section>
+          }
+        } @else {
+          <p class="user-detail__empty">Sin permisos directos.</p>
+        }
+      </article>
+    </div>
+  }
+</div>

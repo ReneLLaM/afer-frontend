@@ -46,7 +46,33 @@ export const adminRoutes: Routes = [
         path: 'usuarios',
         canActivate: [permissionGuard],
         data: { permission: PERMISSIONS.USERS.READ, breadcrumb: 'Usuarios' },
-        loadComponent: () => import('./pages/users/users').then(m => m.UsersPage),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/users/users').then(m => m.UsersPage),
+          },
+          {
+            path: 'crear',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.USERS.CREATE, breadcrumb: 'Crear' },
+            loadComponent: () => import('./pages/users/user-create/user-create').then(m => m.UserCreatePage),
+          },
+          {
+            path: ':id/editar',
+            canActivate: [permissionGuard],
+            data: {
+              permission: [PERMISSIONS.USERS.UPDATE, PERMISSIONS.USERS.ASSIGN_ACCESS],
+              permissionMode: 'any',
+              breadcrumb: 'Editar',
+            },
+            loadComponent: () => import('./pages/users/user-edit/user-edit').then(m => m.UserEditPage),
+          },
+          {
+            path: ':id',
+            data: { breadcrumb: 'Detalle' },
+            loadComponent: () => import('./pages/users/user-detail/user-detail').then(m => m.UserDetailPage),
+          },
+        ],
       },
       {
         path: 'roles',

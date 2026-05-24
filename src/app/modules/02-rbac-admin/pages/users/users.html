@@ -9,7 +9,7 @@
       </p>
     </div>
 
-    <button *hasPermission="PERMISSIONS.USERS.CREATE" class="admin-btn admin-btn--primary" type="button">
+    <button *hasPermission="PERMISSIONS.USERS.CREATE" class="admin-btn admin-btn--primary" type="button" (click)="onCreateUser()">
       <i class="ri-user-add-line"></i>
       <span>Crear Usuario</span>
     </button>
@@ -22,7 +22,65 @@
     [filterCount]="activeFilterCount()"
     (searchChange)="onSearch($event)"
     (clearFilters)="onClearFilters()"
-  />
+  >
+    <div filters class="users-page__filters">
+      <label
+        class="users-page__filter-field"
+        [class.users-page__filter-field--active]="!!statusFilter()"
+      >
+        <span class="users-page__filter-label">
+          Estado
+          @if (statusFilter()) {
+            <span class="users-page__filter-dot" aria-hidden="true"></span>
+          }
+        </span>
+        <select
+          class="users-page__filter-select"
+          [value]="statusFilter()"
+          (change)="onStatusFilter($any($event.target).value)"
+        >
+          <option value="">Todos los estados</option>
+          @for (option of statusOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+
+      <label
+        class="users-page__filter-field"
+        [class.users-page__filter-field--active]="!!roleIdFilter()"
+      >
+        <span class="users-page__filter-label">
+          Rol
+          @if (roleIdFilter()) {
+            <span class="users-page__filter-dot" aria-hidden="true"></span>
+          }
+        </span>
+        <select
+          class="users-page__filter-select"
+          [value]="roleIdFilter()"
+          (change)="onRoleFilter($any($event.target).value)"
+        >
+          <option value="">Todos los roles</option>
+          @for (role of roleOptions().data; track role.id) {
+            <option [value]="role.id">{{ role.name }}</option>
+          }
+        </select>
+      </label>
+
+      <label
+        class="users-page__filter-check"
+        [class.users-page__filter-check--active]="showDeleted()"
+      >
+        <input
+          type="checkbox"
+          [checked]="showDeleted()"
+          (change)="onShowDeletedChange($any($event.target).checked)"
+        />
+        <span>Mostrar eliminados</span>
+      </label>
+    </div>
+  </app-admin-list-toolbar>
 
   @if (error()) {
     <div class="users-page__error">{{ error() }}</div>

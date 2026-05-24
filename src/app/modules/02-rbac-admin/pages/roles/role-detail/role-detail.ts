@@ -1,5 +1,7 @@
+import { Location } from '@angular/common';
 import { Component, inject, signal, ChangeDetectionStrategy, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { switchMap, catchError, of, map } from 'rxjs';
 import { Breadcrumb } from '../../../../../shared/components/breadcrumb/breadcrumb';
@@ -8,13 +10,25 @@ import { DialogService } from '../../../../../shared/services/dialog.service';
 import { ToastService } from '../../../../../shared/services/toast.service';
 import { AdminRolesService } from '../../../services/admin-roles.service';
 import { HasPermissionDirective } from '../../../directives/has-permission.directive';
+import { PermissionActionLabelPipe } from '../../permissions/pipes/permission-action-label.pipe';
+import { PermissionModuleLabelPipe } from '../../permissions/pipes/permission-module-label.pipe';
 import { PERMISSIONS } from '../../../../../core/constants/permissions';
-import type { AdminRoleDetail } from '../../../interfaces/admin-role.interface';
+import type {
+  AdminRoleDetail,
+  RolePermissionSummary,
+} from '../../../interfaces/admin-role.interface';
 
 @Component({
   selector: 'role-detail-page',
   standalone: true,
-  imports: [Breadcrumb, LocaleDatePipe, HasPermissionDirective],
+  imports: [
+    Breadcrumb,
+    LocaleDatePipe,
+    HasPermissionDirective,
+    RouterLink,
+    PermissionActionLabelPipe,
+    PermissionModuleLabelPipe,
+  ],
   templateUrl: './role-detail.html',
   styleUrl: './role-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +36,7 @@ import type { AdminRoleDetail } from '../../../interfaces/admin-role.interface';
 export class RoleDetailPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
   private readonly service = inject(AdminRolesService);
   private readonly dialogService = inject(DialogService);
   private readonly toastService = inject(ToastService);
@@ -60,8 +75,44 @@ export class RoleDetailPage {
   );
 
   permissionsCount = computed(() => this.role()?.permissions.length ?? 0);
+  permissionGroups = computed(() =>
+    this.groupPermissionsByModule(this.role()?.permissions ?? []),
+  );
+
+  trackPermission = (_index: number, permission: RolePermissionSummary): string =>
+    permission.id || permission.slug;
+
+  trackPermissionGroup = (_index: number, group: { module: string }): string => group.module;
+
+  private groupPermissionsByModule(
+    permissions: RolePermissionSummary[],
+  ): Array<{ module: string; permissions: RolePermissionSummary[] }> {
+    const grouped = new Map<string, RolePermissionSummary[]>();
+
+    for (const permission of permissions) {
+      const key = permission.module || 'otros';
+      const current = grouped.get(key) ?? [];
+      current.push(permission);
+      grouped.set(key, current);
+    }
+
+    return Array.from(grouped.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([module, items]) => ({
+        module,
+        permissions: [...items].sort((a, b) => {
+          const byAction = a.action.localeCompare(b.action);
+          return byAction !== 0 ? byAction : a.name.localeCompare(b.name);
+        }),
+      }));
+  }
 
   goBack(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+      return;
+    }
+
     this.router.navigate(['/admin/roles'], {
       queryParamsHandling: 'preserve',
     });

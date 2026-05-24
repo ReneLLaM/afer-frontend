@@ -25,7 +25,8 @@
         <a
           [routerLink]="item.route"
           class="sidebar__link"
-          [class.sidebar__link--active]="isItemActive(item.route)"
+          routerLinkActive="sidebar__link--active"
+          [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' }"
           (click)="closeMobile()"
           [title]="isCollapsed() ? item.label : ''"
         >

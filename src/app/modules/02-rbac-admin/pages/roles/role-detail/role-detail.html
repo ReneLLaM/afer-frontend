@@ -5,7 +5,7 @@
     <div class="role-detail__top-actions">
       <button type="button" class="role-detail__back admin-btn admin-btn--secondary" (click)="goBack()">
         <i class="ri-arrow-left-line"></i>
-        <span>← Volver al listado</span>
+        <span>Volver</span>
       </button>
 
       @if (role(); as currentRole) {
@@ -47,7 +47,7 @@
     <div class="role-detail__panel role-detail__panel--state role-detail__panel--error">
       <i class="ri-error-warning-line"></i>
       <p>{{ error() }}</p>
-      <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">← Volver</button>
+      <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">Volver</button>
     </div>
   } @else if (role(); as r) {
     <section class="role-detail__hero">
@@ -126,7 +126,15 @@
             <dl class="role-detail__event-meta">
               <div>
                 <dt>Responsable</dt>
-                <dd>{{ r.audit.createdBy?.fullName || 'Sistema' }}</dd>
+                <dd>
+                  @if (r.audit.createdBy; as createdBy) {
+                    <a [routerLink]="['/admin/usuarios', createdBy.id]" queryParamsHandling="preserve" class="role-detail__inline-link">
+                      {{ createdBy.fullName }}
+                    </a>
+                  } @else {
+                    Sistema
+                  }
+                </dd>
               </div>
               <div>
                 <dt>Fecha</dt>
@@ -143,7 +151,15 @@
             <dl class="role-detail__event-meta">
               <div>
                 <dt>Responsable</dt>
-                <dd>{{ r.audit.updatedBy?.fullName || 'Sin cambios registrados' }}</dd>
+                <dd>
+                  @if (r.audit.updatedBy; as updatedBy) {
+                    <a [routerLink]="['/admin/usuarios', updatedBy.id]" queryParamsHandling="preserve" class="role-detail__inline-link">
+                      {{ updatedBy.fullName }}
+                    </a>
+                  } @else {
+                    Sin cambios registrados
+                  }
+                </dd>
               </div>
               <div>
                 <dt>Fecha</dt>
@@ -160,7 +176,15 @@
             <dl class="role-detail__event-meta">
               <div>
                 <dt>Responsable</dt>
-                <dd>{{ r.audit.deletedBy?.fullName || 'No eliminado' }}</dd>
+                <dd>
+                  @if (r.audit.deletedBy; as deletedBy) {
+                    <a [routerLink]="['/admin/usuarios', deletedBy.id]" queryParamsHandling="preserve" class="role-detail__inline-link">
+                      {{ deletedBy.fullName }}
+                    </a>
+                  } @else {
+                    No eliminado
+                  }
+                </dd>
               </div>
               <div>
                 <dt>Fecha</dt>
@@ -174,34 +198,66 @@
       <article class="role-detail__panel role-detail__panel--full">
         <h2 class="role-detail__panel-title">
           <i class="ri-lock-password-line"></i>
-          permissions
+          Permisos del rol
         </h2>
 
         @if (r.permissions.length > 0) {
-          <div class="role-detail__permissions">
-            @for (permission of r.permissions; track permission) {
-              <span class="role-detail__permission-item">{{ permission }}</span>
-            }
-          </div>
-        } @else {
-          <p class="role-detail__empty">[]</p>
-        }
-      </article>
+          @for (group of permissionGroups(); track trackPermissionGroup($index, group)) {
+            <section class="role-detail__permission-group">
+              <header class="role-detail__permission-group-head">
+                <span class="role-detail__permission-group-title">
+                  {{ group.module | permissionModuleLabel }}
+                </span>
+                <span class="role-detail__mini-chip role-detail__mini-chip--count">
+                  {{ group.permissions.length }} permisos
+                </span>
+              </header>
 
-      <article class="role-detail__panel role-detail__panel--full">
-        <h2 class="role-detail__panel-title">
-          <i class="ri-list-check-3"></i>
-          permissionSlugs
-        </h2>
+              <div class="role-detail__permission-grid">
+                @for (permission of group.permissions; track trackPermission($index, permission)) {
+                  <article class="role-detail__permission-card">
+                    <div class="role-detail__permission-head">
+                      <span
+                        class="role-detail__permission-action"
+                        [class.role-detail__permission-action--create]="permission.action === 'create'"
+                        [class.role-detail__permission-action--read]="permission.action === 'read'"
+                        [class.role-detail__permission-action--update]="permission.action === 'update'"
+                        [class.role-detail__permission-action--delete]="permission.action === 'delete'"
+                        [class.role-detail__permission-action--assign]="permission.action === 'assign_access'"
+                      >
+                        {{ permission.action | permissionActionLabel }}
+                      </span>
+                    </div>
 
-        @if (r.permissionSlugs.length > 0) {
-          <div class="role-detail__permissions">
-            @for (permissionSlug of r.permissionSlugs; track permissionSlug) {
-              <span class="role-detail__permission-item">{{ permissionSlug }}</span>
-            }
-          </div>
+                    <strong class="role-detail__permission-name">
+                      <a
+                        [routerLink]="['/admin/permisos', permission.id || permission.slug]"
+                        queryParamsHandling="preserve"
+                        class="role-detail__entity-link"
+                      >
+                        {{ permission.name }}
+                      </a>
+                    </strong>
+                    <code class="role-detail__permission-slug">
+                      <a
+                        [routerLink]="['/admin/permisos', permission.id || permission.slug]"
+                        queryParamsHandling="preserve"
+                        class="role-detail__entity-link role-detail__entity-link--code"
+                      >
+                        {{ permission.slug }}
+                      </a>
+                    </code>
+
+                    @if (permission.description) {
+                      <p class="role-detail__permission-description">{{ permission.description }}</p>
+                    }
+                  </article>
+                }
+              </div>
+            </section>
+          }
         } @else {
-          <p class="role-detail__empty">[]</p>
+          <p class="role-detail__empty">Sin permisos asignados.</p>
         }
       </article>
     </div>

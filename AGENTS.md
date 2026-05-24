@@ -80,6 +80,22 @@ export class ProductsService {
 - Servicios específicos de feature: `providedIn: 'any'` o provider en ruta
 - **NUNCA** lógica de UI en services
 
+### 2.3.1 Fechas y rangos en formularios
+
+- Cuando un formulario necesite `inicio/fin` o un rango de fechas, preferir un componente compartido reutilizable en `shared/material/` o `shared/components/`.
+- Si el usuario necesita escritura manual y también calendario visual, preferir input visible simple y legible con apoyo de calendario Material, en lugar de depender solo del campo visual crudo de Material.
+- Para vigencias admin:
+  - sin `inicio` => válido desde ahora
+  - sin `fin` => sin vencimiento
+  - al serializar por día: enviar `inicio` al comienzo del día y `fin` al final del día para evitar ambigüedad.
+
+### 2.3.2 Navegación de detalle y trazabilidad
+
+- En vistas detalle admin, si el backend devuelve un identificador estable de una entidad relacionada (`id`, `slug`, `term`, etc.), el frontend debe renderizarlo como navegación real por URL hacia su detalle.
+- Esto aplica especialmente a auditoría (`createdBy`, `updatedBy`, `deletedBy`) y a relaciones como usuarios, roles y permisos.
+- Si existe `id`, preferir `id`. Si no existe `id` pero sí un identificador estable enrutable como `slug`, usar ese valor.
+- La UX de admin debe permitir seguimiento continuo entre entidades relacionadas; evitar texto plano cuando ya existe una ruta navegable.
+
 ### 2.4 Signals para estado local
 
 ```typescript

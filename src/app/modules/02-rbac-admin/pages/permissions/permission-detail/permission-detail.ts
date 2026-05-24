@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -20,6 +21,7 @@ import type { Permission } from '../../../interfaces/admin-permission.interface'
 export class PermissionDetailPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
   private readonly service = inject(AdminPermissionsService);
 
   loading = signal(true);
@@ -53,6 +55,11 @@ export class PermissionDetailPage {
   );
 
   goBack(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+      return;
+    }
+
     this.router.navigate(['/admin/permisos'], {
       queryParamsHandling: 'preserve',
     });

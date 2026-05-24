@@ -115,6 +115,8 @@ modules/
 - Evitar degradados decorativos en pantallas admin; usar color sÃ³lido, borde y contraste.
 - En registros soft-deleted mostrados con `showDeleted`, ocultar o deshabilitar acciones destructivas y de ediciÃ³n. Un registro eliminado no debe ofrecer `Editar` ni `Eliminar` en la UI.
 - Las vistas detalle admin con auditorÃ­a deben preferir un bloque de `Trazabilidad` con eventos `Creado`, `Actualizado` y `Eliminado`, mostrando responsable y fecha juntos.
+- En vistas detalle RBAC, cualquier entidad relacionada que ya venga con `id`, `slug` o identificador enrutable debe mostrarse como link navegable a su detalle: usuarios de auditoría, roles asignados y permisos.
+- Regla de UX continua: si el backend devuelve un identificador que permite seguimiento, no dejarlo como texto muerto; debe poder abrir la entidad relacionada por URL.
 
 ---
 

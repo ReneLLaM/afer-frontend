@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Location } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -44,6 +45,7 @@ const PERMISSIONS_LIMIT = 500;
 export class RoleCreatePage {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
   private readonly toastService = inject(ToastService);
   private readonly rolesService = inject(AdminRolesService);
   private readonly permissionsService = inject(AdminPermissionsService);
@@ -133,6 +135,11 @@ export class RoleCreatePage {
   }
 
   goBack(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+      return;
+    }
+
     this.router.navigate(['/admin/roles'], {
       queryParamsHandling: 'preserve',
     });

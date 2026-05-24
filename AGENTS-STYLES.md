@@ -168,6 +168,12 @@ overflow: hidden;
 - Headers, cards, grids y grupos de campos admin deben sentirse cerrados y eficientes, no aireados.
 - Si una vista admin ya funciona, no expandir espaciado salvo requerimiento explÃ­cito.
 
+### 4.1.2 Rangos y fechas en admin
+
+- Los controles de `inicio/fin` deben verse integrados al bloque donde aplican; evitar campos de fecha colgando fuera de contexto.
+- Si se combina escritura manual y calendario, el input visible debe ser limpio, compacto y consistente con el resto del formulario; el calendario Material funciona como apoyo, no como única vía.
+- En dark mode, los campos de fecha deben mantener contraste alto en texto, borde, placeholder e icono de calendario.
+
 ### 4.2 Contenedores
 
 ```scss
