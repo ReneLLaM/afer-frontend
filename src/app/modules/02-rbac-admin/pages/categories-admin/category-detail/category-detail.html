@@ -1,0 +1,389 @@
+<div class="category-detail-page">
+  <breadcrumb />
+
+  <header class="category-detail-page__top">
+    <div class="category-detail-page__top-actions">
+      <button type="button" class="category-detail-page__back admin-btn admin-btn--secondary" (click)="goBack()">
+        <i class="ri-arrow-left-line"></i>
+        <span>Volver</span>
+      </button>
+
+      @if (category(); as currentCategory) {
+        <div class="category-detail-page__top-actions-group">
+          <button
+            *hasPermission="PERMISSIONS.CATEGORIES.UPDATE"
+            type="button"
+            class="admin-btn admin-btn--primary"
+            [disabled]="!!currentCategory.deletedAt"
+            (click)="editCategory()"
+          >
+            <mat-icon aria-hidden="true">edit</mat-icon>
+            Editar
+          </button>
+
+          <button
+            *hasPermission="PERMISSIONS.CATEGORIES.DELETE"
+            type="button"
+            class="admin-btn admin-btn--danger"
+            [disabled]="!!currentCategory.deletedAt"
+            (click)="deleteCategory()"
+          >
+            <mat-icon aria-hidden="true">delete</mat-icon>
+            Eliminar
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="category-detail-page__panel category-detail-page__panel--state">Cargando categoria...</div>
+  } @else if (error()) {
+    <div class="category-detail-page__panel category-detail-page__panel--state category-detail-page__panel--error">{{ error() }}</div>
+  } @else if (detail(); as d) {
+    <section class="category-detail-page__hero">
+      <div class="category-detail-page__hero-main">
+        <span class="category-detail-page__eyebrow">Detalle de categoria</span>
+        <h1 class="category-detail-page__title">{{ d.category.name }}</h1>
+        <p class="category-detail-page__hero-description">{{ d.category.description || 'Esta categoria no tiene una descripcion registrada por ahora.' }}</p>
+      </div>
+
+      <div class="category-detail-page__hero-badges">
+        <span class="category-detail-page__chip" [class]="'category-detail-page__chip--' + statusBadge().variant">
+          <i class="ri-checkbox-circle-line"></i>
+          {{ statusBadge().label }}
+        </span>
+        <span class="category-detail-page__chip category-detail-page__chip--order">
+          <i class="ri-list-ordered-2"></i>
+          Orden {{ d.category.order }}
+        </span>
+        <span class="category-detail-page__chip category-detail-page__chip--order">
+          <i class="ri-stack-line"></i>
+          Nivel {{ d.category.level }}
+        </span>
+        <span class="category-detail-page__chip category-detail-page__chip--feature" [class.category-detail-page__chip--feature-off]="!d.category.isFeatured">
+          <i class="ri-star-line"></i>
+          {{ d.category.isFeatured ? 'Destacada' : 'No destacada' }}
+        </span>
+      </div>
+    </section>
+
+    <div class="category-detail-page__grid">
+      <article class="category-detail-page__panel category-detail-page__panel--wide">
+        <h2 class="category-detail-page__panel-title">
+          <i class="ri-price-tag-3-line"></i>
+          Categoria principal
+        </h2>
+
+        <div class="category-detail-page__visual-layout">
+          <div class="category-detail-page__visual-stage">
+            <img [src]="d.category.imageUrl || d.category.image || 'assets/images/placeholder.png'" [alt]="d.category.name" class="category-detail-page__visual-image" />
+          </div>
+
+          <div class="category-detail-page__visual-side">
+            <div class="category-detail-page__summary-grid">
+              @for (item of summaryItems(); track item.label) {
+                <div class="category-detail-page__summary-item">
+                  <span class="category-detail-page__summary-label">{{ item.label }}</span>
+                  <strong class="category-detail-page__summary-value">{{ item.value }}</strong>
+                </div>
+              }
+            </div>
+
+            <dl class="category-detail-page__field-list">
+              <div class="category-detail-page__field">
+                <dt class="category-detail-page__field-label">Slug</dt>
+                <dd class="category-detail-page__field-value"><code>{{ d.category.slug }}</code></dd>
+              </div>
+              <div class="category-detail-page__field">
+                <dt class="category-detail-page__field-label">Clave de imagen</dt>
+                <dd class="category-detail-page__field-value"><code>{{ d.category.imageKey || 'Sin clave registrada' }}</code></dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </article>
+
+      <article class="category-detail-page__panel">
+        <h2 class="category-detail-page__panel-title">
+          <i class="ri-arrow-up-line"></i>
+          Padre
+        </h2>
+
+        @if (d.parent; as parent) {
+          <article class="category-detail-page__relation-card">
+            <a [routerLink]="['/admin/categorias', parent.id]" queryParamsHandling="preserve" class="category-detail-page__relation-visual-link">
+              <img [src]="parent.imageUrl || parent.image || 'assets/images/placeholder.png'" [alt]="parent.name" class="category-detail-page__relation-image" />
+            </a>
+
+            <div class="category-detail-page__relation-content">
+              <a [routerLink]="['/admin/categorias', parent.id]" queryParamsHandling="preserve" class="category-detail-page__inline-link category-detail-page__relation-name">
+                {{ parent.name }}
+              </a>
+              <small class="category-detail-page__relation-meta">{{ parent.slug }} · Nivel {{ parent.level }}</small>
+
+              <div class="category-detail-page__relation-actions">
+                <a
+                  [routerLink]="['/admin/categorias', parent.id]"
+                  queryParamsHandling="preserve"
+                  class="category-detail-page__action-btn btn-view"
+                  aria-label="Ver"
+                  title="Ver"
+                >
+                  <mat-icon aria-hidden="true">visibility</mat-icon>
+                </a>
+                <a
+                  *hasPermission="PERMISSIONS.CATEGORIES.UPDATE"
+                  [routerLink]="['/admin/categorias', parent.id, 'editar']"
+                  queryParamsHandling="preserve"
+                  class="category-detail-page__action-btn btn-edit"
+                  aria-label="Editar"
+                  title="Editar"
+                >
+                  <mat-icon aria-hidden="true">edit</mat-icon>
+                </a>
+                <button
+                  *hasPermission="PERMISSIONS.CATEGORIES.DELETE"
+                  type="button"
+                  class="category-detail-page__action-btn btn-delete"
+                  aria-label="Eliminar"
+                  title="Eliminar"
+                  (click)="deleteCategoryById(parent.id, parent.name)"
+                >
+                  <mat-icon aria-hidden="true">delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </article>
+        } @else {
+          <p class="category-detail-page__empty-copy">Esta categoria no tiene padre. Es una categoria raiz.</p>
+        }
+      </article>
+
+      <article class="category-detail-page__panel">
+        <h2 class="category-detail-page__panel-title">
+          <i class="ri-links-line"></i>
+          Hijos
+        </h2>
+        <p class="category-detail-page__panel-copy">El backend devuelve los hijos directos de esta categoria y se muestran aqui.</p>
+
+        @if (visibleChildren().length > 0) {
+          <div class="category-detail-page__panel-actions">
+            @if (!childReorderMode() && canReorderChildren()) {
+              <button *hasPermission="PERMISSIONS.CATEGORIES.UPDATE" type="button" class="admin-btn admin-btn--secondary" [disabled]="!!d.category.deletedAt" (click)="startChildReorder()">
+                <i class="ri-drag-move-2-line"></i>
+                Reordenar hijos
+              </button>
+            }
+
+            @if (childReorderMode()) {
+              <button type="button" class="admin-btn admin-btn--secondary" [disabled]="childReordering()" (click)="cancelChildReorder()">
+                Cancelar
+              </button>
+              <button type="button" class="admin-btn admin-btn--primary" [disabled]="!canSaveChildReorder() || childReordering()" (click)="saveChildReorder()">
+                <i class="ri-save-line"></i>
+                {{ childReordering() ? 'Guardando...' : 'Guardar orden' }}
+              </button>
+            }
+          </div>
+
+          @if (childReorderMode()) {
+            <div class="category-detail-page__reorder-note">
+              <strong>Modo reordenar activo</strong>
+              <p>Arrastra cada hijo o usa las flechas para moverlo y guarda cuando el nuevo orden quede como quieres.</p>
+            </div>
+          }
+
+          <div class="category-detail-page__children-list">
+            @for (child of visibleChildren(); track child.id; let index = $index) {
+              <article
+                class="category-detail-page__child-card"
+                [class.category-detail-page__child-card--reorderable]="childReorderMode()"
+                [attr.draggable]="childReorderMode() ? true : null"
+                [class.category-detail-page__child-card--dragging]="isChildDragging(child.id)"
+                [class.category-detail-page__child-card--drag-over]="childReorderMode() && !isChildDragging(child.id) && isChildDragOver(child.id)"
+                (dragstart)="onChildDragStart($event, child.id)"
+                (dragover)="onChildDragOver($event)"
+                (dragenter)="onChildDragEnter(child.id)"
+                (drop)="onChildDrop($event, child.id)"
+                (dragend)="onChildDragEnd()"
+              >
+                <div class="category-detail-page__child-main">
+                  <a [routerLink]="['/admin/categorias', child.id]" queryParamsHandling="preserve" class="category-detail-page__child-preview" [attr.draggable]="childReorderMode() ? false : null">
+                    <img [src]="child.imageSrc" [alt]="child.name" class="category-detail-page__child-image" [attr.draggable]="childReorderMode() ? false : null" />
+                  </a>
+
+                  <div class="category-detail-page__child-content">
+                    <div class="category-detail-page__child-head">
+                      <a [routerLink]="['/admin/categorias', child.id]" queryParamsHandling="preserve" class="category-detail-page__inline-link category-detail-page__child-title" [attr.draggable]="childReorderMode() ? false : null">{{ child.name }}</a>
+                      @if (childReorderMode()) {
+                        <span class="category-detail-page__child-order">Posicion {{ index + 1 }}</span>
+                      } @else {
+                        <span class="category-detail-page__child-order">Orden {{ child.order }}</span>
+                      }
+                    </div>
+                    <p class="category-detail-page__child-description">{{ child.description || 'Sin descripcion registrada.' }}</p>
+                    <div class="category-detail-page__child-meta">
+                      <span><code>{{ child.slug }}</code></span>
+                      <span>Nivel {{ child.level }}</span>
+                      <span>{{ child.descendantsCount }} descendientes</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="category-detail-page__child-actions">
+                  @if (childReorderMode()) {
+                    <span class="category-detail-page__drag-handle" aria-hidden="true">
+                      <i class="ri-draggable"></i>
+                    </span>
+                    <button type="button" class="admin-btn admin-btn--icon" [disabled]="index === 0 || childReordering()" (click)="moveChild(index, -1)">
+                      <i class="ri-arrow-up-line"></i>
+                    </button>
+                    <button type="button" class="admin-btn admin-btn--icon" [disabled]="index === visibleChildren().length - 1 || childReordering()" (click)="moveChild(index, 1)">
+                      <i class="ri-arrow-down-line"></i>
+                    </button>
+                  } @else {
+                    <a
+                      [routerLink]="['/admin/categorias', child.id]"
+                      queryParamsHandling="preserve"
+                      class="category-detail-page__action-btn btn-view"
+                      aria-label="Ver"
+                      title="Ver"
+                    >
+                      <mat-icon aria-hidden="true">visibility</mat-icon>
+                    </a>
+                    <a
+                      *hasPermission="PERMISSIONS.CATEGORIES.UPDATE"
+                      [routerLink]="['/admin/categorias', child.id, 'editar']"
+                      queryParamsHandling="preserve"
+                      class="category-detail-page__action-btn btn-edit"
+                      aria-label="Editar"
+                      title="Editar"
+                    >
+                      <mat-icon aria-hidden="true">edit</mat-icon>
+                    </a>
+                    <button
+                      *hasPermission="PERMISSIONS.CATEGORIES.DELETE"
+                      type="button"
+                      class="category-detail-page__action-btn btn-delete"
+                      aria-label="Eliminar"
+                      title="Eliminar"
+                      (click)="deleteCategoryById(child.id, child.name)"
+                    >
+                      <mat-icon aria-hidden="true">delete</mat-icon>
+                    </button>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+          <p class="category-detail-page__empty-copy">Esta categoria no tiene hijos directos.</p>
+        }
+      </article>
+
+      <article class="category-detail-page__panel category-detail-page__panel--wide">
+        <h2 class="category-detail-page__panel-title">
+          <i class="ri-node-tree"></i>
+          Arbol completo
+        </h2>
+        <p class="category-detail-page__panel-copy">El backend devuelve el arbol completo de esta familia y se muestra aqui sin salir del detalle.</p>
+
+        <div class="category-detail-page__tree-wrap">
+          @for (node of fullTreeData(); track node.id) {
+            <app-category-tree-node
+              [node]="node"
+              [level]="0"
+              [selectedNodeId]="d.category.id"
+              [showProductsAction]="false"
+              [showMeta]="true"
+              [showAdminActions]="true"
+              [emphasizeSelectedNode]="true"
+              (viewRequested)="onFullTreeView($event)"
+              (editRequested)="onFullTreeEdit($event)"
+              (deleteRequested)="onFullTreeDelete($event)"
+            ></app-category-tree-node>
+          }
+        </div>
+      </article>
+
+      <article class="category-detail-page__panel category-detail-page__panel--wide">
+        <h2 class="category-detail-page__panel-title">
+          <i class="ri-history-line"></i>
+          Trazabilidad
+        </h2>
+
+        <div class="category-detail-page__timeline">
+          <article class="category-detail-page__event category-detail-page__event--created">
+            <div class="category-detail-page__event-head">
+              <span class="category-detail-page__event-badge">Creado</span>
+              <i class="ri-add-circle-line"></i>
+            </div>
+            <dl class="category-detail-page__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (d.category.audit.createdBy; as createdBy) {
+                    <a [routerLink]="['/admin/usuarios', createdBy.id]" queryParamsHandling="preserve" class="category-detail-page__inline-link">{{ createdBy.fullName }}</a>
+                  } @else {
+                    Sistema
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ d.category.createdAt | localeDate:'long' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="category-detail-page__event category-detail-page__event--updated">
+            <div class="category-detail-page__event-head">
+              <span class="category-detail-page__event-badge">Actualizado</span>
+              <i class="ri-refresh-line"></i>
+            </div>
+            <dl class="category-detail-page__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (d.category.audit.updatedBy; as updatedBy) {
+                    <a [routerLink]="['/admin/usuarios', updatedBy.id]" queryParamsHandling="preserve" class="category-detail-page__inline-link">{{ updatedBy.fullName }}</a>
+                  } @else {
+                    Sin cambios registrados
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ d.category.updatedAt ? (d.category.updatedAt | localeDate:'long') : 'Sin actualizaciones' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="category-detail-page__event category-detail-page__event--deleted">
+            <div class="category-detail-page__event-head">
+              <span class="category-detail-page__event-badge">Eliminado</span>
+              <i class="ri-delete-bin-line"></i>
+            </div>
+            <dl class="category-detail-page__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (d.category.audit.deletedBy; as deletedBy) {
+                    <a [routerLink]="['/admin/usuarios', deletedBy.id]" queryParamsHandling="preserve" class="category-detail-page__inline-link">{{ deletedBy.fullName }}</a>
+                  } @else {
+                    No eliminado
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ d.category.deletedAt ? (d.category.deletedAt | localeDate:'long') : 'No eliminado' }}</dd>
+              </div>
+            </dl>
+          </article>
+        </div>
+      </article>
+    </div>
+  }
+</div>

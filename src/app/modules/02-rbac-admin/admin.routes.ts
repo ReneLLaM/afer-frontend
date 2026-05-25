@@ -28,7 +28,30 @@ export const adminRoutes: Routes = [
         path: 'categorias',
         canActivate: [permissionGuard],
         data: { permission: PERMISSIONS.CATEGORIES.READ, breadcrumb: 'Categorías' },
-        loadComponent: () => import('./pages/categories-admin/categories-admin').then(m => m.CategoriesAdminPage),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/categories-admin/categories-admin').then(m => m.CategoriesAdminPage),
+          },
+          {
+            path: 'crear',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.CATEGORIES.CREATE, breadcrumb: 'Crear' },
+            loadComponent: () => import('./pages/categories-admin/category-create/category-create').then(m => m.CategoryCreatePage),
+          },
+          {
+            path: ':id/editar',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.CATEGORIES.UPDATE, breadcrumb: 'Editar' },
+            loadComponent: () => import('./pages/categories-admin/category-edit/category-edit').then(m => m.CategoryEditPage),
+          },
+          {
+            path: ':id',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.CATEGORIES.READ, breadcrumb: 'Detalle' },
+            loadComponent: () => import('./pages/categories-admin/category-detail/category-detail').then(m => m.CategoryDetailPage),
+          },
+        ],
       },
       {
         path: 'marcas',

@@ -1,0 +1,273 @@
+<div class="categories-page">
+  <breadcrumb />
+
+  <header class="categories-page__header">
+    <div class="categories-page__header-content">
+      <h1 class="categories-page__title">Categorias</h1>
+      <p class="categories-page__subtitle">
+        Explora el catalogo en tabla o como arbol completo, filtra por nivel y trabaja cada rama
+        con una vista clara para admin.
+      </p>
+    </div>
+
+    <div class="categories-page__header-actions">
+      <button
+        *hasPermission="PERMISSIONS.CATEGORIES.UPDATE"
+        class="admin-btn admin-btn--secondary"
+        type="button"
+        [disabled]="reorderMode() || reordering() || preparingReorder() || loading()"
+        (click)="startReorderMode()"
+      >
+        <i class="ri-draggable"></i>
+        <span>{{ preparingReorder() ? 'Preparando...' : 'Reordenar' }}</span>
+      </button>
+
+      <div class="categories-page__view-switch" role="tablist" aria-label="Cambiar vista">
+        <button
+          class="categories-page__view-btn"
+          type="button"
+          [class.categories-page__view-btn--active]="currentView() === 'table'"
+          (click)="onViewChange('table')"
+        >
+          <i class="ri-table-line"></i>
+          <span>Tabla</span>
+        </button>
+
+        <button
+          class="categories-page__view-btn"
+          type="button"
+          [class.categories-page__view-btn--active]="currentView() === 'tree'"
+          (click)="onViewChange('tree')"
+        >
+          <i class="ri-node-tree"></i>
+          <span>Arbol</span>
+        </button>
+      </div>
+
+      <button
+        *hasPermission="PERMISSIONS.CATEGORIES.CREATE"
+        class="admin-btn admin-btn--primary"
+        type="button"
+        (click)="goToCreatePage()"
+      >
+        <i class="ri-add-line"></i>
+        <span>Crear categoria</span>
+      </button>
+    </div>
+  </header>
+
+  @if (currentView() === 'table') {
+    <app-admin-list-toolbar
+      [search]="search()"
+      searchPlaceholder="Buscar categorias..."
+      [hasActiveFilters]="hasActiveFilters()"
+      [filterCount]="activeFilterCount()"
+      (searchChange)="onSearch($event)"
+      (clearFilters)="onClearFilters()"
+    >
+      <div filters class="categories-page__filters">
+        <label
+          class="categories-page__filter-field"
+          [class.categories-page__filter-field--active]="levelFilter() !== ''"
+        >
+          <span class="categories-page__filter-label">
+            Nivel
+            @if (levelFilter() !== '') {
+              <span class="categories-page__filter-dot" aria-hidden="true"></span>
+            }
+          </span>
+
+          <select
+            class="categories-page__filter-select"
+            [value]="levelFilter() === '' ? '' : levelFilter()"
+            (change)="onLevelFilter($any($event.target).value)"
+          >
+            <option value="">Todos</option>
+            @for (level of availableLevels(); track level) {
+              <option [value]="level">Nivel {{ level }}</option>
+            }
+          </select>
+        </label>
+
+        <label
+          class="categories-page__filter-field"
+          [class.categories-page__filter-field--active]="!!statusFilter()"
+        >
+          <span class="categories-page__filter-label">
+            Estado
+            @if (statusFilter()) {
+              <span class="categories-page__filter-dot" aria-hidden="true"></span>
+            }
+          </span>
+
+          <select
+            class="categories-page__filter-select"
+            [value]="statusFilter()"
+            (change)="onStatusFilter($any($event.target).value)"
+          >
+            <option value="">Todos</option>
+            <option value="active">Activas</option>
+            <option value="inactive">Inactivas</option>
+            <option value="deprecated">Deprecadas</option>
+          </select>
+        </label>
+
+        <label
+          class="categories-page__filter-check"
+          [class.categories-page__filter-check--active]="showDeleted()"
+        >
+          <input
+            type="checkbox"
+            [checked]="showDeleted()"
+            (change)="onShowDeletedChange($any($event.target).checked)"
+          />
+          <span>Mostrar eliminadas</span>
+        </label>
+      </div>
+    </app-admin-list-toolbar>
+
+    @if (parentIdFilter()) {
+      <div class="categories-page__context-bar">
+        <div>
+          <strong>Vista de hijos directos</strong>
+          <span>{{ selectedParentLabel() || 'Categoria seleccionada' }}</span>
+        </div>
+
+        <button class="categories-page__context-clear" type="button" (click)="clearParentFilter()">
+          Quitar padre
+        </button>
+      </div>
+    }
+
+    @if (error()) {
+      <div class="categories-page__error">{{ error() }}</div>
+    }
+
+    @if (reorderMode()) {
+      <section class="categories-page__reorder-panel categories-page__reorder-panel--active">
+        <div class="categories-page__reorder-copy">
+          <strong>Modo reordenar activo</strong>
+          <p>
+            Estás ordenando {{ reorderScopeLabel() }}. Arrastra filas dentro de la pagina o usa las
+            flechas para mover elementos entre paginas antes de guardar.
+          </p>
+        </div>
+
+        <div class="categories-page__reorder-actions">
+          <button
+            class="admin-btn admin-btn--secondary"
+            type="button"
+            [disabled]="reordering()"
+            (click)="cancelReorderMode()"
+          >
+            <i class="ri-close-line"></i>
+            <span>Cancelar</span>
+          </button>
+
+          <button
+            class="admin-btn admin-btn--primary"
+            type="button"
+            [disabled]="!canSaveReorder() || reordering()"
+            (click)="saveReorder()"
+          >
+            <i class="ri-check-line"></i>
+            <span>{{ reordering() ? 'Guardando...' : 'Aceptar' }}</span>
+          </button>
+        </div>
+      </section>
+    } @else {
+      @if (reorderBlockedReason()) {
+        <div class="categories-page__reorder-note">
+          <span>{{ reorderBlockedReason() }}</span>
+        </div>
+      }
+    }
+
+    <ng-template #categoryImageCell let-row="row">
+      <div class="categories-page__category-image-shell">
+        <img
+          class="categories-page__category-image"
+          [src]="row.imageUrl"
+          [alt]="row.name"
+          loading="lazy"
+        />
+      </div>
+    </ng-template>
+
+    <app-data-table
+      [columns]="columns()"
+      [data]="tableData()"
+      [loading]="loading()"
+      [serverSort]="true"
+      [showFooterInfo]="false"
+      trackByKey="id"
+      [sortKey]="sortBy()"
+      [sortDir]="sortDirection()"
+      [actions]="rowActions()"
+      [reorderable]="reorderMode()"
+      emptyMessage="No se encontraron categorias"
+      (sortChange)="onSort($event)"
+      (rowReorder)="onRowReorder($event)"
+    />
+
+    <app-pagination
+      [meta]="meta()"
+      (pageChange)="onPageChange($event)"
+      (limitChange)="onLimitChange($event)"
+    />
+  } @else {
+    @if (treeError()) {
+      <div class="categories-page__error">{{ treeError() }}</div>
+    }
+
+    <section class="categories-page__tree-toolbar">
+      <div class="categories-page__tree-toolbar-copy">
+        <span class="categories-page__eyebrow">Vista arbol</span>
+        <h2>Arbol completo</h2>
+        <p>La misma lectura del ecommerce, con acciones admin dentro de cada nodo.</p>
+      </div>
+
+      <div class="categories-page__tree-toolbar-actions">
+        <article class="categories-page__tree-stat">
+          <strong>{{ selectedTreeCounts().roots }}</strong>
+          <span>Raices</span>
+        </article>
+        <article class="categories-page__tree-stat">
+          <strong>{{ selectedTreeCounts().visible }}</strong>
+          <span>Nodos</span>
+        </article>
+        @if (selectedTreeCategory()) {
+          <button class="admin-btn admin-btn--secondary" type="button" (click)="showChildrenInTable()">
+            <i class="ri-list-indefinite"></i>
+            <span>Ver hijos en tabla</span>
+          </button>
+        }
+      </div>
+    </section>
+
+    <section class="categories-page__tree-shell">
+      @if (treeLoading()) {
+        <div class="categories-page__empty-state">Cargando arbol de categorias...</div>
+      } @else {
+        <div class="categories-page__tree-list">
+          @for (root of treeBranch(); track root.id) {
+            <app-category-tree-node
+              [node]="root"
+              [level]="0"
+              [selectedNodeId]="selectedTreeNodeId() || null"
+              [showProductsAction]="false"
+              [showMeta]="true"
+              [showAdminActions]="true"
+              (nodeSelected)="onTreeNodeSelected($event)"
+              (viewRequested)="onTreeView($event)"
+              (editRequested)="onTreeEdit($event)"
+              (deleteRequested)="onTreeDelete($event)"
+            />
+          } @empty {
+            <div class="categories-page__empty-state">No se encontraron categorias para mostrar.</div>
+          }
+        </div>
+      }
+    </section>
+  }
+</div>

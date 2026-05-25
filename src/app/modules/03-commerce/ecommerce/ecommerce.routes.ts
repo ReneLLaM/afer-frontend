@@ -57,6 +57,30 @@ export const ecommerceRoutes: Routes = [
         data: { breadcrumb: 'Gift Card' },
       },
       {
+        path: 'politica-de-privacidad',
+        loadComponent: () =>
+          import('./pages/politica-de-privacidad-page/politica-de-privacidad-page').then(
+            (m) => m.PoliticaDePrivacidadPage,
+          ),
+        data: { breadcrumb: 'Política de Privacidad' },
+      },
+      {
+        path: 'politica-de-envios',
+        loadComponent: () =>
+          import('./pages/politica-de-envios-page/politica-de-envios-page').then(
+            (m) => m.PoliticaDeEnviosPage,
+          ),
+        data: { breadcrumb: 'Política de Envíos' },
+      },
+      {
+        path: 'terminos-y-condiciones',
+        loadComponent: () =>
+          import('./pages/terminos-y-condiciones-page/terminos-y-condiciones-page').then(
+            (m) => m.TerminosYCondicionesPage,
+          ),
+        data: { breadcrumb: 'Términos y Condiciones' },
+      },
+      {
         path: 'acerca-de-nosotros',
         loadComponent: () => import('./pages/acerca-de-nosotros-page/acerca-de-nosotros-page').then((m) => m.AcercaDeNosotrosPage),
         data: { breadcrumb: 'Acerca de Nosotros' },

@@ -25,7 +25,7 @@
     height: 2px;
     background: var(--afer-text-muted);
     border-radius: 1px;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.2s ease;
     z-index: 1;
     opacity: 0.6;
   }
@@ -38,7 +38,7 @@
     width: 2px;
     background: var(--afer-text-muted);
     border-radius: 1px;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.2s ease;
     z-index: 1;
     opacity: 0.6;
   }
@@ -54,7 +54,6 @@
   &:hover > &::before,
   &:hover > &::after {
     background: var(--afer-primary);
-    box-shadow: 0 0 8px rgba(239, 126, 38, 0.4);
     opacity: 1;
   }
 }
@@ -71,7 +70,7 @@
   padding: 0.75rem 1rem;
   min-height: 88px; // Altura única estandarizada globalmente
   cursor: pointer;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
   z-index: 2;
 
   &--featured,
@@ -87,18 +86,35 @@
     border-color: var(--afer-primary);
   }
 
-  // Hover con borde sólido y marcado (sin degradados ni resplandores)
-  &:hover, 
-  &.tree-node:hover {
-    // Modo Claro (Azul sólido y grueso)
-    border-color: var(--afer-secondary) !important;
-    box-shadow: 0 0 0 1.5px var(--afer-secondary) !important; // Borde sólido exterior de 1.5px
+  &--selected {
+    border-color: var(--afer-secondary);
+    background: color-mix(in srgb, var(--afer-secondary), transparent 97%);
+  }
 
-    // Modo Oscuro (Naranja sólido y grueso)
-    :host-context([data-theme='dark']) & {
-      border-color: var(--afer-primary-absolute) !important;
-      box-shadow: 0 0 0 1.5px var(--afer-primary-absolute) !important; // Borde sólido exterior de 1.5px
+  &--current-location {
+    border: 2px solid var(--afer-primary-absolute);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--afer-primary-absolute), transparent 90%) 0%,
+      color-mix(in srgb, var(--afer-secondary-absolute), transparent 93%) 100%
+    );
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--afer-primary-absolute), transparent 80%),
+      0 16px 30px color-mix(in srgb, var(--afer-primary-absolute), transparent 86%);
+
+    .tree-node__name {
+      color: var(--afer-primary-absolute);
     }
+
+    .tree-node__image-wrapper {
+      border-color: var(--afer-primary-absolute);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--afer-primary-absolute), transparent 70%);
+    }
+  }
+
+  &:hover,
+  &.tree-node:hover {
+    border-color: var(--afer-secondary) !important;
   }
 }
 
@@ -145,6 +161,39 @@
   line-height: 1.2;
 }
 
+.tree-node__location-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--afer-primary-absolute);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  animation: tree-node-location-pulse 2.4s ease-in-out infinite;
+
+  mat-icon {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+  }
+}
+
+@keyframes tree-node-location-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--afer-primary-absolute), transparent 35%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--afer-primary-absolute), transparent 100%);
+  }
+}
+
 .tree-node__description {
   margin: 0.25rem 0 0;
   color: var(--afer-text-muted);
@@ -153,6 +202,14 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.tree-node__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-top: 0.4rem;
 }
 
 // ─── Badges ───────────────────────────────────────────────────────────────────
@@ -171,6 +228,30 @@
     color: #2a2e35;
     border: 1px solid rgba(0,0,0,0.1);
   }
+
+  &--muted {
+    background: color-mix(in srgb, var(--afer-text-muted), transparent 88%);
+    color: var(--afer-text-secondary);
+    border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 74%);
+  }
+
+  &--success {
+    background: color-mix(in srgb, #27ae60, transparent 88%);
+    color: #1f8a4d;
+    border: 1px solid color-mix(in srgb, #27ae60, transparent 72%);
+  }
+
+  &--warning {
+    background: color-mix(in srgb, #f39c12, transparent 88%);
+    color: #b9770e;
+    border: 1px solid color-mix(in srgb, #f39c12, transparent 72%);
+  }
+
+  &--danger {
+    background: color-mix(in srgb, #e74c3c, transparent 88%);
+    color: #c0392b;
+    border: 1px solid color-mix(in srgb, #e74c3c, transparent 72%);
+  }
 }
 
 // ─── Actions ──────────────────────────────────────────────────────────────────
@@ -181,6 +262,7 @@
   justify-content: center;
   gap: 0.5rem;
   flex-shrink: 0;
+  min-width: 148px;
 }
 
 .tree-node__controls {
@@ -208,17 +290,70 @@
   background: var(--afer-secondary-absolute);
   color: #ffffff;
   border: 1px solid transparent;
-  border-radius: 12px 0;
+  border-radius: 10px;
   padding: 6px 14px;
   font-size: 0.8125rem;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 
   &:hover {
-    filter: brightness(1.1);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: color-mix(in srgb, var(--afer-secondary-absolute), #fff 10%);
+  }
+}
+
+.tree-node__admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+
+.tree-node__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--afer-text-secondary);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &.btn-view {
+    color: var(--afer-secondary-absolute);
+  }
+
+  &.btn-view:hover {
+    background: color-mix(in srgb, var(--afer-secondary-absolute), transparent 88%);
+    color: var(--afer-secondary-absolute);
+  }
+
+  &.btn-edit {
+    color: var(--afer-primary-absolute);
+  }
+
+  &.btn-edit:hover {
+    background: color-mix(in srgb, var(--afer-primary-absolute), transparent 88%);
+    color: var(--afer-primary-absolute);
+  }
+
+  &.btn-delete {
+    color: #d94c4c;
+  }
+
+  &.btn-delete:hover {
+    background: color-mix(in srgb, #d94c4c, transparent 88%);
+    color: #d94c4c;
   }
 }
 
@@ -342,8 +477,23 @@
   }
 
   .tree-node__actions {
-    min-width: 85px;
+    min-width: 96px;
     gap: 0.3rem;
+  }
+
+  .tree-node__admin-actions {
+    justify-content: flex-start;
+  }
+
+  .tree-node__action-btn {
+    width: 28px;
+    height: 28px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
   }
 
   .btn-view-products {

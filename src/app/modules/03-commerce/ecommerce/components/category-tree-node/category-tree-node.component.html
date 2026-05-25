@@ -3,30 +3,51 @@
   [class.tree-node--has-children]="hasChildren"
   [class.tree-node--expanded]="isExpanded()"
   [class.tree-node--featured]="node().isFeatured"
-  (click)="toggle($event)"
+  [class.tree-node--selected]="isSelected"
+  [class.tree-node--current-location]="isCurrentLocation"
+  (click)="onNodeClick($event)"
   [attr.role]="hasChildren ? 'button' : null"
   [attr.aria-expanded]="hasChildren ? isExpanded() : null"
 >
-  <!-- Image -->
   <div class="tree-node__image-wrapper">
     <img
-      [src]="node().image"
+      [src]="node().image || 'assets/images/placeholder.png'"
       [alt]="node().name"
       class="tree-node__image"
       loading="lazy"
     />
   </div>
 
-  <!-- Content -->
   <div class="tree-node__content">
     <div class="tree-node__header">
       <span class="tree-node__name">{{ node().name }}</span>
+      @if (isCurrentLocation) {
+        <span class="tree-node__location-badge">
+          <mat-icon aria-hidden="true">my_location</mat-icon>
+          Estás aquí
+        </span>
+      }
       @if (node().isFeatured) {
         <span class="tree-node__badge tree-node__badge--featured">
           Destacado
         </span>
       }
     </div>
+
+    @if (showMeta()) {
+      <div class="tree-node__meta">
+        <span class="tree-node__badge tree-node__badge--muted">Nivel {{ node().level }}</span>
+        <span class="tree-node__badge tree-node__badge--muted">Orden {{ node().order }}</span>
+        <span
+          class="tree-node__badge"
+          [class.tree-node__badge--success]="node().status === 'active'"
+          [class.tree-node__badge--warning]="node().status === 'inactive'"
+          [class.tree-node__badge--danger]="node().status === 'deprecated'"
+        >
+          {{ node().status }}
+        </span>
+      </div>
+    }
     
     @if (node().description) {
       <p class="tree-node__description">
@@ -35,7 +56,6 @@
     }
   </div>
 
-  <!-- Actions -->
   <div class="tree-node__actions">
     @if (hasChildren) {
       <div class="tree-node__controls">
@@ -69,13 +89,46 @@
       </div>
     }
 
-    <button class="btn-view-products" (click)="viewProducts($event)">
-      Ver productos
-    </button>
+    @if (showAdminActions()) {
+      <div class="tree-node__admin-actions">
+        <button
+          class="tree-node__action-btn btn-view"
+          type="button"
+          aria-label="Ver"
+          title="Ver"
+          (click)="requestView($event)"
+        >
+          <mat-icon aria-hidden="true">visibility</mat-icon>
+        </button>
+        <button
+          class="tree-node__action-btn btn-edit"
+          type="button"
+          aria-label="Editar"
+          title="Editar"
+          (click)="requestEdit($event)"
+        >
+          <mat-icon aria-hidden="true">edit</mat-icon>
+        </button>
+        <button
+          class="tree-node__action-btn btn-delete"
+          type="button"
+          aria-label="Eliminar"
+          title="Eliminar"
+          (click)="requestDelete($event)"
+        >
+          <mat-icon aria-hidden="true">delete</mat-icon>
+        </button>
+      </div>
+    }
+
+    @if (showProductsAction()) {
+      <button class="btn-view-products" (click)="viewProducts($event)">
+        {{ actionLabel() }}
+      </button>
+    }
   </div>
 </div>
 
-<!-- Recursive children -->
 @if (hasChildren && isExpanded()) {
   <div class="tree-children">
     <ul class="tree-list" role="list">
@@ -84,6 +137,16 @@
           <app-category-tree-node
             [node]="child"
             [level]="level() + 1"
+            [selectedNodeId]="selectedNodeId()"
+            [showProductsAction]="showProductsAction()"
+            [showMeta]="showMeta()"
+            [actionLabel]="actionLabel()"
+            [showAdminActions]="showAdminActions()"
+            [emphasizeSelectedNode]="emphasizeSelectedNode()"
+            (nodeSelected)="nodeSelected.emit($event)"
+            (viewRequested)="viewRequested.emit($event)"
+            (editRequested)="editRequested.emit($event)"
+            (deleteRequested)="deleteRequested.emit($event)"
           ></app-category-tree-node>
         </li>
       }

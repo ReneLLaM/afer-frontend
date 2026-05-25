@@ -8,6 +8,7 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 interface GifCard {
   key: string;
@@ -19,7 +20,7 @@ interface GifCard {
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './modal.html',
   styleUrls: ['./modal.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,

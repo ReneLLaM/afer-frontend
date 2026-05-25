@@ -3,14 +3,14 @@ export interface CategoriesResponse {
 }
 
 export interface Datum {
-  id:          string;
-  name:        string;
-  slug:        string;
-  description: string;
-  image:       string;
-  order:       number;
-  level:       number;
-  status:      string;
-  isFeatured:  boolean;
-  children:    Datum[];
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  image: string | null;
+  order: number;
+  level: number;
+  status: string;
+  isFeatured: boolean;
+  children: Datum[];
 }

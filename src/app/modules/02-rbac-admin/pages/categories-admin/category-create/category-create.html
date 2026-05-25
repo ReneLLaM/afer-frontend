@@ -1,0 +1,185 @@
+<div class="category-form-page">
+  <breadcrumb />
+
+  <header class="category-form-page__top">
+    <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">
+      <i class="ri-arrow-left-line"></i>
+      <span>Volver</span>
+    </button>
+  </header>
+
+  <section class="category-form-page__hero">
+    <div>
+      <span class="category-form-page__eyebrow">Nueva categoria</span>
+      <h1 class="category-form-page__title">Crear Categoria</h1>
+      <p class="category-form-page__subtitle">Crea una categoria con imagen, jerarquía y estado listos para tienda y admin.</p>
+    </div>
+
+    <div class="category-form-page__hero-badge">
+      <i class="ri-node-tree"></i>
+      <span>Jerarquía clara + imagen lista para catálogo</span>
+    </div>
+  </section>
+
+  @if (submitError()) {
+    <div class="category-form-page__alert category-form-page__alert--error">{{ submitError() }}</div>
+  }
+
+  <form class="category-form-page__grid" [formGroup]="form" (ngSubmit)="submit()">
+    <section class="category-form-page__panel category-form-page__panel--main">
+      <div class="category-form-page__panel-head">
+        <h2 class="category-form-page__panel-title">Informacion principal</h2>
+
+        <label class="category-form-page__check category-form-page__check--compact">
+          <input type="checkbox" formControlName="isFeatured" />
+          <span>Destacada</span>
+        </label>
+      </div>
+
+      <div class="category-form-page__compact-grid">
+        <label class="category-form-page__field category-form-page__field--title">
+          <span>Nombre *</span>
+          <input type="text" formControlName="name" placeholder="Ej. Televisores" />
+          @if (form.controls.name.touched && form.controls.name.invalid) {
+            <small>El nombre es obligatorio.</small>
+          }
+        </label>
+
+        <label class="category-form-page__field">
+          <span>Estado</span>
+          <select formControlName="status">
+            @for (option of statusOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <div class="category-form-page__compact-grid category-form-page__compact-grid--slug">
+        <label class="category-form-page__field">
+          <span>Slug</span>
+          <input type="text" formControlName="slug" placeholder="Se genera si lo dejas vacío" />
+        </label>
+
+        <div class="category-form-page__field">
+          <span>Categoria padre</span>
+          <input
+            type="search"
+            [value]="parentSearch()"
+            placeholder="Busca por nombre o ruta"
+            (input)="onParentSearchInput($event)"
+          />
+          <p class="category-form-page__field-hint">
+            Busca entre {{ parentOptions().length }} categorías y selecciona una ruta válida para ubicar esta categoría.
+          </p>
+
+          <div class="category-form-page__parent-picker">
+            <button type="button" class="category-form-page__parent-option" [class.category-form-page__parent-option--active]="!selectedParent()" (click)="clearParentSelection()">
+              <span class="category-form-page__parent-option-title">Sin padre</span>
+              <small>Se mostrará como categoría raíz</small>
+            </button>
+
+            @for (option of filteredParentOptions(); track option.id) {
+              <button
+                type="button"
+                class="category-form-page__parent-option"
+                [class.category-form-page__parent-option--active]="selectedParent()?.id === option.id"
+                (click)="selectParent(option)"
+              >
+                <span class="category-form-page__parent-option-title">{{ option.label }}</span>
+                <small>{{ option.pathLabel }}</small>
+              </button>
+            }
+          </div>
+
+          <div class="category-form-page__parent-meta">
+            <span>{{ parentResultsCount() }} resultado{{ parentResultsCount() === 1 ? '' : 's' }}</span>
+
+            @if (selectedParent(); as selectedParent) {
+              <strong>Seleccionada: {{ selectedParent.pathLabel }}</strong>
+            } @else {
+              <strong>Seleccionada: Categoría raíz</strong>
+            }
+          </div>
+        </div>
+      </div>
+
+      <label class="category-form-page__field">
+        <span>Descripcion</span>
+        <textarea rows="5" formControlName="description" placeholder="Describe la categoria para contexto de catálogo y admin."></textarea>
+      </label>
+    </section>
+
+    <aside class="category-form-page__panel category-form-page__panel--side">
+      <h2 class="category-form-page__panel-title">Imagen principal *</h2>
+
+      <input
+        #fileInput
+        type="file"
+        class="category-form-page__file-input"
+        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+        (change)="onImageChange($event)"
+      />
+
+      <div
+        class="category-form-page__dropzone"
+        [class.category-form-page__dropzone--active]="isDragOver()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+        (click)="openFileDialog()"
+      >
+        @if (selectedImage()) {
+          <div class="category-form-page__preview-stage">
+            <img [src]="previewImageUrl()" alt="Vista previa de la categoria" class="category-form-page__preview-image" />
+          </div>
+        } @else {
+          <div class="category-form-page__drop-copy">
+            <i class="ri-image-add-line"></i>
+            <strong>Arrastra la imagen aquí</strong>
+            <span>o haz clic para seleccionar un archivo</span>
+            <small>JPG, PNG o WEBP. Máximo 1 MB.</small>
+          </div>
+        }
+      </div>
+
+      @if (imageError()) {
+        <div class="category-form-page__alert category-form-page__alert--error">{{ imageError() }}</div>
+      }
+
+      <div class="category-form-page__file-meta">
+        <span class="category-form-page__file-label">Archivo</span>
+        <strong>{{ selectedImageName() }}</strong>
+      </div>
+
+      <div class="category-form-page__live-card">
+        <span class="category-form-page__live-kicker">Vista previa</span>
+        <p class="category-form-page__live-hint">Así se verá la tarjeta de categoría con imagen cuadrada y jerarquía visible.</p>
+
+        <article class="category-form-page__preview-card">
+          <div class="category-form-page__preview-card-visual">
+            @if (summary().featured) {
+              <div class="category-form-page__preview-card-badge">DESTACADA</div>
+            }
+
+            <img [src]="previewImageUrl()" [alt]="summary().name" class="category-form-page__preview-card-image" />
+          </div>
+
+          <div class="category-form-page__preview-card-info">
+            <span class="category-form-page__preview-card-parent">{{ summary().parent }}</span>
+            <strong class="category-form-page__preview-card-name">{{ summary().name }}</strong>
+            <p class="category-form-page__preview-card-description">{{ summary().description }}</p>
+            <span class="category-form-page__preview-card-status">{{ summary().status }}</span>
+          </div>
+        </article>
+      </div>
+    </aside>
+
+    <section class="category-form-page__panel category-form-page__panel--submit">
+      <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving()">
+        <i class="ri-save-line"></i>
+        <span>{{ saving() ? 'Creando...' : 'Crear categoria' }}</span>
+      </button>
+    </section>
+  </form>
+</div>
