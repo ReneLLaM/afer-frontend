@@ -1,1 +1,141 @@
-<p>acerca-de-nosotros-page works!</p>
+<main class="about-page" role="main">
+
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="about-hero__inner">
+      <span class="about-tag">{{ content.hero.badge }}</span>
+      <h1 class="about-hero__title">{{ content.hero.title }}</h1>
+      <p class="about-hero__desc">{{ content.hero.description }}</p>
+    </div>
+  </section>
+
+  <!-- History 1 -->
+  <section class="about-section">
+    <div class="about-row">
+      <div class="about-row__image">
+        <div class="about-image-frame">
+          <img [src]="content.history.images[0]" alt="Historia AFER" loading="lazy" />
+        </div>
+      </div>
+      <div class="about-row__content">
+        <span class="about-tag about-tag--sm">Nuestra Historia</span>
+        <h2 class="about-row__title">Una historia de innovación</h2>
+        <p>{{ content.history.paragraphs[0] }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline 2009, 2010, 2011 -->
+  <section class="about-section">
+    <div class="about-timeline">
+      @for (event of content.timeline.slice(0, 3); track event.year) {
+        <article class="about-timeline-card">
+          <div class="about-timeline-img">
+            <img [src]="event.imageUrl" [alt]="event.title" loading="lazy" />
+          </div>
+          <div class="about-timeline-content">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.description }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- History 2 -->
+  <section class="about-section">
+    <div class="about-row about-row--reverse">
+      <div class="about-row__content">
+        <p>{{ content.history.paragraphs[1] }}</p>
+        <p>{{ content.history.paragraphs[2] }}</p>
+      </div>
+      <div class="about-row__image">
+        <div class="about-image-frame">
+          <img [src]="content.history.images[1]" alt="Historia AFER" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote -->
+  <section class="about-section">
+    <div class="about-quote">
+      <p>"{{ content.history.quote }}"</p>
+    </div>
+  </section>
+
+  <!-- Timeline 2012, 2014, 2015 -->
+  <section class="about-section">
+    <div class="about-timeline">
+      @for (event of [content.timeline[3], content.timeline[4], content.timeline[5]]; track event.year) {
+        <article class="about-timeline-card">
+          <div class="about-timeline-img">
+            <img [src]="event.imageUrl" [alt]="event.title" loading="lazy" />
+          </div>
+          <div class="about-timeline-content">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.description }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- Mission / Vision -->
+  <section class="about-section">
+    <div class="about-mv-grid">
+      @for (item of content.missionVision; track item.type) {
+        <div class="about-mv-card">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Timeline 2017, 2018, 2019 -->
+  <section class="about-section">
+    <div class="about-timeline">
+      @for (event of content.timeline.slice(6, 9); track event.year) {
+        <article class="about-timeline-card">
+          <div class="about-timeline-img">
+            <img [src]="event.imageUrl" [alt]="event.title" loading="lazy" />
+          </div>
+          <div class="about-timeline-content">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.description }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="about-section">
+    <div class="about-section__header">
+      <span class="about-tag">Nuestros Valores</span>
+    </div>
+    <div class="about-values">
+      @for (value of content.values; track value.title) {
+        <div class="about-value-card">
+          <h3>{{ value.title }}</h3>
+          <p>{{ value.description }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Timeline 2024 -->
+  <section class="about-section">
+    <div class="about-finale">
+      <div class="about-finale__image">
+        <img [src]="content.timeline[9].imageUrl" [alt]="content.timeline[9].title" loading="lazy" />
+      </div>
+      <div class="about-finale__content">
+        <h2>{{ content.timeline[9].title }}</h2>
+        <p>{{ content.timeline[9].description }}</p>
+      </div>
+    </div>
+  </section>
+
+</main>

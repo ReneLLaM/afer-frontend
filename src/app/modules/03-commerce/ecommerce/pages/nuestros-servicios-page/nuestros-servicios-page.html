@@ -1,1 +1,158 @@
-<p>nuestros-servicios-page works!</p>
+<main class="services-container" role="main">
+
+  <section class="services-hero">
+    <div class="services-hero-content">
+      <span class="services-hero-badge">AFER Bolivia</span>
+      <h1 class="services-hero-title">Servicios de Ventas y Postventa</h1>
+      <p class="services-hero-subtitle">de Afer Bolivia</p>
+      <p class="services-hero-description">
+        Nuestra misión es asegurarte una experiencia de compra excepcional desde el primer contacto hasta mucho después de la compra. A continuación, te explicamos nuestros servicios en detalle y los pasos para acceder a cada uno.
+      </p>
+    </div>
+  </section>
+
+  <section class="services-bar">
+    <div class="services-bar-content">
+      <span class="services-bar-line"></span>
+      <div class="services-bar-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M1 3h15v13H1V3z"/>
+          <path d="M16 8h4l3 3v5h-7V8z"/>
+          <circle cx="5.5" cy="18.5" r="2.5"/>
+          <circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+        <span>Envíos a Nivel Nacional</span>
+      </div>
+      <span class="services-bar-line"></span>
+    </div>
+  </section>
+
+  <section class="services-accordion">
+    <div class="services-accordion-header">
+      <span class="services-tag">¿QuéOfrecemos?</span>
+      <h2>Nuestros Servicios</h2>
+      <p>Soluciones completas para cada etapa de tu experiencia de compra</p>
+    </div>
+
+    <div class="services-accordion-list">
+      <!-- Entregas a Domicilio Gratuitas -->
+      <article
+        class="service-item"
+        [class.active]="isServiceOpen('entregas')"
+        style="--delay: 0ms"
+      >
+        <button
+          class="service-item-trigger"
+          (click)="toggleService('entregas')"
+          [attr.aria-expanded]="isServiceOpen('entregas')"
+          aria-controls="service-entregas"
+        >
+          <div class="service-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M1 3h15v13H1V3z"/>
+              <path d="M16 8h4l3 3v5h-7V8z"/>
+              <circle cx="5.5" cy="18.5" r="2.5"/>
+              <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          <span class="service-item-title">Entregas a Domicilio Gratuitas</span>
+          <span class="service-item-toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </span>
+        </button>
+        <div class="service-item-content" id="service-entregas" role="region">
+          <p>Para nuestros clientes en Sucre, Oruro, Cochabamba y La Paz, llevamos tus productos hasta tu hogar sin costo adicional. ¡Recibe tus compras sin moverte de casa!</p>
+        </div>
+      </article>
+
+      <!-- Envíos Seguros a Nivel Nacional -->
+      <article
+        class="service-item"
+        [class.active]="isServiceOpen('envios')"
+        style="--delay: 100ms"
+      >
+        <button
+          class="service-item-trigger"
+          (click)="toggleService('envios')"
+          [attr.aria-expanded]="isServiceOpen('envios')"
+          aria-controls="service-envios"
+        >
+          <div class="service-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 3l9 4.5v9L12 21l-9-4.5v-9L12 3z"/>
+              <path d="M12 12l9-4.5M12 12v9M12 12L3 7.5"/>
+            </svg>
+          </div>
+          <span class="service-item-title">Envíos Seguros a Nivel Nacional</span>
+          <span class="service-item-toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </span>
+        </button>
+        <div class="service-item-content" id="service-envios" role="region">
+          <p>Llevamos tus productos de manera confiable a cualquier rincón del país, cuidando cada detalle para que lleguen en perfectas condiciones</p>
+        </div>
+      </article>
+
+      <!-- Atención Online de Lunes a Domingo -->
+      <article
+        class="service-item"
+        [class.active]="isServiceOpen('atencion')"
+        style="--delay: 200ms"
+      >
+        <button
+          class="service-item-trigger"
+          (click)="toggleService('atencion')"
+          [attr.aria-expanded]="isServiceOpen('atencion')"
+          aria-controls="service-atencion"
+        >
+          <div class="service-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 18v-6a9 9 0 0118 0v6"/>
+              <path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/>
+            </svg>
+          </div>
+          <span class="service-item-title">Atención Online de Lunes a Domingo</span>
+          <span class="service-item-toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </span>
+        </button>
+        <div class="service-item-content" id="service-atencion" role="region">
+          <p>Te acompañamos todos los días de la semana, de lunes a domingo, para resolver tus dudas y asistirte en lo que necesites. ¡Siempre estamos aquí para ti!</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="services-promo">
+    <div class="services-promo-bg">
+      <div class="bg-icon bg-icon-1"></div>
+      <div class="bg-icon bg-icon-2"></div>
+      <div class="bg-icon bg-icon-3"></div>
+      <div class="bg-icon bg-icon-4"></div>
+      <div class="bg-icon bg-icon-5"></div>
+    </div>
+    <div class="services-promo-decoration"></div>
+    <div class="services-promo-image">
+      <img src="/assets/Servicios-image/Group 214.png" alt="AFER Bolivia" />
+    </div>
+    <div class="services-promo-content">
+      <h2 class="services-promo-title">¡Confía en nosotros!</h2>
+      <p class="services-promo-text">Mejora tu hogar con un solo clic</p>
+      <a routerLink="/" class="services-promo-btn">¡Comienza ahora!</a>
+    </div>
+  </section>
+
+  <section class="services-faq">
+    <div class="services-faq-content">
+      <h3>Preguntas frecuentes sobre Afer Bolivia</h3>
+      <a href="#" class="services-faq-btn">Más información</a>
+    </div>
+  </section>
+
+</main>
