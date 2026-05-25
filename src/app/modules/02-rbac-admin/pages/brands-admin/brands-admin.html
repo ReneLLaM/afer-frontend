@@ -1,17 +1,17 @@
-<div class="banners-page">
+<div class="brands-page">
   <breadcrumb />
 
-  <header class="banners-page__header">
-    <div class="banners-page__header-content">
-      <h1 class="banners-page__title">Banners</h1>
-      <p class="banners-page__subtitle">
-        Gestiona banners con estado, vigencia e imagen principal desde un listado limpio.
+  <header class="brands-page__header">
+    <div class="brands-page__header-content">
+      <h1 class="brands-page__title">Marcas</h1>
+      <p class="brands-page__subtitle">
+        Gestiona imagen, posicion, estado y visibilidad de cada marca desde un listado claro.
       </p>
     </div>
 
-    <div class="banners-page__header-actions">
+    <div class="brands-page__header-actions">
       <button
-        *hasPermission="PERMISSIONS.BANNERS.UPDATE"
+        *hasPermission="PERMISSIONS.BRANDS.UPDATE"
         class="admin-btn admin-btn--secondary"
         type="button"
         [disabled]="reorderMode() || !!reorderBlockedReason() || reordering() || preparingReorder()"
@@ -23,83 +23,95 @@
       </button>
 
       <button
-        *hasPermission="PERMISSIONS.BANNERS.CREATE"
+        *hasPermission="PERMISSIONS.BRANDS.CREATE"
         class="admin-btn admin-btn--primary"
         type="button"
-        (click)="onCreateBanner()"
+        (click)="onCreateBrand()"
       >
         <i class="ri-add-line"></i>
-        <span>Crear Banner</span>
+        <span>Crear Marca</span>
       </button>
     </div>
   </header>
 
   <app-admin-list-toolbar
     [search]="search()"
-    searchPlaceholder="Buscar banners..."
+    searchPlaceholder="Buscar marcas..."
     [hasActiveFilters]="hasActiveFilters()"
     [filterCount]="activeFilterCount()"
     (searchChange)="onSearch($event)"
     (clearFilters)="onClearFilters()"
   >
-    <div filters class="banners-page__filters">
+    <div filters class="brands-page__filters">
       <label
-        class="banners-page__filter-field"
-        [class.banners-page__filter-field--active]="!!statusFilter()"
+        class="brands-page__filter-field"
+        [class.brands-page__filter-field--active]="!!statusFilter()"
       >
-        <span class="banners-page__filter-label">
+        <span class="brands-page__filter-label">
           Estado
           @if (statusFilter()) {
-            <span class="banners-page__filter-dot" aria-hidden="true"></span>
+            <span class="brands-page__filter-dot" aria-hidden="true"></span>
           }
         </span>
+
         <select
-          class="banners-page__filter-select"
+          class="brands-page__filter-select"
           [value]="statusFilter()"
           (change)="onStatusFilter($any($event.target).value)"
         >
           <option value="">Todos</option>
-          <option value="active">Activos</option>
-          <option value="inactive">Inactivos</option>
+          <option value="active">Activas</option>
+          <option value="inactive">Inactivas</option>
+          <option value="deprecated">Deprecadas</option>
         </select>
       </label>
 
       <label
-        class="banners-page__filter-check"
-        [class.banners-page__filter-check--active]="showDeleted()"
+        class="brands-page__filter-check"
+        [class.brands-page__filter-check--active]="showDeleted()"
       >
         <input
           type="checkbox"
           [checked]="showDeleted()"
           (change)="onShowDeletedChange($any($event.target).checked)"
         />
-        <span>Mostrar eliminados</span>
+        <span>Mostrar eliminadas</span>
       </label>
     </div>
   </app-admin-list-toolbar>
 
   @if (error()) {
-    <div class="banners-page__error">{{ error() }}</div>
+    <div class="brands-page__error">{{ error() }}</div>
   }
 
   @if (reorderMode()) {
-    <section class="banners-page__reorder-panel banners-page__reorder-panel--active">
-      <div class="banners-page__reorder-copy">
+    <section class="brands-page__reorder-panel brands-page__reorder-panel--active">
+      <div class="brands-page__reorder-copy">
         <strong>Modo reordenar activo</strong>
         <p>
           Arrastra filas dentro de la pagina actual. Si cambias de pagina con cambios pendientes,
           se te avisara porque el contenido entre paginas puede desplazarse. Tambien puedes usar
-          las flechas de acciones para enviar un banner a la pagina anterior o siguiente.
+          las flechas de acciones para enviar una marca a la pagina anterior o siguiente.
         </p>
       </div>
 
-      <div class="banners-page__reorder-actions">
-        <button class="admin-btn admin-btn--secondary" type="button" [disabled]="reordering()" (click)="cancelReorderMode()">
+      <div class="brands-page__reorder-actions">
+        <button
+          class="admin-btn admin-btn--secondary"
+          type="button"
+          [disabled]="reordering()"
+          (click)="cancelReorderMode()"
+        >
           <i class="ri-close-line"></i>
           <span>Cancelar</span>
         </button>
 
-        <button class="admin-btn admin-btn--primary" type="button" [disabled]="!canSaveReorder() || reordering()" (click)="saveReorder()">
+        <button
+          class="admin-btn admin-btn--primary"
+          type="button"
+          [disabled]="!canSaveReorder() || reordering()"
+          (click)="saveReorder()"
+        >
           <i class="ri-check-line"></i>
           <span>{{ reordering() ? 'Guardando...' : 'Aceptar' }}</span>
         </button>
@@ -107,16 +119,30 @@
     </section>
   } @else {
     @if (reorderBlockedReason()) {
-      <div class="banners-page__reorder-note">
+      <div class="brands-page__reorder-note">
         <span>{{ reorderBlockedReason() }}</span>
       </div>
     }
   }
 
+  <ng-template #brandImageCell let-row="row">
+    <div
+      class="brands-page__brand-image-shell"
+      [style.background-color]="row.backgroundColor || '#f4f6f8'"
+    >
+      <img
+        class="brands-page__brand-image"
+        [src]="row.imageUrl"
+        [alt]="row.name"
+        loading="lazy"
+      />
+    </div>
+  </ng-template>
+
   <app-data-table
-    [columns]="columns"
+    [columns]="columns()"
     [data]="tableData()"
-    [loading]="loading() || reordering()"
+    [loading]="loading()"
     [serverSort]="true"
     [showFooterInfo]="false"
     trackByKey="id"
@@ -125,7 +151,7 @@
     [crud]="reorderMode() ? null : tableCrud"
     [actions]="reorderActions()"
     [reorderable]="reorderMode()"
-    emptyMessage="No se encontraron banners"
+    emptyMessage="No se encontraron marcas"
     (sortChange)="onSort($event)"
     (rowReorder)="onRowReorder($event)"
   />

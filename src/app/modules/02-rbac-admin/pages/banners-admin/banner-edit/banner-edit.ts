@@ -34,7 +34,7 @@ import {
 import type { Datum as CategoryNode } from '../../../../03-commerce/ecommerce/pages/categories-page/interfaces/categories-response.interface';
 import type { Datum as BrandItem } from '../../../../03-commerce/ecommerce/pages/brands-page/interfaces/brands-response.interface';
 import type { Datum as ProductItem } from '../../../../03-commerce/ecommerce/pages/products-page/interfaces/products-response.interface';
-import type { AdminBannerDetail } from '../../../interfaces/admin-banner.interface';
+import type { AdminBannerDetail, BannerStatus } from '../../../interfaces/admin-banner.interface';
 
 const MAX_IMAGE_SIZE_BYTES = 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
@@ -78,7 +78,7 @@ export class BannerEditPage {
     title: ['', [Validators.required, Validators.maxLength(160)]],
     description: ['', [Validators.maxLength(500)]],
     ctaLabel: ['', [Validators.maxLength(80)]],
-    isActive: [true],
+    status: ['active' as BannerStatus],
   });
 
   readonly loading = signal(true);
@@ -185,7 +185,7 @@ export class BannerEditPage {
   readonly summary = computed(() => ({
     title: this.form.controls.title.value.trim() || 'Sin titulo',
     ctaLabel: this.form.controls.ctaLabel.value.trim() || 'Sin CTA',
-    isActive: this.form.controls.isActive.value,
+    status: this.form.controls.status.value,
     hasImage: !!this.displayImageUrl(),
     categories: this.selectedCategoryIds().length,
     brands: this.selectedBrandIds().length,
@@ -327,7 +327,7 @@ export class BannerEditPage {
           title: this.form.controls.title.value.trim(),
           description: this.emptyToUndefined(this.form.controls.description.value),
           ctaLabel: this.emptyToUndefined(this.form.controls.ctaLabel.value),
-          isActive: this.form.controls.isActive.value,
+          status: this.form.controls.status.value,
           startsAt: this.toPayloadDate(this.startsAt(), 'start'),
           endsAt: this.toPayloadDate(this.endsAt(), 'end'),
           categoriesIds: this.selectedCategoryIds(),
@@ -414,7 +414,7 @@ export class BannerEditPage {
             title: banner.title,
             description: banner.description ?? '',
             ctaLabel: banner.ctaLabel ?? '',
-            isActive: banner.isActive,
+            status: banner.status,
           });
           this.startsAt.set(this.fromApiDate(banner.startsAt));
           this.endsAt.set(this.fromApiDate(banner.endsAt));

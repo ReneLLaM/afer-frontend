@@ -72,29 +72,16 @@
     <div class="role-detail__grid">
       <article class="role-detail__panel role-detail__panel--wide">
         <h2 class="role-detail__panel-title">
-          <i class="ri-information-line"></i>
-          Información general
+          <i class="ri-file-text-line"></i>
+          Descripción
         </h2>
-        <dl class="role-detail__meta role-detail__meta--two-columns">
-          <div>
-            <dt>Nombre:</dt>
-            <dd>{{ r.name }}</dd>
-          </div>
-          <div>
-            <dt>Slug:</dt>
-            <dd><code>{{ r.slug }}</code></dd>
-          </div>
-          <div class="role-detail__meta-full">
-            <dt>Descripcion:</dt>
-            <dd class="role-detail__description">{{ r.description || 'Sin descripción registrada.' }}</dd>
-          </div>
-        </dl>
+        <p class="role-detail__description">{{ r.description || 'Sin descripción registrada.' }}</p>
       </article>
 
       <article class="role-detail__panel">
         <h2 class="role-detail__panel-title">
-          <i class="ri-shield-check-line"></i>
-          Estado
+          <i class="ri-pie-chart-line"></i>
+          Resumen
         </h2>
         <dl class="role-detail__meta">
           <div>
@@ -102,12 +89,12 @@
             <dd>{{ r.isSystem ? 'Rol del sistema' : 'Rol personalizado' }}</dd>
           </div>
           <div>
-            <dt>isSystem:</dt>
-            <dd>{{ r.isSystem ? 'true' : 'false' }}</dd>
+            <dt>Permisos:</dt>
+            <dd>{{ permissionsCount() }}</dd>
           </div>
           <div>
-            <dt>Total de permisos:</dt>
-            <dd>{{ permissionsCount() }}</dd>
+            <dt>Slug:</dt>
+            <dd><code>{{ r.slug }}</code></dd>
           </div>
         </dl>
       </article>

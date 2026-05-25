@@ -10,6 +10,8 @@ export type BannerSortBy =
   | 'createdAt'
   | 'updatedAt';
 
+export type BannerStatus = 'active' | 'inactive';
+
 export interface AdminBannerBase {
   id: string;
   title: string;
@@ -18,7 +20,7 @@ export interface AdminBannerBase {
   imageUrl: string;
   ctaLabel: string | null;
   order: number;
-  isActive: boolean;
+  status: BannerStatus;
   startsAt: string | null;
   endsAt: string | null;
 }
@@ -68,7 +70,7 @@ export interface AdminBannersQuery {
   limit?: number;
   offset?: number;
   search?: string;
-  isActive?: boolean;
+  status?: BannerStatus;
   showDeleted?: boolean;
   sortBy?: BannerSortBy;
   order?: 'ASC' | 'DESC';
@@ -78,7 +80,7 @@ export interface CreateAdminBannerDto {
   title: string;
   description?: string;
   ctaLabel?: string;
-  isActive?: boolean;
+  status?: BannerStatus;
   startsAt?: string;
   endsAt?: string;
   categoriesIds?: string[];
@@ -90,7 +92,7 @@ export interface UpdateAdminBannerDto {
   title?: string;
   description?: string;
   ctaLabel?: string;
-  isActive?: boolean;
+  status?: BannerStatus;
   startsAt?: string;
   endsAt?: string;
   categoriesIds?: string[];

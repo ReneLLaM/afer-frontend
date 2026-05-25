@@ -67,9 +67,9 @@
       </div>
 
       <div class="banner-detail__hero-badges">
-        <span class="banner-detail__chip" [class.banner-detail__chip--active]="b.isActive" [class.banner-detail__chip--inactive]="!b.isActive">
-          <i [class]="b.isActive ? 'ri-checkbox-circle-line' : 'ri-close-circle-line'"></i>
-          {{ b.isActive ? 'Activo' : 'Inactivo' }}
+        <span class="banner-detail__chip" [class.banner-detail__chip--active]="b.status === 'active'" [class.banner-detail__chip--inactive]="b.status === 'inactive'">
+          <i [class]="b.status === 'active' ? 'ri-checkbox-circle-line' : 'ri-close-circle-line'"></i>
+          {{ b.status === 'active' ? 'Activo' : 'Inactivo' }}
         </span>
         <span class="banner-detail__chip banner-detail__chip--order">
           <i class="ri-list-ordered-2"></i>
@@ -89,52 +89,30 @@
     </section>
 
     <div class="banner-detail__grid">
-      <article class="banner-detail__panel banner-detail__panel--wide">
+      <article class="banner-detail__panel banner-detail__panel--wide banner-detail__panel--visual">
         <h2 class="banner-detail__panel-title">
           <i class="ri-image-line"></i>
           Imagen principal
         </h2>
 
-        <div class="banner-detail__image-wrap">
-          <img [src]="b.imageUrl" [alt]="b.title" class="banner-detail__image" />
+        <div class="banner-detail__visual-layout">
+          <div class="banner-detail__image-wrap">
+            <img [src]="b.imageUrl" [alt]="b.title" class="banner-detail__image" />
+          </div>
+
+          <dl class="banner-detail__field-list banner-detail__field-list--stacked">
+            <div class="banner-detail__field banner-detail__field--stacked">
+              <dt class="banner-detail__field-label">Clave de imagen:</dt>
+              <dd class="banner-detail__field-value banner-detail__field-value--code"><code>{{ b.imageKey }}</code></dd>
+            </div>
+          </dl>
         </div>
       </article>
 
       <article class="banner-detail__panel">
         <h2 class="banner-detail__panel-title">
-          <i class="ri-information-line"></i>
-          Información general
-        </h2>
-
-        <dl class="banner-detail__field-list">
-          <div class="banner-detail__field banner-detail__field--stacked">
-            <dt class="banner-detail__field-label">Titulo:</dt>
-            <dd class="banner-detail__field-value banner-detail__field-value--title">{{ b.title }}</dd>
-          </div>
-
-          <div class="banner-detail__field">
-            <dt class="banner-detail__field-label">CTA:</dt>
-            <dd class="banner-detail__field-value">{{ b.ctaLabel || 'Sin CTA' }}</dd>
-          </div>
-
-          <div class="banner-detail__field banner-detail__field--stacked">
-            <dt class="banner-detail__field-label">Descripcion:</dt>
-            <dd class="banner-detail__field-value banner-detail__field-value--prose">
-              {{ b.description || 'Sin descripcion registrada.' }}
-            </dd>
-          </div>
-
-          <div class="banner-detail__field banner-detail__field--stacked">
-            <dt class="banner-detail__field-label">Clave de imagen:</dt>
-            <dd class="banner-detail__field-value banner-detail__field-value--code"><code>{{ b.imageKey }}</code></dd>
-          </div>
-        </dl>
-      </article>
-
-      <article class="banner-detail__panel banner-detail__panel--wide">
-        <h2 class="banner-detail__panel-title">
           <i class="ri-time-line"></i>
-          Vigencia y estado
+          Vigencia
         </h2>
 
         <p class="banner-detail__panel-note">
@@ -147,14 +125,6 @@
         </p>
 
         <dl class="banner-detail__field-list banner-detail__field-list--split">
-          <div class="banner-detail__field">
-            <dt class="banner-detail__field-label">Estado:</dt>
-            <dd class="banner-detail__field-value">{{ b.isActive ? 'Activo' : 'Inactivo' }}</dd>
-          </div>
-          <div class="banner-detail__field">
-            <dt class="banner-detail__field-label">Orden:</dt>
-            <dd class="banner-detail__field-value">{{ b.order }}</dd>
-          </div>
           <div class="banner-detail__field">
             <dt class="banner-detail__field-label">Inicio:</dt>
             <dd

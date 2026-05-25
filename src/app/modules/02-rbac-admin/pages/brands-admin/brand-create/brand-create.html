@@ -1,0 +1,182 @@
+<div class="brand-create">
+  <breadcrumb />
+
+  <header class="brand-create__top">
+    <button type="button" class="brand-create__back admin-btn admin-btn--secondary" (click)="goBack()">
+      <i class="ri-arrow-left-line"></i>
+      <span>Volver</span>
+    </button>
+  </header>
+
+  <section class="brand-create__hero">
+    <div>
+      <span class="brand-create__eyebrow">Nueva marca</span>
+      <h1 class="brand-create__title">Crear Marca</h1>
+      <p class="brand-create__subtitle">
+        Define identidad visual, estado y presencia destacada desde un formulario compacto y claro.
+      </p>
+    </div>
+
+    <div class="brand-create__hero-badge">
+      <i class="ri-image-line"></i>
+      <span>Logo + color listos para catálogo y admin</span>
+    </div>
+  </section>
+
+  @if (submitError()) {
+    <div class="brand-create__alert brand-create__alert--error">{{ submitError() }}</div>
+  }
+
+  <form class="brand-create__grid" [formGroup]="form" (ngSubmit)="submit()">
+    <section class="brand-create__panel brand-create__panel--main">
+      <div class="brand-create__panel-head">
+        <h2 class="brand-create__panel-title">Informacion principal</h2>
+
+        <label class="brand-create__check brand-create__check--compact">
+          <input type="checkbox" formControlName="isFeatured" />
+          <span>Destacada</span>
+        </label>
+      </div>
+
+      <div class="brand-create__compact-grid">
+        <label class="brand-create__field brand-create__field--title">
+          <span>Nombre *</span>
+          <input type="text" formControlName="name" placeholder="Ej. Samsung" />
+          @if (form.controls.name.touched && form.controls.name.invalid) {
+            <small>El nombre es obligatorio.</small>
+          }
+        </label>
+
+        <label class="brand-create__field">
+          <span>Estado</span>
+          <select formControlName="status">
+            @for (option of statusOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <label class="brand-create__field">
+        <span>Descripcion</span>
+        <textarea formControlName="description" rows="4" placeholder="Describe brevemente la marca, su tono o su posicionamiento."></textarea>
+      </label>
+
+      <div class="brand-create__compact-grid brand-create__compact-grid--slug">
+        <label class="brand-create__field">
+          <span>Slug</span>
+          <input type="text" formControlName="slug" placeholder="Se genera si lo dejas vacío" />
+        </label>
+
+        <label class="brand-create__field">
+          <span>Color de fondo del logo *</span>
+          <div class="brand-create__color-input-wrap">
+            <input type="color" class="brand-create__color-picker" formControlName="backgroundColor" />
+            <input type="text" formControlName="backgroundColor" placeholder="#ffffff" />
+          </div>
+          <p class="brand-create__field-hint">
+            Este color se usa como fondo de la imagen en su vista previa y en la identidad visual de la marca.
+          </p>
+          @if (form.controls.backgroundColor.touched && form.controls.backgroundColor.invalid) {
+            <small>Usa un color hexadecimal como `#ffffff`.</small>
+          }
+        </label>
+      </div>
+
+      <div class="brand-create__preset-block">
+        @for (group of colorPresetGroups; track group.label) {
+          <div class="brand-create__preset-group">
+            <span class="brand-create__preset-label">{{ group.label }}</span>
+            <div class="brand-create__preset-grid">
+              @for (color of group.colors; track color) {
+                <button
+                  type="button"
+                  class="brand-create__preset"
+                  [class.brand-create__preset--active]="backgroundColor() === color"
+                  [style.background-color]="color"
+                  [attr.aria-label]="'Usar color ' + color"
+                  (click)="selectPreset(color)"
+                >
+                  @if (backgroundColor() === color) {
+                    <i class="ri-check-line"></i>
+                  }
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <aside class="brand-create__panel brand-create__panel--side">
+      <h2 class="brand-create__panel-title">Logo principal *</h2>
+
+      <input
+        #fileInput
+        type="file"
+        class="brand-create__file-input"
+        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+        (change)="onImageChange($event)"
+      />
+
+      <div
+        class="brand-create__dropzone"
+        [class.brand-create__dropzone--active]="isDragOver()"
+        [class.brand-create__dropzone--has-image]="previewUrl()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+        (click)="openFileDialog()"
+      >
+        @if (previewUrl()) {
+          <div class="brand-create__preview-stage" [style.background-color]="backgroundColor()">
+            <img [src]="previewUrl()" alt="Vista previa de la marca" class="brand-create__preview-image" />
+          </div>
+        } @else {
+          <div class="brand-create__drop-copy">
+            <i class="ri-image-add-line"></i>
+            <strong>Arrastra tu logo aquí</strong>
+            <span>o haz clic para seleccionar un archivo</span>
+            <small>JPG, PNG o WEBP. Máximo 1 MB.</small>
+          </div>
+        }
+      </div>
+
+      @if (imageError()) {
+        <div class="brand-create__image-error">{{ imageError() }}</div>
+      }
+
+      <div class="brand-create__file-meta">
+        <span class="brand-create__file-label">Archivo</span>
+        <strong>{{ selectedImageName() }}</strong>
+      </div>
+
+      <div class="brand-create__live-card">
+        <span class="brand-create__live-kicker">Vista previa</span>
+        <p class="brand-create__live-hint">Así se verá la card de marca con el fondo aplicado al logo.</p>
+
+        <article class="brand-create__preview-card">
+          <div class="brand-create__preview-card-visual" [style.background-color]="backgroundColor()">
+            @if (summary().featured) {
+              <div class="brand-create__preview-card-badge">DESTACADO</div>
+            }
+
+            <img [src]="previewImageUrl()" [alt]="summary().name" class="brand-create__preview-card-image" />
+          </div>
+
+          <div class="brand-create__preview-card-info">
+            <strong class="brand-create__preview-card-name">{{ summary().name }}</strong>
+            <p class="brand-create__preview-card-description">{{ summary().description }}</p>
+          </div>
+        </article>
+      </div>
+    </aside>
+
+    <section class="brand-create__panel brand-create__panel--submit">
+      <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving()">
+        <i class="ri-save-line"></i>
+        <span>{{ saving() ? 'Creando...' : 'Crear marca' }}</span>
+      </button>
+    </section>
+  </form>
+</div>

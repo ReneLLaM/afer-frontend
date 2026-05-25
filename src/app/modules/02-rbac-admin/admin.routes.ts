@@ -34,7 +34,30 @@ export const adminRoutes: Routes = [
         path: 'marcas',
         canActivate: [permissionGuard],
         data: { permission: PERMISSIONS.BRANDS.READ, breadcrumb: 'Marcas' },
-        loadComponent: () => import('./pages/brands-admin/brands-admin').then(m => m.BrandsAdminPage),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/brands-admin/brands-admin').then(m => m.BrandsAdminPage),
+          },
+          {
+            path: 'crear',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.BRANDS.CREATE, breadcrumb: 'Crear' },
+            loadComponent: () => import('./pages/brands-admin/brand-create/brand-create').then(m => m.BrandCreatePage),
+          },
+          {
+            path: ':term/editar',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.BRANDS.UPDATE, breadcrumb: 'Editar' },
+            loadComponent: () => import('./pages/brands-admin/brand-edit/brand-edit').then(m => m.BrandEditPage),
+          },
+          {
+            path: ':term',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.BRANDS.READ, breadcrumb: 'Detalle' },
+            loadComponent: () => import('./pages/brands-admin/brand-detail/brand-detail').then(m => m.BrandDetailPage),
+          },
+        ],
       },
       {
         path: 'banners',

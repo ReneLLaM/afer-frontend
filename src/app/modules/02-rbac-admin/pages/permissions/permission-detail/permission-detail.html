@@ -53,8 +53,25 @@
 
       <article class="permission-detail__panel">
         <h2 class="permission-detail__panel-title">
+          <i class="ri-pie-chart-line"></i>
+          Resumen
+        </h2>
+        <dl class="permission-detail__meta">
+          <div>
+            <dt>Módulo:</dt>
+            <dd>{{ p.module | permissionModuleLabel }}</dd>
+          </div>
+          <div>
+            <dt>Acción:</dt>
+            <dd>{{ p.action | permissionActionLabel }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="permission-detail__panel">
+        <h2 class="permission-detail__panel-title">
           <i class="ri-fingerprint-line"></i>
-          Identificador
+          Identificador y registro
         </h2>
         <dl class="permission-detail__meta">
           <div>
@@ -62,25 +79,8 @@
             <dd><code>{{ p.id }}</code></dd>
           </div>
           <div>
-            <dt>Slug:</dt>
-            <dd><code>{{ p.slug }}</code></dd>
-          </div>
-        </dl>
-      </article>
-
-      <article class="permission-detail__panel">
-        <h2 class="permission-detail__panel-title">
-          <i class="ri-calendar-line"></i>
-          Registro
-        </h2>
-        <dl class="permission-detail__meta">
-          <div>
             <dt>Creado:</dt>
             <dd>{{ p.createdAt | localeDate:'medium' }}</dd>
-          </div>
-          <div>
-            <dt>Modulo · Accion:</dt>
-            <dd>{{ p.module | permissionModuleLabel }} · {{ p.action | permissionActionLabel }}</dd>
           </div>
         </dl>
       </article>

@@ -7,10 +7,11 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { catchError, distinctUntilChanged, of, switchMap, tap } from 'rxjs';
+import { catchError, distinctUntilChanged, firstValueFrom, of, switchMap, tap } from 'rxjs';
 import {
   DataTable,
   type SortEvent,
+  type TableAction,
   type TableColumn,
   type TableMeta,
 } from '../../components/admin-data-table/admin-data-table';
@@ -26,6 +27,7 @@ import type {
   AdminBannerListItem,
   AdminBannersResponse,
   BannerSortBy,
+  BannerStatus,
 } from '../../interfaces/admin-banner.interface';
 import {
   areSameQueryParams,
@@ -64,11 +66,13 @@ export class BannersAdminPage {
   private readonly toastService = inject(ToastService);
 
   loading = signal(false);
+  preparingReorder = signal(false);
   reordering = signal(false);
   reorderMode = signal(false);
   error = signal<string | null>(null);
   refreshTick = signal(0);
   reorderDraft = signal<AdminBannerListItem[] | null>(null);
+  reorderBaseline = signal<string[] | null>(null);
 
   queryParams = toSignal(this.route.queryParams, {
     initialValue: this.route.snapshot.queryParams,
@@ -80,9 +84,9 @@ export class BannersAdminPage {
   search = computed(() => this.listParams().search);
   sortBy = computed(() => this.listParams().sortBy);
   order = computed(() => this.listParams().order);
-  isActiveFilter = computed<'' | 'true' | 'false'>(() => {
-    const value = this.queryParams()['isActive'];
-    return value === 'true' || value === 'false' ? value : '';
+  statusFilter = computed<'' | BannerStatus>(() => {
+    const value = this.queryParams()['status'];
+    return value === 'active' || value === 'inactive' ? value : '';
   });
   showDeleted = computed(() => this.queryParams()['showDeleted'] === 'true');
   sortDirection = computed(() => sortDirectionFromOrder(this.order()));
@@ -151,15 +155,14 @@ export class BannersAdminPage {
       hideBelow: 'lg',
     },
     {
-      key: 'isActive',
-      label: 'Activo',
-      sortable: true,
+      key: 'status',
+      label: 'Estado',
       type: 'badge',
       width: '96px',
       align: 'center',
       badgeMap: {
-        true: { label: 'Activo', variant: 'success' },
-        false: { label: 'Inactivo', variant: 'warning' },
+        active: { label: 'Activo', variant: 'success' },
+        inactive: { label: 'Inactivo', variant: 'warning' },
       },
     },
     {
@@ -191,6 +194,27 @@ export class BannersAdminPage {
     },
   };
 
+  readonly reorderActions = computed<TableAction<AdminBannerListItem>[]>(() => {
+    if (!this.reorderMode()) return [];
+
+    return [
+      {
+        icon: 'chevron_left',
+        label: 'Enviar a pagina anterior',
+        class: 'action-btn--secondary',
+        show: (banner) => this.canMoveToPreviousPage(banner),
+        callback: (banner) => this.moveToPreviousPage(banner),
+      },
+      {
+        icon: 'chevron_right',
+        label: 'Enviar a pagina siguiente',
+        class: 'action-btn--secondary',
+        show: (banner) => this.canMoveToNextPage(banner),
+        callback: (banner) => this.moveToNextPage(banner),
+      },
+    ];
+  });
+
   requestParams$ = toObservable(
     computed(() =>
       JSON.stringify({
@@ -200,7 +224,7 @@ export class BannersAdminPage {
         search: this.search() || undefined,
         sortBy: this.sortBy() || undefined,
         order: this.order() || undefined,
-        isActive: this.isActiveFilter() || undefined,
+        status: this.statusFilter() || undefined,
         showDeleted: this.showDeleted() ? 'true' : undefined,
       }),
     ),
@@ -214,8 +238,8 @@ export class BannersAdminPage {
         search?: string;
         sortBy?: BannerSortBy;
         order?: 'ASC' | 'DESC';
-        isActive?: 'true' | 'false';
-        showDeleted?: 'true';
+          status?: BannerStatus;
+          showDeleted?: 'true';
       } = JSON.parse(paramsJson);
 
       this.loading.set(true);
@@ -228,12 +252,7 @@ export class BannersAdminPage {
           search: parsed.search,
           sortBy: parsed.sortBy || DEFAULT_SORT_BY,
           order: parsed.order || DEFAULT_ORDER,
-          isActive:
-            parsed.isActive === 'true'
-              ? true
-              : parsed.isActive === 'false'
-                ? false
-              : undefined,
+          status: parsed.status,
           showDeleted: parsed.showDeleted === 'true' ? true : undefined,
         })
         .pipe(
@@ -255,7 +274,15 @@ export class BannersAdminPage {
 
   data = computed(() => this.response().data);
   meta = computed<TableMeta>(() => toListMeta(this.response().meta));
-  tableData = computed(() => this.reorderDraft() ?? this.data());
+  tableData = computed(() => {
+    const draft = this.reorderDraft();
+    if (this.reorderMode() && draft) {
+      const start = toApiOffset(this.page(), this.limit());
+      return draft.slice(start, start + this.limit());
+    }
+
+    return this.data();
+  });
 
   canStartReorder = computed(() => {
     const meta = this.response().meta;
@@ -263,23 +290,24 @@ export class BannersAdminPage {
 
     return (
       !this.loading() &&
+      !this.preparingReorder() &&
       !this.reordering() &&
       !this.search() &&
-      !this.isActiveFilter() &&
+      !this.statusFilter() &&
       !this.showDeleted() &&
       this.effectiveSortBy() === 'order' &&
       this.effectiveOrder() === 'ASC' &&
-      this.data().length > 1 &&
-      hasAllRowsVisible
+      meta.total > 1 &&
+      (hasAllRowsVisible || meta.total > meta.limit)
     );
   });
 
   canSaveReorder = computed(() => {
     const draft = this.reorderDraft();
-    const current = this.data();
-    if (!this.reorderMode() || !draft || draft.length !== current.length) return false;
+    const baseline = this.reorderBaseline();
+    if (!this.reorderMode() || !draft || !baseline || draft.length !== baseline.length) return false;
 
-    return draft.some((item, index) => item.id !== current[index]?.id);
+    return draft.some((item, index) => item.id !== baseline[index]);
   });
 
   reorderBlockedReason = computed(() => {
@@ -287,14 +315,11 @@ export class BannersAdminPage {
 
     if (this.showDeleted()) return 'Oculta los eliminados para reordenar.';
     if (this.search()) return 'Limpia la búsqueda para reordenar.';
-    if (this.isActiveFilter()) return 'Quita el filtro de estado para reordenar.';
+    if (this.statusFilter()) return 'Quita el filtro de estado para reordenar.';
     if (this.effectiveSortBy() !== 'order' || this.effectiveOrder() !== 'ASC') {
       return 'Ordena por la columna Orden en ascendente para reordenar.';
     }
-    if (meta.total > meta.limit || this.data().length !== meta.total) {
-      return 'Muestra todos los banners en una sola página antes de reordenar.';
-    }
-    if (this.data().length <= 1) return 'Se necesitan al menos dos banners para reordenar.';
+    if (meta.total <= 1) return 'Se necesitan al menos dos banners para reordenar.';
 
     return null;
   });
@@ -303,7 +328,7 @@ export class BannersAdminPage {
     () =>
       !!this.search() ||
       !!this.sortBy() ||
-      !!this.isActiveFilter() ||
+      !!this.statusFilter() ||
       this.showDeleted(),
   );
 
@@ -311,15 +336,23 @@ export class BannersAdminPage {
     let count = 0;
     if (this.search()) count++;
     if (this.sortBy()) count++;
-    if (this.isActiveFilter()) count++;
+    if (this.statusFilter()) count++;
     if (this.showDeleted()) count++;
     return count;
   });
 
-  private navigateQuery(
+  private async navigateQuery(
     patch: Record<string, string | number | null | undefined>,
-  ): void {
-    this.cancelReorderMode();
+  ): Promise<void> {
+    const shouldKeepReorderMode = this.isPaginationOnlyPatch(patch);
+
+    if (this.reorderMode()) {
+      const shouldContinue = await this.confirmReorderNavigation(patch, shouldKeepReorderMode);
+      if (!shouldContinue) return;
+      if (!shouldKeepReorderMode) {
+        this.cancelReorderMode();
+      }
+    }
 
     const nextQuery = buildListQueryPatch(this.queryParams(), patch);
     const currentQuery = buildListQueryPatch(this.queryParams(), {});
@@ -328,7 +361,7 @@ export class BannersAdminPage {
       return;
     }
 
-    this.router.navigate([], {
+    await this.router.navigate([], {
       relativeTo: this.route,
       queryParams: nextQuery,
       queryParamsHandling: '',
@@ -337,19 +370,19 @@ export class BannersAdminPage {
   }
 
   onSearch(value: string): void {
-    this.navigateQuery({ search: value, page: 1 });
+    void this.navigateQuery({ search: value, page: 1 });
   }
 
-  onIsActiveFilter(value: string): void {
-    this.navigateQuery({ isActive: value || null, page: 1 });
+  onStatusFilter(value: string): void {
+    void this.navigateQuery({ status: value || null, page: 1 });
   }
 
   onShowDeletedChange(checked: boolean): void {
-    this.navigateQuery({ showDeleted: checked ? 'true' : null, page: 1 });
+    void this.navigateQuery({ showDeleted: checked ? 'true' : null, page: 1 });
   }
 
   onSort(event: SortEvent): void {
-    this.navigateQuery({
+    void this.navigateQuery({
       sortBy: event.direction ? event.key : null,
       order: event.direction ? event.direction.toUpperCase() : null,
       page: 1,
@@ -357,19 +390,19 @@ export class BannersAdminPage {
   }
 
   onPageChange(page: number): void {
-    this.navigateQuery({ page });
+    void this.navigateQuery({ page });
   }
 
   onLimitChange(limit: number): void {
-    this.navigateQuery({ limit, page: 1 });
+    void this.navigateQuery({ limit, page: 1 });
   }
 
   onClearFilters(): void {
-    this.navigateQuery({
+    void this.navigateQuery({
       search: null,
       sortBy: null,
       order: null,
-      isActive: null,
+      status: null,
       showDeleted: null,
       page: 1,
     });
@@ -381,17 +414,29 @@ export class BannersAdminPage {
     });
   }
 
-  startReorderMode(): void {
+  async startReorderMode(): Promise<void> {
     if (!this.canStartReorder()) return;
 
-    this.reorderDraft.set([...this.data()]);
-    this.reorderMode.set(true);
+    this.preparingReorder.set(true);
     this.error.set(null);
+
+    try {
+      const allBanners = await this.loadAllBannersForReorder();
+      this.reorderDraft.set(allBanners);
+      this.reorderBaseline.set(allBanners.map((banner) => banner.id));
+      this.reorderMode.set(true);
+    } catch (err) {
+      const error = err as { error?: { message?: string }; message?: string };
+      this.error.set(error?.error?.message ?? error?.message ?? 'No se pudo iniciar el reordenamiento de banners');
+    } finally {
+      this.preparingReorder.set(false);
+    }
   }
 
   cancelReorderMode(): void {
     this.reorderMode.set(false);
     this.reorderDraft.set(null);
+    this.reorderBaseline.set(null);
   }
 
   saveReorder(): void {
@@ -420,12 +465,39 @@ export class BannersAdminPage {
     const draft = this.reorderDraft();
     if (!this.reorderMode() || !draft) return;
 
+    const pageOffset = toApiOffset(this.page(), this.limit());
+    const fromIndex = pageOffset + event.fromIndex;
+    const toIndex = pageOffset + event.toIndex;
     const nextDraft = [...draft];
-    const [moved] = nextDraft.splice(event.fromIndex, 1);
+    const [moved] = nextDraft.splice(fromIndex, 1);
     if (!moved) return;
 
-    nextDraft.splice(event.toIndex, 0, moved);
+    nextDraft.splice(toIndex, 0, moved);
     this.reorderDraft.set(nextDraft);
+  }
+
+  moveToPreviousPage(banner: AdminBannerListItem): void {
+    const draft = this.reorderDraft();
+    if (!draft) return;
+
+    const fromIndex = draft.findIndex((item) => item.id === banner.id);
+    const targetIndex = Math.max(this.currentPageStartIndex() - 1, 0);
+    if (fromIndex < 0 || fromIndex === targetIndex) return;
+
+    this.reorderDraft.set(this.moveDraftItemAcrossPages(draft, fromIndex, targetIndex));
+    this.goToReorderPage(this.page() - 1);
+  }
+
+  moveToNextPage(banner: AdminBannerListItem): void {
+    const draft = this.reorderDraft();
+    if (!draft) return;
+
+    const fromIndex = draft.findIndex((item) => item.id === banner.id);
+    const targetIndex = Math.min(this.currentPageStartIndex() + this.limit(), draft.length);
+    if (fromIndex < 0 || fromIndex === targetIndex) return;
+
+    this.reorderDraft.set(this.moveDraftItemAcrossPages(draft, fromIndex, targetIndex));
+    this.goToReorderPage(this.page() + 1);
   }
 
   private getScheduleBadge(row: AdminBannerListItem): {
@@ -486,5 +558,124 @@ export class BannersAdminPage {
           });
         }
       });
+  }
+
+  private async loadAllBannersForReorder(): Promise<AdminBannerListItem[]> {
+    const total = Math.max(this.response().meta.total, this.data().length, this.limit());
+    const response = await firstValueFrom(
+      this.service.findAll({
+        limit: total,
+        offset: 0,
+        sortBy: 'order',
+        order: 'ASC',
+      }),
+    );
+
+    return response.data;
+  }
+
+  private canMoveToPreviousPage(banner: AdminBannerListItem): boolean {
+    const draft = this.reorderDraft();
+    if (!this.reorderMode() || !draft || this.page() <= 1) return false;
+
+    return draft.findIndex((item) => item.id === banner.id) >= this.currentPageStartIndex();
+  }
+
+  private canMoveToNextPage(_banner: AdminBannerListItem): boolean {
+    const draft = this.reorderDraft();
+    if (!this.reorderMode() || !draft) return false;
+
+    return this.page() < this.totalDraftPages(draft.length);
+  }
+
+  private currentPageStartIndex(): number {
+    return toApiOffset(this.page(), this.limit());
+  }
+
+  private totalDraftPages(totalItems: number): number {
+    return Math.max(Math.ceil(totalItems / this.limit()), 1);
+  }
+
+  private moveDraftItem(
+    draft: AdminBannerListItem[],
+    fromIndex: number,
+    targetIndex: number,
+  ): AdminBannerListItem[] {
+    const nextDraft = [...draft];
+    const [moved] = nextDraft.splice(fromIndex, 1);
+    if (!moved) return draft;
+
+    const normalizedTarget = fromIndex < targetIndex ? targetIndex - 1 : targetIndex;
+    nextDraft.splice(normalizedTarget, 0, moved);
+    return nextDraft;
+  }
+
+  private moveDraftItemAcrossPages(
+    draft: AdminBannerListItem[],
+    fromIndex: number,
+    targetIndex: number,
+  ): AdminBannerListItem[] {
+    const nextDraft = [...draft];
+    const [moved] = nextDraft.splice(fromIndex, 1);
+    if (!moved) return draft;
+
+    nextDraft.splice(targetIndex, 0, moved);
+    return nextDraft;
+  }
+
+  private goToReorderPage(page: number): void {
+    const nextPage = Math.max(page, 1);
+    const nextQuery = buildListQueryPatch(this.queryParams(), { page: nextPage });
+    const currentQuery = buildListQueryPatch(this.queryParams(), {});
+
+    if (areSameQueryParams(currentQuery, nextQuery)) return;
+
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: nextQuery,
+      queryParamsHandling: '',
+      replaceUrl: true,
+    });
+  }
+
+  private isPaginationOnlyPatch(
+    patch: Record<string, string | number | null | undefined>,
+  ): boolean {
+    const keys = Object.keys(patch);
+    return keys.length > 0 && keys.every((key) => key === 'page' || key === 'limit');
+  }
+
+  private async confirmReorderNavigation(
+    patch: Record<string, string | number | null | undefined>,
+    keepReorderMode: boolean,
+  ): Promise<boolean> {
+    if (!this.canSaveReorder()) return true;
+
+    if (keepReorderMode) {
+      const targetPage = Number(patch['page'] ?? this.page());
+      const movementMessage =
+        targetPage < this.page()
+          ? 'El ultimo registro de la pagina anterior puede entrar en esta pagina.'
+          : 'Uno de los registros de esta pagina puede pasar a la siguiente, o el primero de la siguiente puede venir a esta pagina.';
+
+      return this.dialogService.confirm({
+        title: 'Guardar cambios antes de paginar',
+        message:
+          `Tienes cambios de orden sin guardar. Te recomendamos guardar antes de cambiar de pagina. ` +
+          `Si continuas, la composicion entre paginas puede moverse. ${movementMessage}`,
+        confirmText: 'Continuar',
+        cancelText: 'Seguir editando',
+        type: 'warning',
+      });
+    }
+
+    return this.dialogService.confirm({
+      title: 'Salir del modo reordenar',
+      message:
+        'Tienes cambios de orden sin guardar. Si cambias filtros o orden del listado, el borrador actual se perdera. Guarda primero si quieres conservarlo.',
+      confirmText: 'Descartar borrador',
+      cancelText: 'Seguir editando',
+      type: 'warning',
+    });
   }
 }

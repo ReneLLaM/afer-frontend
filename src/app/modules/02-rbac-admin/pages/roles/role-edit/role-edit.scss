@@ -254,3 +254,84 @@
     &__group-head { flex-direction: column; align-items: stretch; }
   }
 }
+
+@media (max-width: 767px) {
+  .role-edit {
+    padding: 0.72rem 0.85rem 1rem;
+
+    .admin-btn {
+      height: 34px;
+      padding: 0 0.8rem;
+      font-size: 0.76rem;
+    }
+
+    &__hero,
+    &__panel,
+    &__permission-group {
+      border-radius: 10px;
+    }
+
+    &__hero {
+      gap: 0.6rem;
+      padding: 0.75rem 0.8rem;
+      margin-bottom: 0.6rem;
+    }
+
+    &__eyebrow {
+      font-size: 0.62rem;
+    }
+
+    &__title {
+      font-size: 1.02rem;
+    }
+
+    &__subtitle,
+    &__counter,
+    &__alert,
+    &__state,
+    &__permissions-help,
+    &__field span,
+    &__field small,
+    &__summary dd,
+    &__group-head strong,
+    &__group-head small,
+    &__group-toggle,
+    &__permission-name,
+    &__permission-meta {
+      font-size: 0.72rem;
+    }
+
+    &__panel {
+      padding: 0.72rem 0.78rem;
+    }
+
+    &__panel-title,
+    &__summary dt {
+      font-size: 0.68rem;
+    }
+
+    &__field {
+      gap: 0.28rem;
+      margin-bottom: 0.65rem;
+    }
+
+    &__field input,
+    &__field textarea {
+      padding: 0.58rem 0.68rem;
+      font-size: 0.78rem;
+    }
+
+    &__field textarea {
+      min-height: 96px;
+    }
+
+    &__group-head,
+    &__permission-list {
+      padding: 0.6rem 0.68rem;
+    }
+
+    &__permission-item {
+      padding: 0.55rem 0.6rem;
+    }
+  }
+}

@@ -165,10 +165,11 @@
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 0.75rem;
+    align-items: start;
   }
 
   &__panel {
-    grid-column: span 4;
+    grid-column: span 5;
     padding: 0.9rem 0.95rem;
     border-radius: 12px;
     border: 1px solid color-mix(in srgb, var(--afer-text-muted), transparent 82%);
@@ -176,11 +177,11 @@
     box-shadow: 0 8px 24px color-mix(in srgb, var(--afer-text-primary), transparent 96%);
 
     &--wide {
-      grid-column: span 8;
+      grid-column: span 7;
     }
 
     &--narrow {
-      grid-column: span 4;
+      grid-column: span 5;
     }
 
     &--full {
@@ -522,7 +523,7 @@
 
   &__permission-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 0.6rem;
   }
 

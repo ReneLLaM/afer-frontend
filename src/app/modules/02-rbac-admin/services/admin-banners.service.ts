@@ -24,7 +24,7 @@ export class AdminBannersService {
     if (params.limit) httpParams = httpParams.set('limit', String(params.limit));
     if (params.offset !== undefined) httpParams = httpParams.set('offset', String(params.offset));
     if (params.search) httpParams = httpParams.set('search', params.search);
-    if (params.isActive !== undefined) httpParams = httpParams.set('isActive', String(params.isActive));
+    if (params.status !== undefined) httpParams = httpParams.set('status', params.status);
     if (params.showDeleted !== undefined) {
       httpParams = httpParams.set('showDeleted', String(params.showDeleted));
     }
@@ -69,7 +69,7 @@ export class AdminBannersService {
     this.appendText(formData, 'title', payload.title);
     this.appendText(formData, 'description', payload.description);
     this.appendText(formData, 'ctaLabel', payload.ctaLabel);
-    this.appendBoolean(formData, 'isActive', payload.isActive);
+    this.appendText(formData, 'status', payload.status);
     this.appendText(formData, 'startsAt', payload.startsAt);
     this.appendText(formData, 'endsAt', payload.endsAt);
     this.appendArray(formData, 'categoriesIds', payload.categoriesIds);
@@ -82,18 +82,6 @@ export class AdminBannersService {
   private appendText(formData: FormData, key: string, value?: string): void {
     if (value !== undefined) {
       formData.append(key, value);
-    }
-  }
-
-  private appendNumber(formData: FormData, key: string, value?: number): void {
-    if (value !== undefined) {
-      formData.append(key, String(value));
-    }
-  }
-
-  private appendBoolean(formData: FormData, key: string, value?: boolean): void {
-    if (value !== undefined) {
-      formData.append(key, String(value));
     }
   }
 

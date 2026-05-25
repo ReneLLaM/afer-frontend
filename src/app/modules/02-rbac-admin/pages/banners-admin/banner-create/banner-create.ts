@@ -27,6 +27,7 @@ import { BrandsService, SortByBrandsPublic } from '../../../../03-commerce/ecomm
 import type { Datum as CategoryNode } from '../../../../03-commerce/ecommerce/pages/categories-page/interfaces/categories-response.interface';
 import type { Datum as BrandItem } from '../../../../03-commerce/ecommerce/pages/brands-page/interfaces/brands-response.interface';
 import type { Datum as ProductItem } from '../../../../03-commerce/ecommerce/pages/products-page/interfaces/products-response.interface';
+import type { BannerStatus } from '../../../interfaces/admin-banner.interface';
 
 const MAX_IMAGE_SIZE_BYTES = 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
@@ -65,7 +66,7 @@ export class BannerCreatePage {
     title: ['', [Validators.required, Validators.maxLength(160)]],
     description: ['', [Validators.maxLength(500)]],
     ctaLabel: ['', [Validators.maxLength(80)]],
-    isActive: [true],
+    status: ['active' as BannerStatus],
   });
 
   readonly saving = signal(false);
@@ -163,7 +164,7 @@ export class BannerCreatePage {
   readonly summary = computed(() => ({
     title: this.form.controls.title.value.trim() || 'Sin titulo',
     ctaLabel: this.form.controls.ctaLabel.value.trim() || 'Sin CTA',
-    isActive: this.form.controls.isActive.value,
+    status: this.form.controls.status.value,
     hasImage: !!this.selectedImage(),
     categories: this.selectedCategoryIds().length,
     brands: this.selectedBrandIds().length,
@@ -302,7 +303,7 @@ export class BannerCreatePage {
           title: this.form.controls.title.value.trim(),
           description: this.emptyToUndefined(this.form.controls.description.value),
           ctaLabel: this.emptyToUndefined(this.form.controls.ctaLabel.value),
-          isActive: this.form.controls.isActive.value,
+          status: this.form.controls.status.value,
           startsAt: this.toPayloadDate(this.startsAt(), 'start'),
           endsAt: this.toPayloadDate(this.endsAt(), 'end'),
           categoriesIds: this.selectedCategoryIds(),

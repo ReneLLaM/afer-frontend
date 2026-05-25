@@ -1,0 +1,198 @@
+<div class="brand-detail">
+  <breadcrumb />
+
+  <header class="brand-detail__top">
+    <div class="brand-detail__top-actions">
+      <button type="button" class="brand-detail__back admin-btn admin-btn--secondary" (click)="goBack()">
+        <i class="ri-arrow-left-line"></i>
+        <span>Volver</span>
+      </button>
+
+      @if (brand(); as currentBrand) {
+        <div class="brand-detail__top-actions-group">
+          <button
+            *hasPermission="PERMISSIONS.BRANDS.UPDATE"
+            type="button"
+            class="admin-btn admin-btn--primary"
+            [disabled]="!!currentBrand.deletedAt"
+            (click)="editBrand()"
+          >
+            <i class="ri-edit-line"></i>
+            Editar
+          </button>
+
+          <button
+            *hasPermission="PERMISSIONS.BRANDS.DELETE"
+            type="button"
+            class="admin-btn admin-btn--danger"
+            [disabled]="!!currentBrand.deletedAt"
+            (click)="deleteBrand()"
+          >
+            <i class="ri-delete-bin-line"></i>
+            Eliminar
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="brand-detail__panel brand-detail__panel--state">
+      <div class="brand-detail__loading">
+        <div class="brand-detail__spinner"></div>
+        <span>Cargando marca...</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="brand-detail__panel brand-detail__panel--state brand-detail__panel--error">
+      <i class="ri-error-warning-line"></i>
+      <p>{{ error() }}</p>
+      <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">Volver</button>
+    </div>
+  } @else if (brand(); as b) {
+    <section class="brand-detail__hero">
+      <div class="brand-detail__hero-main">
+        <span class="brand-detail__eyebrow">Identidad de marca</span>
+        <h1 class="brand-detail__title">{{ b.name }}</h1>
+
+        <p class="brand-detail__hero-description">
+          {{ b.description || 'Esta marca no tiene una descripcion registrada por ahora.' }}
+        </p>
+      </div>
+
+      <div class="brand-detail__hero-badges">
+        <span class="brand-detail__chip" [class]="'brand-detail__chip--' + statusBadge().variant">
+          <i class="ri-checkbox-circle-line"></i>
+          {{ statusBadge().label }}
+        </span>
+        <span class="brand-detail__chip brand-detail__chip--order">
+          <i class="ri-list-ordered-2"></i>
+          Orden {{ b.order }}
+        </span>
+        <span class="brand-detail__chip brand-detail__chip--feature" [class.brand-detail__chip--feature-off]="!b.isFeatured">
+          <i class="ri-star-line"></i>
+          {{ b.isFeatured ? 'Destacada' : 'No destacada' }}
+        </span>
+      </div>
+    </section>
+
+    <div class="brand-detail__grid">
+      <article class="brand-detail__panel brand-detail__panel--wide brand-detail__panel--visual">
+        <h2 class="brand-detail__panel-title">
+          <i class="ri-palette-line"></i>
+          Identidad visual
+        </h2>
+
+        <div class="brand-detail__visual-layout">
+          <div class="brand-detail__visual-stage" [ngStyle]="heroStyle()">
+            <img [src]="b.imageUrl" [alt]="b.name" class="brand-detail__visual-image" />
+          </div>
+
+          <dl class="brand-detail__field-list brand-detail__field-list--stacked">
+            <div class="brand-detail__field">
+              <dt class="brand-detail__field-label">Slug:</dt>
+              <dd class="brand-detail__field-value brand-detail__field-value--title">{{ b.slug }}</dd>
+            </div>
+
+            <div class="brand-detail__field">
+              <dt class="brand-detail__field-label">Fondo:</dt>
+              <dd class="brand-detail__field-value brand-detail__field-value--color">
+                <span class="brand-detail__color-dot" [style.background-color]="b.backgroundColor || '#f4f6f8'"></span>
+                {{ b.backgroundColor || '#f4f6f8' }}
+              </dd>
+            </div>
+
+            <div class="brand-detail__field brand-detail__field--stacked">
+              <dt class="brand-detail__field-label">Clave de imagen:</dt>
+              <dd class="brand-detail__field-value brand-detail__field-value--code"><code>{{ b.imageKey || 'Sin clave registrada' }}</code></dd>
+            </div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="brand-detail__panel brand-detail__panel--full">
+        <h2 class="brand-detail__panel-title">
+          <i class="ri-history-line"></i>
+          Trazabilidad
+        </h2>
+
+        <div class="brand-detail__timeline">
+          <article class="brand-detail__event brand-detail__event--created">
+            <div class="brand-detail__event-head">
+              <span class="brand-detail__event-badge">Creado</span>
+              <i class="ri-add-circle-line"></i>
+            </div>
+            <dl class="brand-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (b.audit.createdBy; as createdBy) {
+                    <a [routerLink]="['/admin/usuarios', createdBy.id]" queryParamsHandling="preserve" class="brand-detail__inline-link">
+                      {{ createdBy.fullName }}
+                    </a>
+                  } @else {
+                    Sistema
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ b.createdAt | localeDate:'long' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="brand-detail__event brand-detail__event--updated">
+            <div class="brand-detail__event-head">
+              <span class="brand-detail__event-badge">Actualizado</span>
+              <i class="ri-refresh-line"></i>
+            </div>
+            <dl class="brand-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (b.audit.updatedBy; as updatedBy) {
+                    <a [routerLink]="['/admin/usuarios', updatedBy.id]" queryParamsHandling="preserve" class="brand-detail__inline-link">
+                      {{ updatedBy.fullName }}
+                    </a>
+                  } @else {
+                    Sin cambios registrados
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ b.updatedAt ? (b.updatedAt | localeDate:'long') : 'Sin actualizaciones' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="brand-detail__event brand-detail__event--deleted">
+            <div class="brand-detail__event-head">
+              <span class="brand-detail__event-badge">Eliminado</span>
+              <i class="ri-delete-bin-line"></i>
+            </div>
+            <dl class="brand-detail__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (b.audit.deletedBy; as deletedBy) {
+                    <a [routerLink]="['/admin/usuarios', deletedBy.id]" queryParamsHandling="preserve" class="brand-detail__inline-link">
+                      {{ deletedBy.fullName }}
+                    </a>
+                  } @else {
+                    No eliminado
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ b.deletedAt ? (b.deletedAt | localeDate:'long') : 'No eliminado' }}</dd>
+              </div>
+            </dl>
+          </article>
+        </div>
+      </article>
+    </div>
+  }
+</div>

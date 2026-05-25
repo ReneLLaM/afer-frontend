@@ -40,9 +40,12 @@
       <section class="banner-create__panel banner-create__panel--main">
         <div class="banner-create__panel-head">
           <h2 class="banner-create__panel-title">Contenido</h2>
-          <label class="banner-create__check banner-create__check--compact">
-            <input type="checkbox" formControlName="isActive" />
-            <span>Activo</span>
+          <label class="banner-create__field banner-create__field--inline-select">
+            <span>Estado</span>
+            <select formControlName="status">
+              <option value="active">Activo</option>
+              <option value="inactive">Inactivo</option>
+            </select>
           </label>
         </div>
 
