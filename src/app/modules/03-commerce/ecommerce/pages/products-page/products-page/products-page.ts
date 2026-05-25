@@ -17,6 +17,13 @@ import { MobileFilterDrawer } from './components/mobile-filter-drawer/mobile-fil
 import { ActiveFilterChips, ActiveFilter } from './components/active-filter-chips/active-filter-chips';
 import { BrandsResponse, Datum as BrandDatum } from '../../brands-page/interfaces/brands-response.interface';
 import { Datum as CategoryDatum, CategoriesResponse } from '../../categories-page/interfaces/categories-response.interface';
+import type { ListMeta } from '../../../../../../shared/interfaces/list-meta.interface';
+import {
+  CATALOG_PAGE_SIZE_OPTIONS,
+  parseCatalogLimit,
+  parseCatalogPage,
+  toCatalogOffset,
+} from '../../../../../../shared/utils/catalog-list-query.utils';
 
 @Component({
   selector: 'products-page',
@@ -73,17 +80,29 @@ export class ProductsPage {
     }));
   }
 
-  private readonly urlParams = toSignal(this.route.queryParamMap);
-  readonly page = computed(() => Number(this.urlParams()?.get('page')) || 1);
-  readonly category = computed(() => this.urlParams()?.get('category') || null);
-  readonly brand = computed(() => this.urlParams()?.get('brand') || null);
-  readonly sortBy = computed(() => this.urlParams()?.get('sortBy') || null);
-  readonly order = computed(() => this.urlParams()?.get('order') || null);
-  readonly isFeatured = computed(() => this.urlParams()?.get('isFeatured') === 'true');
-  readonly isTrending = computed(() => this.urlParams()?.get('isTrending') === 'true');
-  readonly isNew = computed(() => this.urlParams()?.get('isNew') === 'true');
-  readonly search = computed(() => this.urlParams()?.get('search') || null);
-  readonly productIds = computed(() => this.urlParams()?.get('productIds') || null);
+  readonly pageSizeOptions = CATALOG_PAGE_SIZE_OPTIONS;
+
+  private readonly queryParams = toSignal(this.route.queryParams, {
+    initialValue: this.route.snapshot.queryParams,
+  });
+
+  private queryParam(key: string): string | null {
+    const value = this.queryParams()[key];
+    if (value === undefined || value === null) return null;
+    return Array.isArray(value) ? value[0] : String(value);
+  }
+
+  readonly page = computed(() => parseCatalogPage(this.queryParam('page')));
+  readonly limit = computed(() => parseCatalogLimit(this.queryParam('limit')));
+  readonly category = computed(() => this.queryParam('category'));
+  readonly brand = computed(() => this.queryParam('brand'));
+  readonly sortBy = computed(() => this.queryParam('sortBy'));
+  readonly order = computed(() => this.queryParam('order'));
+  readonly isFeatured = computed(() => this.queryParam('isFeatured') === 'true');
+  readonly isTrending = computed(() => this.queryParam('isTrending') === 'true');
+  readonly isNew = computed(() => this.queryParam('isNew') === 'true');
+  readonly search = computed(() => this.queryParam('search'));
+  readonly productIds = computed(() => this.queryParam('productIds'));
 
   constructor() {
     effect(() => {
@@ -113,6 +132,7 @@ export class ProductsPage {
   readonly productsResource = rxResource({
     params: () => ({
       page: this.page(),
+      limit: this.limit(),
       category: this.category(),
       brand: this.brand(),
       sortBy: this.sortBy(),
@@ -124,8 +144,8 @@ export class ProductsPage {
       productIds: this.productIds(),
     }),
     stream: ({ params }) => {
-      const limit = 12;
-      const offset = (params.page - 1) * limit;
+      const limit = params.limit;
+      const offset = toCatalogOffset(params.page, limit);
 
       return this.productsService.getProducts({
         limit,
@@ -145,10 +165,29 @@ export class ProductsPage {
 
   readonly products = computed(() => this.productsResource.value()?.data ?? []);
   readonly meta = computed(() => this.productsResource.value()?.meta);
+  readonly paginationMeta = computed((): ListMeta | null => {
+    const apiMeta = this.meta();
+    if (!apiMeta) return null;
+
+    const limit = this.limit();
+    const page = this.page();
+
+    return {
+      total: apiMeta.total,
+      limit,
+      page,
+      totalPages: Math.max(1, Math.ceil(apiMeta.total / limit)),
+    };
+  });
   readonly isLoading = computed(() => this.productsResource.isLoading());
 
   handlePageChange(nuevaPagina: number): void {
-    this.navegar({ page: nuevaPagina });
+    this.navegar({ page: String(nuevaPagina) });
+  }
+
+  handleLimitChange(limit: number): void {
+    this.productsService.invalidateCache();
+    this.navegar({ limit: String(limit), page: 1 });
   }
 
   handleFavorite(_productId: string): void {
@@ -258,9 +297,19 @@ export class ProductsPage {
   }
 
   navegar(params: Record<string, string | number | null>): void {
+    const queryParams: Record<string, string | null> = {};
+
+    for (const [key, value] of Object.entries(params)) {
+      if (value === null || value === undefined || value === '') {
+        queryParams[key] = null;
+        continue;
+      }
+      queryParams[key] = String(value);
+    }
+
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: params,
+      queryParams,
       queryParamsHandling: 'merge',
     });
   }

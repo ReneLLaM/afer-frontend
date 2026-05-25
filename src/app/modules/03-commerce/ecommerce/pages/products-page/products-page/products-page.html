@@ -91,6 +91,20 @@
           </div>
         </div>
 
+        <div class="filter-group">
+          <label>Mostrar</label>
+          <div class="select-box">
+            <select [ngModel]="limit()" (ngModelChange)="handleLimitChange($event)">
+              @for (size of pageSizeOptions; track size) {
+                <option [ngValue]="size">{{ size }}</option>
+              }
+            </select>
+            <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"></path>
+            </svg>
+          </div>
+        </div>
+
         <div class="filter-divider"></div>
 
         <div class="filter-flags">
@@ -142,7 +156,7 @@
     <div class="products-grid">
       @if (isLoading()) {
         <!-- Skeleton mientras carga -->
-        <skeleton-card [count]="10" />
+        <skeleton-card [count]="limit()" />
       } @else {
         @for (product of products(); track product.id) {
           <product-card
@@ -157,11 +171,12 @@
       }
     </div>
 
-    @if (meta(); as metaData) {
-      @if (metaData.totalPages > 1) {
-        <app-pagination 
-          [meta]="metaData" 
+    @if (paginationMeta(); as metaData) {
+      @if (metaData.total > 0) {
+        <app-pagination
+          [meta]="metaData"
           (pageChange)="handlePageChange($event)"
+          (limitChange)="handleLimitChange($event)"
         />
       }
     }

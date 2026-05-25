@@ -8,6 +8,13 @@ import { BrandsService, SortByBrandsPublic } from '../../services/brands.service
 import { BrandCard } from '../../components/brand-card/brand-card';
 import { SkeletonCard } from '../../../../../shared/components/skeleton-card/skeleton-card';
 import { Pagination } from '../../../../../shared/components/pagination/pagination';
+import type { ListMeta } from '../../../../../shared/interfaces/list-meta.interface';
+import {
+  CATALOG_PAGE_SIZE_OPTIONS,
+  parseCatalogLimit,
+  parseCatalogPage,
+  toCatalogOffset,
+} from '../../../../../shared/utils/catalog-list-query.utils';
 
 @Component({
   selector: 'app-brands',
@@ -22,13 +29,24 @@ export class BrandsPage {
   private readonly route = inject(ActivatedRoute);
   private readonly brandsService = inject(BrandsService);
 
-  private readonly urlData = toSignal(this.route.queryParamMap);
+  readonly pageSizeOptions = CATALOG_PAGE_SIZE_OPTIONS;
 
-  readonly sortBy = computed(() => this.urlData()?.get('sortBy') as SortByBrandsPublic | null);
-  readonly order = computed(() => this.urlData()?.get('order') as 'ASC' | 'DESC' | null);
-  readonly page = computed(() => Number(this.urlData()?.get('page')) || 1);
+  private readonly queryParams = toSignal(this.route.queryParams, {
+    initialValue: this.route.snapshot.queryParams,
+  });
+
+  private queryParam(key: string): string | null {
+    const value = this.queryParams()[key];
+    if (value === undefined || value === null) return null;
+    return Array.isArray(value) ? value[0] : String(value);
+  }
+
+  readonly sortBy = computed(() => this.queryParam('sortBy') as SortByBrandsPublic | null);
+  readonly order = computed(() => this.queryParam('order') as 'ASC' | 'DESC' | null);
+  readonly page = computed(() => parseCatalogPage(this.queryParam('page')));
+  readonly limit = computed(() => parseCatalogLimit(this.queryParam('limit')));
   readonly isFeatured = computed((): boolean | null => {
-    const val = this.urlData()?.get('isFeatured');
+    const val = this.queryParam('isFeatured');
     if (val === 'true') return true;
     if (val === 'false') return false;
     return null;
@@ -39,14 +57,16 @@ export class BrandsPage {
       sortBy: this.sortBy() ?? SortByBrandsPublic.order,
       order: this.order() ?? 'ASC',
       page: this.page(),
+      limit: this.limit(),
       isFeatured: this.isFeatured(),
     }),
     stream: ({ params }) => {
+      const limit = params.limit;
       return this.brandsService.getBrands({
         sortBy: params.sortBy,
         order: params.order,
-        limit: 16,
-        offset: (params.page - 1) * 16,
+        limit,
+        offset: toCatalogOffset(params.page, limit),
         isFeatured: params.isFeatured ?? undefined,
       });
     },
@@ -54,6 +74,20 @@ export class BrandsPage {
 
   readonly brands = computed(() => this.brandsResource.value()?.data ?? []);
   readonly meta = computed(() => this.brandsResource.value()?.meta);
+  readonly paginationMeta = computed((): ListMeta | null => {
+    const apiMeta = this.meta();
+    if (!apiMeta) return null;
+
+    const limit = this.limit();
+    const page = this.page();
+
+    return {
+      total: apiMeta.total,
+      limit,
+      page,
+      totalPages: Math.max(1, Math.ceil(apiMeta.total / limit)),
+    };
+  });
   readonly isLoading = computed(() => this.brandsResource.isLoading());
 
   handleSortChange(nuevoFiltro: SortByBrandsPublic | null): void {
@@ -69,7 +103,11 @@ export class BrandsPage {
   }
 
   handlePageChange(nuevaPagina: number): void {
-    this.irAPagina({ page: nuevaPagina });
+    this.irAPagina({ page: String(nuevaPagina) });
+  }
+
+  handleLimitChange(limit: number): void {
+    this.irAPagina({ limit: String(limit), page: '1' });
   }
 
   resetFilters(): void {
@@ -77,9 +115,19 @@ export class BrandsPage {
   }
 
   private irAPagina(params: Record<string, string | number | null>): void {
+    const queryParams: Record<string, string | null> = {};
+
+    for (const [key, value] of Object.entries(params)) {
+      if (value === null || value === undefined || value === '') {
+        queryParams[key] = null;
+        continue;
+      }
+      queryParams[key] = String(value);
+    }
+
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: params,
+      queryParams,
       queryParamsHandling: 'merge',
     });
   }

@@ -331,6 +331,10 @@
   }
 }
 
+:host ::ng-deep app-pagination .pagination__limit {
+  display: none;
+}
+
 .products-empty {
   grid-column: 1 / -1;
   display: flex;

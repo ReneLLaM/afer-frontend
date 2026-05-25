@@ -1,0 +1,171 @@
+<div class="products-page">
+  <breadcrumb />
+
+  <header class="products-page__header">
+    <div class="products-page__header-content">
+      <h1 class="products-page__title">Productos</h1>
+      <p class="products-page__subtitle">
+        Administra inventario, marca, categorias y estado comercial desde un listado claro y filtrable.
+      </p>
+    </div>
+
+    <div class="products-page__header-actions">
+      <button
+        *hasPermission="PERMISSIONS.PRODUCTS.CREATE"
+        class="admin-btn admin-btn--primary"
+        type="button"
+        (click)="goToCreatePage()"
+      >
+        <i class="ri-add-line"></i>
+        <span>Crear producto</span>
+      </button>
+    </div>
+  </header>
+
+  <app-admin-list-toolbar
+    [search]="search()"
+    searchPlaceholder="Buscar productos..."
+    [hasActiveFilters]="hasActiveFilters()"
+    [filterCount]="activeFilterCount()"
+    (searchChange)="onSearch($event)"
+    (clearFilters)="onClearFilters()"
+  >
+    <div filters class="products-page__filters">
+      <label
+        class="products-page__filter-field"
+        [class.products-page__filter-field--active]="!!statusFilter()"
+      >
+        <span class="products-page__filter-label">
+          Estado
+          @if (statusFilter()) {
+            <span class="products-page__filter-dot" aria-hidden="true"></span>
+          }
+        </span>
+
+        <select
+          class="products-page__filter-select"
+          [value]="statusFilter()"
+          (change)="onStatusFilter($any($event.target).value)"
+        >
+          <option value="">Todos</option>
+          <option value="active">Activos</option>
+          <option value="inactive">Inactivos</option>
+          <option value="deprecated">Deprecados</option>
+        </select>
+      </label>
+
+      <label
+        class="products-page__filter-field"
+        [class.products-page__filter-field--active]="!!categoryIdFilter()"
+      >
+        <span class="products-page__filter-label">
+          Categoria
+          @if (categoryIdFilter()) {
+            <span class="products-page__filter-dot" aria-hidden="true"></span>
+          }
+        </span>
+
+        <div class="products-page__search-select-shell">
+          <i class="ri-search-line products-page__search-select-icon" aria-hidden="true"></i>
+          <input
+            class="products-page__search-select"
+            type="text"
+            [value]="categoryFilterInput()"
+            list="products-admin-categories"
+            placeholder="Escribe la categoria exacta"
+            autocomplete="off"
+            (input)="onCategoryFilterInput($any($event.target).value)"
+          />
+        </div>
+      </label>
+
+      <label
+        class="products-page__filter-field"
+        [class.products-page__filter-field--active]="!!brandIdFilter()"
+      >
+        <span class="products-page__filter-label">
+          Marca
+          @if (brandIdFilter()) {
+            <span class="products-page__filter-dot" aria-hidden="true"></span>
+          }
+        </span>
+
+        <div class="products-page__search-select-shell">
+          <i class="ri-search-line products-page__search-select-icon" aria-hidden="true"></i>
+          <input
+            class="products-page__search-select"
+            type="text"
+            [value]="brandFilterInput()"
+            list="products-admin-brands"
+            placeholder="Escribe la marca exacta"
+            autocomplete="off"
+            (input)="onBrandFilterInput($any($event.target).value)"
+          />
+        </div>
+      </label>
+
+      <label
+        class="products-page__filter-check"
+        [class.products-page__filter-check--active]="showDeleted()"
+      >
+        <input
+          type="checkbox"
+          [checked]="showDeleted()"
+          (change)="onShowDeletedChange($any($event.target).checked)"
+        />
+        <span>Mostrar eliminados</span>
+      </label>
+    </div>
+  </app-admin-list-toolbar>
+
+  <datalist id="products-admin-categories">
+    @for (option of filterOptions().categories; track option.id) {
+      <option [value]="option.label"></option>
+    }
+  </datalist>
+
+  <datalist id="products-admin-brands">
+    @for (option of filterOptions().brands; track option.id) {
+      <option [value]="option.label"></option>
+    }
+  </datalist>
+
+  @if (filtersError()) {
+    <div class="products-page__error">{{ filtersError() }}</div>
+  }
+
+  @if (error()) {
+    <div class="products-page__error">{{ error() }}</div>
+  }
+
+  <ng-template #productImageCell let-row="row">
+    <div class="products-page__product-image-shell">
+      <img
+        class="products-page__product-image"
+        [src]="row.primaryImageUrl"
+        [alt]="row.title"
+        loading="lazy"
+      />
+    </div>
+  </ng-template>
+
+  <app-data-table
+    [columns]="columns()"
+    [data]="tableData()"
+    [loading]="loading() || filtersLoading()"
+    [serverSort]="true"
+    [showFooterInfo]="false"
+    trackByKey="id"
+    [sortKey]="sortBy()"
+    [sortDir]="sortDirection()"
+    [crud]="tableCrud"
+    emptyMessage="No se encontraron productos"
+    (sortChange)="onSort($event)"
+  />
+
+  <app-pagination
+    [meta]="meta()"
+    (pageChange)="onPageChange($event)"
+    (limitChange)="onLimitChange($event)"
+  />
+</div>

@@ -1,0 +1,474 @@
+<div class="product-detail-admin">
+  <breadcrumb />
+
+  <header class="product-detail-admin__top">
+    <div class="product-detail-admin__top-actions">
+      <button type="button" class="product-detail-admin__back admin-btn admin-btn--secondary" (click)="goBack()">
+        <i class="ri-arrow-left-line"></i>
+        <span>Volver</span>
+      </button>
+
+      @if (product(); as currentProduct) {
+        <div class="product-detail-admin__top-actions-group">
+          <button
+            *hasPermission="PERMISSIONS.PRODUCTS.UPDATE"
+            type="button"
+            class="admin-btn admin-btn--secondary"
+            [disabled]="!!currentProduct.deletedAt"
+            (click)="editProduct()"
+          >
+            <i class="ri-edit-line"></i>
+            Editar
+          </button>
+
+          <button
+            *hasPermission="PERMISSIONS.PRODUCTS.DELETE"
+            type="button"
+            class="admin-btn admin-btn--danger"
+            [disabled]="!!currentProduct.deletedAt"
+            (click)="deleteProduct()"
+          >
+            <i class="ri-delete-bin-line"></i>
+            Eliminar
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="product-detail-admin__panel product-detail-admin__panel--state">
+      <div class="product-detail-admin__loading">
+        <div class="product-detail-admin__spinner"></div>
+        <span>Cargando producto...</span>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="product-detail-admin__panel product-detail-admin__panel--state product-detail-admin__panel--error">
+      <i class="ri-error-warning-line"></i>
+      <p>{{ error() }}</p>
+      <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">Volver</button>
+    </div>
+  } @else if (product(); as p) {
+    <section class="product-detail-admin__hero">
+      <div class="product-detail-admin__hero-copy">
+        <span class="product-detail-admin__eyebrow">Ficha completa del producto</span>
+        <h1 class="product-detail-admin__title">{{ p.title }}</h1>
+        <p class="product-detail-admin__hero-description">
+          {{ p.specificationsSummary || 'Este producto no tiene un resumen comercial registrado.' }}
+        </p>
+      </div>
+
+      <div class="product-detail-admin__hero-aside">
+        <div class="product-detail-admin__price">Bs {{ p.price | number:'1.2-2' }}</div>
+        <div class="product-detail-admin__hero-badges">
+          <span class="product-detail-admin__chip" [class]="'product-detail-admin__chip--' + statusBadge().variant">
+            <i class="ri-checkbox-circle-line"></i>
+            {{ statusBadge().label }}
+          </span>
+          <span class="product-detail-admin__chip product-detail-admin__chip--sku">
+            <i class="ri-barcode-box-line"></i>
+            SKU {{ p.sku }}
+          </span>
+          <span class="product-detail-admin__chip product-detail-admin__chip--stock">
+            <i class="ri-stack-line"></i>
+            Stock {{ p.currentStock }}
+          </span>
+          @for (badge of heroBadges(); track badge) {
+            <span class="product-detail-admin__chip product-detail-admin__chip--flag">{{ badge }}</span>
+          }
+        </div>
+      </div>
+    </section>
+
+    <div class="product-detail-admin__grid">
+      <article class="product-detail-admin__panel product-detail-admin__panel--visual">
+        <h2 class="product-detail-admin__panel-title">
+          <i class="ri-image-line"></i>
+          Vista principal
+        </h2>
+
+        <div class="product-detail-admin__cover-stage">
+          <img [src]="coverImage()" [alt]="p.title" class="product-detail-admin__cover-image" />
+        </div>
+      </article>
+
+      <article class="product-detail-admin__panel">
+        <h2 class="product-detail-admin__panel-title">
+          <i class="ri-store-2-line"></i>
+          Comercial
+        </h2>
+
+        <dl class="product-detail-admin__field-list">
+          <div class="product-detail-admin__field">
+            <dt>Marca</dt>
+            <dd>
+              @if (p.brand; as brand) {
+                <span class="product-detail-admin__brand-inline">
+                  @if (brand.imageUrl) {
+                    <img [src]="brand.imageUrl" [alt]="brand.name" class="product-detail-admin__brand-image" />
+                  }
+                  <span>{{ brand.name }}</span>
+                </span>
+              } @else {
+                Sin marca
+              }
+            </dd>
+          </div>
+          <div class="product-detail-admin__field">
+            <dt>Categorias</dt>
+            <dd class="product-detail-admin__category-list">
+              @for (category of p.categories; track category.id) {
+                <span class="product-detail-admin__tag">{{ category.name }}</span>
+              } @empty {
+                <span>Sin categorias</span>
+              }
+            </dd>
+          </div>
+          <div class="product-detail-admin__field">
+            <dt>Slug</dt>
+            <dd><code>{{ p.slug }}</code></dd>
+          </div>
+          <div class="product-detail-admin__field">
+            <dt>Garantia</dt>
+            <dd>
+              {{ p.warrantyMonths ? (p.warrantyMonths + ' meses') : 'Sin garantia' }}
+              @if (p.warrantyDescription) {
+                <span class="product-detail-admin__muted-block">{{ p.warrantyDescription }}</span>
+              }
+            </dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="product-detail-admin__panel">
+        <h2 class="product-detail-admin__panel-title">
+          <i class="ri-archive-drawer-line"></i>
+          Inventario
+        </h2>
+
+        <dl class="product-detail-admin__metrics-grid">
+          <div class="product-detail-admin__metric">
+            <dt>Stock actual</dt>
+            <dd>{{ p.currentStock }}</dd>
+          </div>
+          <div class="product-detail-admin__metric">
+            <dt>Stock minimo</dt>
+            <dd>{{ p.minStock }}</dd>
+          </div>
+          <div class="product-detail-admin__metric">
+            <dt>Stock maximo</dt>
+            <dd>{{ p.maxStock }}</dd>
+          </div>
+          <div class="product-detail-admin__metric">
+            <dt>Precio</dt>
+            <dd>Bs {{ p.price | number:'1.2-2' }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="product-detail-admin__panel product-detail-admin__panel--full">
+        <h2 class="product-detail-admin__panel-title">
+          <i class="ri-file-text-line"></i>
+          Contenido comercial
+        </h2>
+
+        <div class="product-detail-admin__rich-grid">
+          <section>
+            <h3>Descripcion</h3>
+            <div class="product-detail-admin__rich-box" [innerHTML]="p.description"></div>
+          </section>
+
+          <section>
+            <h3>Caracteristicas</h3>
+            <div class="product-detail-admin__rich-box" [innerHTML]="p.features"></div>
+          </section>
+        </div>
+      </article>
+
+      <article class="product-detail-admin__panel product-detail-admin__panel--full">
+        <div class="product-detail-admin__panel-head">
+          <div>
+            <h2 class="product-detail-admin__panel-title">
+              <i class="ri-gallery-line"></i>
+              Imagenes
+            </h2>
+            <p class="product-detail-admin__panel-copy">Se muestran en el mismo orden que entrega el backend.</p>
+          </div>
+
+          @if (visibleImages().length > 0) {
+            <div class="product-detail-admin__panel-actions">
+              @if (!imageReorderMode() && canReorderImages()) {
+                <button *hasPermission="PERMISSIONS.PRODUCTS.UPDATE" type="button" class="admin-btn admin-btn--secondary" [disabled]="!!p.deletedAt" (click)="startImageReorder()">
+                  <i class="ri-drag-move-2-line"></i>
+                  Reordenar imagenes
+                </button>
+              }
+              @if (imageReorderMode()) {
+                <button type="button" class="admin-btn admin-btn--secondary" [disabled]="imageReordering()" (click)="cancelImageReorder()">Cancelar</button>
+                <button type="button" class="admin-btn admin-btn--primary" [disabled]="!canSaveImageReorder() || imageReordering()" (click)="saveImageReorder()">
+                  {{ imageReordering() ? 'Guardando...' : 'Aceptar' }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        @if (imageReorderMode()) {
+          <div class="product-detail-admin__reorder-note">
+            <strong>Modo reordenar activo</strong>
+            <p>Arrastra las tarjetas o usa las flechas para definir el nuevo orden de las imagenes.</p>
+          </div>
+        }
+
+        <div class="product-detail-admin__media-grid">
+          @for (image of visibleImages(); track image.id; let index = $index) {
+            <article
+              class="product-detail-admin__media-card"
+              [class.product-detail-admin__media-card--reorderable]="imageReorderMode()"
+              [class.product-detail-admin__media-card--dragging]="isImageDragging(image.id)"
+              [class.product-detail-admin__media-card--drag-over]="imageReorderMode() && !isImageDragging(image.id) && isImageDragOver(image.id)"
+              [attr.draggable]="imageReorderMode() ? true : null"
+              (dragstart)="onImageDragStart($event, image.id)"
+              (dragover)="onImageDragOver($event)"
+              (dragenter)="onImageDragEnter(image.id)"
+              (drop)="onImageDrop($event, image.id)"
+              (dragend)="onImageDragEnd()"
+            >
+              <img [src]="image.url" [alt]="p.title + ' imagen ' + (index + 1)" class="product-detail-admin__media-image" [attr.draggable]="imageReorderMode() ? false : null" />
+              <div class="product-detail-admin__media-body">
+                <strong>Imagen {{ imageReorderMode() ? index + 1 : image.order }}</strong>
+                <code>{{ image.url }}</code>
+              </div>
+              <div class="product-detail-admin__media-actions">
+                @if (imageReorderMode()) {
+                  <span class="product-detail-admin__drag-handle"><i class="ri-draggable"></i></span>
+                  <button type="button" class="admin-btn admin-btn--icon" [disabled]="index === 0 || imageReordering()" (click)="moveImage(index, -1)"><i class="ri-arrow-up-line"></i></button>
+                  <button type="button" class="admin-btn admin-btn--icon" [disabled]="index === visibleImages().length - 1 || imageReordering()" (click)="moveImage(index, 1)"><i class="ri-arrow-down-line"></i></button>
+                }
+              </div>
+            </article>
+          } @empty {
+            <p class="product-detail-admin__empty-copy">Este producto no tiene imagenes registradas.</p>
+          }
+        </div>
+      </article>
+
+      <article class="product-detail-admin__panel product-detail-admin__panel--full">
+        <div class="product-detail-admin__panel-head">
+          <div>
+            <h2 class="product-detail-admin__panel-title">
+              <i class="ri-video-line"></i>
+              Videos
+            </h2>
+            <p class="product-detail-admin__panel-copy">Se renderizan usando el mismo enfoque del detalle publico.</p>
+          </div>
+
+          @if (visibleVideos().length > 0) {
+            <div class="product-detail-admin__panel-actions">
+              @if (!videoReorderMode() && canReorderVideos()) {
+                <button *hasPermission="PERMISSIONS.PRODUCTS.UPDATE" type="button" class="admin-btn admin-btn--secondary" [disabled]="!!p.deletedAt" (click)="startVideoReorder()">
+                  <i class="ri-drag-move-2-line"></i>
+                  Reordenar videos
+                </button>
+              }
+              @if (videoReorderMode()) {
+                <button type="button" class="admin-btn admin-btn--secondary" [disabled]="videoReordering()" (click)="cancelVideoReorder()">Cancelar</button>
+                <button type="button" class="admin-btn admin-btn--primary" [disabled]="!canSaveVideoReorder() || videoReordering()" (click)="saveVideoReorder()">
+                  {{ videoReordering() ? 'Guardando...' : 'Aceptar' }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        @if (videoReorderMode()) {
+          <div class="product-detail-admin__reorder-note">
+            <strong>Modo reordenar activo</strong>
+            <p>Arrastra cada video o usa las flechas para cambiar su posicion.</p>
+          </div>
+        }
+
+        <div class="product-detail-admin__video-grid">
+          @for (video of visibleVideos(); track video.id; let index = $index) {
+            <article
+              class="product-detail-admin__video-card"
+              [class.product-detail-admin__video-card--reorderable]="videoReorderMode()"
+              [class.product-detail-admin__video-card--dragging]="isVideoDragging(video.id)"
+              [class.product-detail-admin__video-card--drag-over]="videoReorderMode() && !isVideoDragging(video.id) && isVideoDragOver(video.id)"
+              [attr.draggable]="videoReorderMode() ? true : null"
+              (dragstart)="onVideoDragStart($event, video.id)"
+              (dragover)="onVideoDragOver($event)"
+              (dragenter)="onVideoDragEnter(video.id)"
+              (drop)="onVideoDrop($event, video.id)"
+              (dragend)="onVideoDragEnd()"
+            >
+              <div class="product-detail-admin__video-embed" [innerHTML]="video.url | safeHtml"></div>
+              <div class="product-detail-admin__video-meta">
+                <strong>Video {{ videoReorderMode() ? index + 1 : video.order }}</strong>
+                <code>{{ video.url }}</code>
+              </div>
+              <div class="product-detail-admin__media-actions">
+                @if (videoReorderMode()) {
+                  <span class="product-detail-admin__drag-handle"><i class="ri-draggable"></i></span>
+                  <button type="button" class="admin-btn admin-btn--icon" [disabled]="index === 0 || videoReordering()" (click)="moveVideo(index, -1)"><i class="ri-arrow-up-line"></i></button>
+                  <button type="button" class="admin-btn admin-btn--icon" [disabled]="index === visibleVideos().length - 1 || videoReordering()" (click)="moveVideo(index, 1)"><i class="ri-arrow-down-line"></i></button>
+                }
+              </div>
+            </article>
+          } @empty {
+            <p class="product-detail-admin__empty-copy">Este producto no tiene videos registrados.</p>
+          }
+        </div>
+      </article>
+
+      <article class="product-detail-admin__panel product-detail-admin__panel--full">
+        <div class="product-detail-admin__panel-head">
+          <div>
+            <h2 class="product-detail-admin__panel-title">
+              <i class="ri-list-check-3"></i>
+              Especificaciones
+            </h2>
+            <p class="product-detail-admin__panel-copy">Cada bloque mantiene el orden devuelto por backend.</p>
+          </div>
+
+          @if (visibleSpecifications().length > 0) {
+            <div class="product-detail-admin__panel-actions">
+              @if (!specificationReorderMode() && canReorderSpecifications()) {
+                <button *hasPermission="PERMISSIONS.PRODUCTS.UPDATE" type="button" class="admin-btn admin-btn--secondary" [disabled]="!!p.deletedAt" (click)="startSpecificationReorder()">
+                  <i class="ri-drag-move-2-line"></i>
+                  Reordenar especificaciones
+                </button>
+              }
+              @if (specificationReorderMode()) {
+                <button type="button" class="admin-btn admin-btn--secondary" [disabled]="specificationReordering()" (click)="cancelSpecificationReorder()">Cancelar</button>
+                <button type="button" class="admin-btn admin-btn--primary" [disabled]="!canSaveSpecificationReorder() || specificationReordering()" (click)="saveSpecificationReorder()">
+                  {{ specificationReordering() ? 'Guardando...' : 'Aceptar' }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        @if (specificationReorderMode()) {
+          <div class="product-detail-admin__reorder-note">
+            <strong>Modo reordenar activo</strong>
+            <p>Arrastra las especificaciones o muévelas con flechas para ajustar su secuencia.</p>
+          </div>
+        }
+
+        <div class="product-detail-admin__spec-list">
+          @for (specification of visibleSpecifications(); track specification.id; let index = $index) {
+            <article
+              class="product-detail-admin__spec-card"
+              [class.product-detail-admin__spec-card--reorderable]="specificationReorderMode()"
+              [class.product-detail-admin__spec-card--dragging]="isSpecificationDragging(specification.id)"
+              [class.product-detail-admin__spec-card--drag-over]="specificationReorderMode() && !isSpecificationDragging(specification.id) && isSpecificationDragOver(specification.id)"
+              [attr.draggable]="specificationReorderMode() ? true : null"
+              (dragstart)="onSpecificationDragStart($event, specification.id)"
+              (dragover)="onSpecificationDragOver($event)"
+              (dragenter)="onSpecificationDragEnter(specification.id)"
+              (drop)="onSpecificationDrop($event, specification.id)"
+              (dragend)="onSpecificationDragEnd()"
+            >
+              <div class="product-detail-admin__spec-body">
+                <div class="product-detail-admin__spec-order">{{ specificationReorderMode() ? index + 1 : specification.order }}</div>
+                <div>
+                  <h3>{{ specification.group }}</h3>
+                  <p>{{ specification.descriptionSpecifications }}</p>
+                </div>
+              </div>
+              <div class="product-detail-admin__media-actions">
+                @if (specificationReorderMode()) {
+                  <span class="product-detail-admin__drag-handle"><i class="ri-draggable"></i></span>
+                  <button type="button" class="admin-btn admin-btn--icon" [disabled]="index === 0 || specificationReordering()" (click)="moveSpecification(index, -1)"><i class="ri-arrow-up-line"></i></button>
+                  <button type="button" class="admin-btn admin-btn--icon" [disabled]="index === visibleSpecifications().length - 1 || specificationReordering()" (click)="moveSpecification(index, 1)"><i class="ri-arrow-down-line"></i></button>
+                }
+              </div>
+            </article>
+          } @empty {
+            <p class="product-detail-admin__empty-copy">Este producto no tiene especificaciones registradas.</p>
+          }
+        </div>
+      </article>
+
+      <article class="product-detail-admin__panel product-detail-admin__panel--full">
+        <h2 class="product-detail-admin__panel-title">
+          <i class="ri-history-line"></i>
+          Trazabilidad
+        </h2>
+
+        <div class="product-detail-admin__timeline">
+          <article class="product-detail-admin__event product-detail-admin__event--created">
+            <div class="product-detail-admin__event-head">
+              <span class="product-detail-admin__event-badge">Creado</span>
+              <i class="ri-add-circle-line"></i>
+            </div>
+            <dl class="product-detail-admin__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (p.audit.createdBy; as createdBy) {
+                    <a [routerLink]="['/admin/usuarios', createdBy.id]" queryParamsHandling="preserve" class="product-detail-admin__inline-link">{{ createdBy.fullName }}</a>
+                  } @else {
+                    Sistema
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ p.createdAt | localeDate:'long' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="product-detail-admin__event product-detail-admin__event--updated">
+            <div class="product-detail-admin__event-head">
+              <span class="product-detail-admin__event-badge">Actualizado</span>
+              <i class="ri-refresh-line"></i>
+            </div>
+            <dl class="product-detail-admin__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (p.audit.updatedBy; as updatedBy) {
+                    <a [routerLink]="['/admin/usuarios', updatedBy.id]" queryParamsHandling="preserve" class="product-detail-admin__inline-link">{{ updatedBy.fullName }}</a>
+                  } @else {
+                    Sin cambios registrados
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ p.updatedAt ? (p.updatedAt | localeDate:'long') : 'Sin actualizaciones' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="product-detail-admin__event product-detail-admin__event--deleted">
+            <div class="product-detail-admin__event-head">
+              <span class="product-detail-admin__event-badge">Eliminado</span>
+              <i class="ri-delete-bin-line"></i>
+            </div>
+            <dl class="product-detail-admin__event-meta">
+              <div>
+                <dt>Responsable</dt>
+                <dd>
+                  @if (p.audit.deletedBy; as deletedBy) {
+                    <a [routerLink]="['/admin/usuarios', deletedBy.id]" queryParamsHandling="preserve" class="product-detail-admin__inline-link">{{ deletedBy.fullName }}</a>
+                  } @else {
+                    No eliminado
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Fecha</dt>
+                <dd>{{ p.deletedAt ? (p.deletedAt | localeDate:'long') : 'No eliminado' }}</dd>
+              </div>
+            </dl>
+          </article>
+        </div>
+      </article>
+    </div>
+  }
+</div>

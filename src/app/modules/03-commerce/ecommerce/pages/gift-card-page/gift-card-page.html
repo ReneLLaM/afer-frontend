@@ -1,1 +1,168 @@
-<p>gift-card-page works!</p>
+<main class="gift-page">
+  <!-- Hero -->
+  <section class="gift-hero">
+    <div class="gift-hero__inner">
+      <span class="gift-hero__badge">Nuevo</span>
+      <h1 class="gift-hero__title">Gift Card <span>AFER</span></h1>
+      <p class="gift-hero__desc">
+        El regalo que siempre acierta. Una gift card es la forma más fácil y flexible de
+        sorprender a alguien especial. Quien la recibe elige lo que realmente quiere.
+      </p>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="gift-benefits">
+    <div class="gift-benefits__grid">
+      @for (b of benefits; track b.title) {
+        <article class="gift-benefit-card">
+          <div class="gift-benefit-card__icon">
+            @switch (b.icon) {
+              @case ('present') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/>
+                  <path d="M4 12h16"/>
+                  <path d="M12 22V8"/>
+                  <path d="M12 8H8a3 3 0 0 1 0-6 4 4 0 0 1 4 4z"/>
+                  <path d="M12 8h4a3 3 0 0 0 0-6 4 4 0 0 0-4 4z"/>
+                </svg>
+              }
+              @case ('calendar') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                  <path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/>
+                  <path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>
+                </svg>
+              }
+              @case ('phone') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4a16 16 0 0 1 16 16"/><path d="M4 12a8 8 0 0 1 8 8"/>
+                  <path d="M4 20h.01"/><path d="M20 4h.01"/>
+                  <rect x="2" y="2" width="20" height="20" rx="4"/>
+                </svg>
+              }
+              @case ('heart') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/>
+                </svg>
+              }
+            }
+          </div>
+          <h3 class="gift-benefit-card__title">{{ b.title }}</h3>
+          <p class="gift-benefit-card__desc">{{ b.desc }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="gift-how">
+    <h2 class="gift-section-title">¿Cómo funciona?</h2>
+    <p class="gift-section-sub">Cuatro pasos simples para regalar</p>
+    <div class="gift-how__steps">
+      @for (step of steps; track step.num; let i = $index) {
+        <div class="gift-step">
+          <div class="gift-step__number">{{ step.num }}</div>
+          <div class="gift-step__line" [class.gift-step__line--last]="i === steps.length - 1"></div>
+          <div class="gift-step__content">
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.desc }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Banner -->
+  <section class="gift-banner">
+    <div class="gift-banner__bg"></div>
+    <div class="gift-banner__content">
+      <h2>¿Listo para regalar?</h2>
+      <p>Crea tu gift card en minutos y sorprende a quien más quieres.</p>
+      <a class="gift-btn gift-btn--primary" href="https://wa.me/59169137711" target="_blank" rel="noopener">Personalizar gift card</a>
+    </div>
+    <div class="gift-banner__visual">
+      <div class="gift-card-preview">
+        <div class="gift-card-preview__inner">
+          <span class="gift-card-preview__label">Gift Card</span>
+          <span class="gift-card-preview__brand">AFER</span>
+          <span class="gift-card-preview__code">•••• •••• •••• 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use cases -->
+  <section class="gift-cases">
+    <h2 class="gift-section-title">Ideales para regalar</h2>
+    <p class="gift-section-sub">Momentos perfectos para una gift card</p>
+    <div class="gift-cases__grid">
+      @for (c of useCases; track c.title) {
+        <article class="gift-case-card">
+          <div class="gift-case-card__icon">
+            @switch (c.icon) {
+              @case ('cake') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16h16"/>
+                  <path d="M12 3v6"/><path d="M9 6h6"/><path d="M3 21h18"/>
+                </svg>
+              }
+              @case ('briefcase') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                </svg>
+              }
+              @case ('graduation') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                  <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                </svg>
+              }
+              @case ('heart') {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/>
+                </svg>
+              }
+            }
+          </div>
+          <h3>{{ c.title }}</h3>
+          <p>{{ c.desc }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="gift-faq">
+    <h2 class="gift-section-title">Preguntas frecuentes</h2>
+    <div class="gift-faq__list">
+      @for (item of faqItems; track item.question; let i = $index) {
+        <div class="gift-faq-item" [class.gift-faq-item--open]="openFaqIndex() === i">
+          <button class="gift-faq-item__question" (click)="toggleFaq(i)">
+            <span>{{ item.question }}</span>
+            <svg class="gift-faq-item__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          @if (openFaqIndex() === i) {
+            <div class="gift-faq-item__answer">
+              <p>{{ item.answer }}</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="gift-final">
+    <div class="gift-final__card">
+      <h2>Regala con confianza</h2>
+      <p>Crea tu gift card ahora y el destinatario decide cuándo y cómo usarla.</p>
+      <a class="gift-btn gift-btn--primary gift-btn--lg" href="https://wa.me/59169137711" target="_blank" rel="noopener">Compra tu gift card</a>
+    </div>
+  </section>
+</main>

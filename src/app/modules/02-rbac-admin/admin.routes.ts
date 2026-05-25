@@ -22,7 +22,30 @@ export const adminRoutes: Routes = [
         path: 'productos',
         canActivate: [permissionGuard],
         data: { permission: PERMISSIONS.PRODUCTS.READ, breadcrumb: 'Productos' },
-        loadComponent: () => import('./pages/products-admin/products-admin').then(m => m.ProductsAdminPage),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/products-admin/products-admin').then(m => m.ProductsAdminPage),
+          },
+          {
+            path: 'crear',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.PRODUCTS.CREATE, breadcrumb: 'Crear' },
+            loadComponent: () => import('./pages/products-admin/product-create/product-create').then(m => m.ProductCreatePage),
+          },
+          {
+            path: ':term/editar',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.PRODUCTS.UPDATE, breadcrumb: 'Editar' },
+            loadComponent: () => import('./pages/products-admin/product-create/product-create').then(m => m.ProductCreatePage),
+          },
+          {
+            path: ':term',
+            canActivate: [permissionGuard],
+            data: { permission: PERMISSIONS.PRODUCTS.READ, breadcrumb: 'Detalle' },
+            loadComponent: () => import('./pages/products-admin/product-detail/product-detail').then(m => m.ProductDetailPage),
+          },
+        ],
       },
       {
         path: 'categorias',

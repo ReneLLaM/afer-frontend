@@ -1,1 +1,145 @@
-<p>politica-de-privacidad-page works!</p>
+<main class="legal-page" role="main">
+  <section class="legal-hero">
+    <div class="legal-hero__inner">
+      <span class="legal-tag">AFER Bolivia</span>
+      <h1 class="legal-hero__title">POLÍTICA DE PRIVACIDAD</h1>
+      <p class="legal-hero__desc">
+        Esta política describe cómo recopilamos, usamos y protegemos tus datos personales de acuerdo
+        con la <strong>Ley 164 de Protección de Datos Personales</strong> y normativa aplicable en Bolivia.
+      </p>
+      <p class="legal-hero__desc">Última actualización: Mayo 2026</p>
+    </div>
+  </section>
+
+  <div class="legal-layout">
+    <div class="legal-sidebar-container">
+      <aside class="legal-sidebar">
+        <nav class="legal-toc">
+          <span class="legal-toc__title">Índice</span>
+          @for (section of sections; track section.id) {
+            <a class="legal-toc__link"
+               [class.active]="activeSection() === section.id"
+               (click)="scrollTo(section.id)">
+              {{ section.title }}
+            </a>
+          }
+        </nav>
+      </aside>
+    </div>
+
+    <div class="legal-content-container">
+      <div class="legal-content">
+
+        <section id="responsable" class="legal-section">
+          <h2>1. Responsable del Tratamiento</h2>
+          <p>
+            <strong>AFER BOLIVIA</strong> es responsable del tratamiento y protección de los datos
+            personales proporcionados por los clientes.
+          </p>
+        </section>
+
+        <section id="datos-recopilados" class="legal-section">
+          <h2>2. Datos Recopilados</h2>
+          <p>Se podrán recopilar los siguientes datos:</p>
+          <ul>
+            <li>Nombre completo</li>
+            <li>Número de teléfono</li>
+            <li>Correo electrónico</li>
+            <li>Dirección</li>
+            <li>Información de facturación</li>
+            <li>Datos básicos de navegación en plataformas digitales</li>
+          </ul>
+        </section>
+
+        <section id="finalidad" class="legal-section">
+          <h2>3. Finalidad del Tratamiento</h2>
+          <p>Los datos recopilados serán utilizados para:</p>
+          <ul>
+            <li>Gestión de pedidos y entregas</li>
+            <li>Atención al cliente</li>
+            <li>Envío de información comercial y promociones</li>
+            <li>Mejora de productos y servicios</li>
+            <li>Cumplimiento de obligaciones legales</li>
+          </ul>
+        </section>
+
+        <section id="base-legal" class="legal-section">
+          <h2>4. Base Legal</h2>
+          <p>
+            El tratamiento de datos se realiza con el consentimiento del titular y para la ejecución
+            de la relación comercial conforme a la normativa boliviana vigente.
+          </p>
+        </section>
+
+        <section id="destinatarios" class="legal-section">
+          <h2>5. Destinatarios de los Datos</h2>
+          <p>Los datos podrán ser compartidos únicamente con:</p>
+          <ul>
+            <li>Empresas de transporte y logística</li>
+            <li>Entidades financieras o plataformas de pago</li>
+            <li>Autoridades competentes cuando la ley lo requiera</li>
+          </ul>
+        </section>
+
+        <section id="transferencia" class="legal-section">
+          <h2>6. Transferencia Internacional</h2>
+          <p>
+            AFER BOLIVIA no realiza transferencias internacionales de datos personales.
+          </p>
+        </section>
+
+        <section id="conservacion" class="legal-section">
+          <h2>7. Plazo de Conservación</h2>
+          <p>
+            Los datos personales serán conservados durante el tiempo necesario para cumplir fines
+            comerciales, legales y administrativos.
+          </p>
+        </section>
+
+        <section id="derechos-arco" class="legal-section">
+          <h2>8. Derechos ARCO</h2>
+          <p>El titular de los datos podrá solicitar:</p>
+          <ul>
+            <li>Acceso a su información</li>
+            <li>Rectificación de datos incorrectos</li>
+            <li>Cancelación de datos cuando corresponda</li>
+            <li>Oposición al uso de su información para fines comerciales</li>
+          </ul>
+        </section>
+
+        <section id="seguridad" class="legal-section">
+          <h2>9. Seguridad de los Datos</h2>
+          <p>
+            AFER BOLIVIA aplica medidas técnicas y administrativas razonables para proteger la
+            información personal de accesos no autorizados, pérdida o alteración.
+          </p>
+        </section>
+
+        <section id="cookies" class="legal-section">
+          <h2>10. Uso de Cookies</h2>
+          <p>
+            Las plataformas digitales de AFER BOLIVIA pueden utilizar cookies para mejorar la
+            experiencia de navegación y analizar el uso del sitio web o redes digitales.
+          </p>
+        </section>
+
+        <section id="cambios" class="legal-section">
+          <h2>11. Cambios a la Política</h2>
+          <p>
+            AFER BOLIVIA podrá actualizar esta política en cualquier momento. Las modificaciones
+            serán publicadas en los canales oficiales de la empresa.
+          </p>
+        </section>
+
+        <section id="contacto" class="legal-section">
+          <h2>12. Contacto del Responsable</h2>
+          <p>
+            Para consultas relacionadas con privacidad y tratamiento de datos, el cliente puede
+            comunicarse a los números 69137711 y 69127711.
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</main>

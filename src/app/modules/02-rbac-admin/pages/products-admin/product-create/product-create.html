@@ -1,0 +1,593 @@
+<div class="product-create-page">
+  <breadcrumb />
+
+  <header class="product-create-page__top">
+    <button type="button" class="admin-btn admin-btn--secondary" (click)="goBack()">
+      <i class="ri-arrow-left-line"></i>
+      <span>Volver</span>
+    </button>
+  </header>
+
+  <section class="product-create-page__hero">
+    <div>
+      <span class="product-create-page__eyebrow">{{ pageEyebrow() }}</span>
+      <h1 class="product-create-page__title">{{ pageTitle() }}</h1>
+      <p class="product-create-page__subtitle">{{ pageSubtitle() }}</p>
+    </div>
+
+    <div class="product-create-page__hero-badge">
+      <i class="ri-box-3-line"></i>
+      <span>{{ heroBadge() }}</span>
+    </div>
+  </section>
+
+  @if (loadError()) {
+    <section class="product-create-page__panel">
+      <div class="product-create-page__alert product-create-page__alert--error">{{ loadError() }}</div>
+    </section>
+  } @else {
+    @if (optionsError()) {
+      <div class="product-create-page__alert product-create-page__alert--error">{{ optionsError() }}</div>
+    }
+
+    @if (submitError()) {
+      <div class="product-create-page__alert product-create-page__alert--error">{{ submitError() }}</div>
+    }
+
+    @if (isBootstrapping()) {
+      <section class="product-create-page__panel">Cargando formulario de producto...</section>
+    } @else {
+      <form class="product-create-page__grid" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="product-create-page__main-stack">
+          <section class="product-create-page__panel">
+            <div class="product-create-page__panel-head">
+              <h2 class="product-create-page__panel-title">Identidad comercial</h2>
+
+              <div class="product-create-page__flags">
+                <label class="product-create-page__check">
+                  <input type="checkbox" formControlName="isFeatured" />
+                  <span>Destacado</span>
+                </label>
+
+                <label class="product-create-page__check">
+                  <input type="checkbox" formControlName="isTrending" />
+                  <span>Tendencia</span>
+                </label>
+
+                <label class="product-create-page__check">
+                  <input type="checkbox" formControlName="isNew" />
+                  <span>Nuevo</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="product-create-page__compact-grid product-create-page__compact-grid--triple">
+              <label class="product-create-page__field">
+                <span>Titulo *</span>
+                <input type="text" formControlName="title" placeholder="Ej. Smart TV QLED 55 pulgadas" />
+                @if (form.controls.title.touched && form.controls.title.hasError('required')) {
+                  <small>El titulo es obligatorio.</small>
+                } @else if (form.controls.title.touched && form.controls.title.hasError('maxlength')) {
+                  <small>Usa un titulo de hasta 180 caracteres.</small>
+                }
+              </label>
+
+              <label class="product-create-page__field">
+                <span>SKU *</span>
+                <input type="text" formControlName="sku" placeholder="Ej. TV-Q55-2026" />
+                @if (form.controls.sku.touched && form.controls.sku.hasError('required')) {
+                  <small>El SKU es obligatorio.</small>
+                }
+              </label>
+
+              <label class="product-create-page__field">
+                <span>Estado</span>
+                <select formControlName="status">
+                  @for (option of statusOptions; track option.value) {
+                    <option [value]="option.value">{{ option.label }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+
+            <div class="product-create-page__compact-grid product-create-page__compact-grid--price">
+              <label class="product-create-page__field">
+                <span>Precio *</span>
+                <input
+                  type="text"
+                  formControlName="price"
+                  inputmode="decimal"
+                  placeholder="Ej. 4599.90"
+                  (blur)="onPriceBlur()"
+                />
+                <p class="product-create-page__field-hint">Usa decimal con punto. Ejemplo: `4599.90`.</p>
+                @if (form.controls.price.touched && form.controls.price.hasError('required')) {
+                  <small>El precio es obligatorio.</small>
+                } @else if (form.controls.price.touched && form.controls.price.hasError('pattern')) {
+                  <small>Ingresa un precio válido con hasta 2 decimales.</small>
+                }
+              </label>
+
+              <label class="product-create-page__field">
+                <span>Slug</span>
+                <input type="text" formControlName="slug" placeholder="Se genera si lo dejas vacío" />
+              </label>
+            </div>
+          </section>
+
+          <section class="product-create-page__panel">
+            <div class="product-create-page__panel-head">
+              <h2 class="product-create-page__panel-title">Marca y categorias</h2>
+              <span class="product-create-page__panel-meta">
+                {{ brandOptions().length }} marcas · {{ categoryOptions().length }} categorías cargadas
+              </span>
+            </div>
+
+            <div class="product-create-page__compact-grid product-create-page__compact-grid--brand">
+              <div class="product-create-page__field">
+                <span>Marca *</span>
+                <div class="product-create-page__search-shell">
+                  <i class="ri-search-line"></i>
+                  <input
+                    type="search"
+                    [value]="brandSearch()"
+                    placeholder="Busca por nombre o slug"
+                    (input)="onBrandSearchInput($event)"
+                  />
+                </div>
+                <p class="product-create-page__field-hint">
+                  Se cargan todas las marcas no eliminadas. El producto debe tener una marca.
+                </p>
+                @if (form.controls.brandId.touched && form.controls.brandId.hasError('required')) {
+                  <small>La marca es obligatoria.</small>
+                }
+
+                <div class="product-create-page__suggestions">
+                  @for (option of filteredBrandOptions(); track option.id) {
+                    <button
+                      type="button"
+                      class="product-create-page__suggestion"
+                      [class.product-create-page__suggestion--active]="selectedBrand()?.id === option.id"
+                      (click)="selectBrand(option)"
+                    >
+                      <strong>{{ option.name }}</strong>
+                      <span>{{ option.slug }}</span>
+                    </button>
+                  }
+                </div>
+
+                @if (selectedBrand()) {
+                  <div class="product-create-page__selection-card">
+                    <div>
+                      <span class="product-create-page__selection-kicker">Marca seleccionada</span>
+                      <strong>{{ selectedBrand()!.name }}</strong>
+                      <small>{{ selectedBrand()!.slug }}</small>
+                    </div>
+
+                    <button type="button" class="product-create-page__selection-clear" (click)="clearBrand()">
+                      Limpiar
+                    </button>
+                  </div>
+                }
+              </div>
+
+              <div class="product-create-page__field">
+                <span>Categorias *</span>
+                <div class="product-create-page__search-shell">
+                  <i class="ri-search-line"></i>
+                  <input
+                    type="search"
+                    [value]="categorySearch()"
+                    placeholder="Busca y agrega categorías"
+                    (input)="onCategorySearchInput($event)"
+                  />
+                </div>
+                <p class="product-create-page__field-hint">
+                  Se cargan todas las categorías no eliminadas. Debes asociar al menos una.
+                </p>
+                @if (form.controls.categoryIds.touched && form.controls.categoryIds.hasError('minArrayLength')) {
+                  <small>Selecciona al menos una categoría.</small>
+                }
+
+                <div class="product-create-page__chips">
+                  @for (category of selectedCategories(); track category.id) {
+                    <button
+                      type="button"
+                      class="product-create-page__chip"
+                      [attr.aria-label]="'Quitar categoría ' + category.name"
+                      (click)="removeCategory(category.id)"
+                    >
+                      <span>{{ category.name }}</span>
+                      <span class="product-create-page__chip-remove">
+                        <i class="ri-close-line" aria-hidden="true"></i>
+                        <span>Quitar</span>
+                      </span>
+                    </button>
+                  } @empty {
+                    <div class="product-create-page__empty-inline">Aún no agregaste categorías.</div>
+                  }
+                </div>
+
+                <div class="product-create-page__suggestions product-create-page__suggestions--categories">
+                  @for (option of filteredCategoryOptions(); track option.id) {
+                    <button type="button" class="product-create-page__suggestion" (click)="addCategory(option)">
+                      <strong>{{ option.name }}</strong>
+                      <span>{{ option.slug }}</span>
+                    </button>
+                  } @empty {
+                    <div class="product-create-page__empty-inline">No hay categorías que coincidan con tu búsqueda.</div>
+                  }
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="product-create-page__panel">
+            <div class="product-create-page__panel-head">
+              <h2 class="product-create-page__panel-title">Contenido descriptivo</h2>
+              <span class="product-create-page__panel-meta">Texto visible en ficha y resumen</span>
+            </div>
+
+            <label class="product-create-page__field">
+              <span>Resumen de especificaciones</span>
+              <textarea
+                rows="3"
+                formControlName="specificationsSummary"
+                placeholder="Ej. QLED 4K, 120 Hz, HDMI 2.1, Dolby Atmos..."
+              ></textarea>
+            </label>
+
+            <div class="product-create-page__compact-grid product-create-page__compact-grid--content">
+              <label class="product-create-page__field">
+                <span>Descripcion *</span>
+                <textarea
+                  rows="7"
+                  formControlName="description"
+                  placeholder="Describe el producto, su propuesta de valor y el contexto de uso."
+                ></textarea>
+                @if (form.controls.description.touched && form.controls.description.hasError('required')) {
+                  <small>La descripción es obligatoria.</small>
+                }
+              </label>
+
+              <label class="product-create-page__field">
+                <span>Caracteristicas *</span>
+                <textarea
+                  rows="7"
+                  formControlName="features"
+                  placeholder="Lista ventajas, funciones y puntos diferenciales relevantes."
+                ></textarea>
+                @if (form.controls.features.touched && form.controls.features.hasError('required')) {
+                  <small>Las características son obligatorias.</small>
+                }
+              </label>
+            </div>
+          </section>
+
+          <section class="product-create-page__panel">
+            <div class="product-create-page__panel-head">
+              <h2 class="product-create-page__panel-title">Inventario y garantia</h2>
+              <span class="product-create-page__panel-meta">Control interno y mensaje comercial</span>
+            </div>
+
+            <div class="product-create-page__compact-grid product-create-page__compact-grid--inventory">
+              <label class="product-create-page__field">
+                <span>Stock minimo</span>
+                <input type="number" min="0" formControlName="minStock" />
+              </label>
+
+              <label class="product-create-page__field">
+                <span>Stock actual</span>
+                <input type="number" min="0" formControlName="currentStock" />
+              </label>
+
+              <label class="product-create-page__field">
+                <span>Stock maximo</span>
+                <input type="number" min="0" formControlName="maxStock" />
+              </label>
+
+              <label class="product-create-page__field">
+                <span>Meses de garantia</span>
+                <input type="number" min="0" formControlName="warrantyMonths" />
+              </label>
+            </div>
+
+            <label class="product-create-page__field">
+              <span>Descripcion de garantia</span>
+              <textarea
+                rows="3"
+                formControlName="warrantyDescription"
+                placeholder="Ej. Garantía de fábrica por defectos de fabricación."
+              ></textarea>
+            </label>
+
+            @if (inventoryError()) {
+              <div class="product-create-page__alert product-create-page__alert--error">{{ inventoryError() }}</div>
+            }
+          </section>
+
+          <section class="product-create-page__panel">
+            <div class="product-create-page__panel-head">
+              <h2 class="product-create-page__panel-title">Videos TikTok</h2>
+              <button type="button" class="admin-btn admin-btn--secondary" (click)="addVideo()">
+                <i class="ri-add-line"></i>
+                <span>Agregar video</span>
+              </button>
+            </div>
+
+            <div class="product-create-page__dynamic-list">
+              @for (videoGroup of videosArray.controls; track videoGroup; let index = $index) {
+                <div
+                  class="product-create-page__dynamic-card product-create-page__dynamic-card--stack"
+                  [class.product-create-page__dynamic-card--dragging]="isDraggingVideo() === index"
+                  [class.product-create-page__dynamic-card--drag-over]="isDragOverVideo() === index && isDraggingVideo() !== index"
+                  [formGroup]="videoGroup"
+                  draggable="true"
+                  (dragstart)="onVideoDragStart($event, index)"
+                  (dragover)="onVideoDragOver($event, index)"
+                  (dragleave)="onVideoDragLeave()"
+                  (drop)="onVideoDrop($event, index)"
+                  (dragend)="onVideoDragEnd()"
+                >
+                  <div class="product-create-page__dynamic-card-head">
+                    <div class="product-create-page__drag-head">
+                      <span class="product-create-page__drag-handle" title="Arrastra para reordenar">
+                        <i class="ri-drag-move-2-line"></i>
+                      </span>
+                      <strong>Video #{{ index + 1 }}</strong>
+                    </div>
+
+                    <div class="product-create-page__dynamic-card-actions">
+                      <button type="button" class="product-create-page__mini-btn product-create-page__mini-btn--danger" (click)="removeVideo(index)">
+                        <i class="ri-delete-bin-line"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <label class="product-create-page__field">
+                    <span>HTML embebido de TikTok *</span>
+                    <textarea
+                      rows="6"
+                      formControlName="html"
+                      placeholder="Pega aquí el HTML completo que te da TikTok para embeber el video."
+                    ></textarea>
+                    <p class="product-create-page__field-hint">
+                      Aquí no va una URL simple: pega el HTML del embed de TikTok.
+                    </p>
+                    @if (videoGroup.controls.html.touched && videoGroup.controls.html.hasError('required')) {
+                      <small>El HTML del video es obligatorio.</small>
+                    } @else if (videoGroup.controls.html.touched && videoGroup.controls.html.hasError('tiktokEmbed')) {
+                      <small>Pega un embed válido de TikTok que contenga el HTML del video.</small>
+                    }
+                  </label>
+                </div>
+              } @empty {
+                <div class="product-create-page__empty-block">
+                  <i class="ri-tiktok-line"></i>
+                  <strong>No agregaste videos todavía</strong>
+                  <span>Pega el HTML de TikTok para que luego se renderice igual que en el detalle público.</span>
+                </div>
+              }
+            </div>
+          </section>
+
+          <section class="product-create-page__panel">
+            <div class="product-create-page__panel-head">
+              <h2 class="product-create-page__panel-title">Especificaciones</h2>
+              <button type="button" class="admin-btn admin-btn--secondary" (click)="addSpecification()">
+                <i class="ri-add-line"></i>
+                <span>Agregar bloque</span>
+              </button>
+            </div>
+
+            <div class="product-create-page__dynamic-list">
+              @for (specGroup of specificationsArray.controls; track specGroup; let index = $index) {
+                <div
+                  class="product-create-page__dynamic-card product-create-page__dynamic-card--spec-stack"
+                  [class.product-create-page__dynamic-card--dragging]="isDraggingSpec() === index"
+                  [class.product-create-page__dynamic-card--drag-over]="isDragOverSpec() === index && isDraggingSpec() !== index"
+                  [formGroup]="specGroup"
+                  draggable="true"
+                  (dragstart)="onSpecDragStart($event, index)"
+                  (dragover)="onSpecDragOver($event, index)"
+                  (dragleave)="onSpecDragLeave()"
+                  (drop)="onSpecDrop($event, index)"
+                  (dragend)="onSpecDragEnd()"
+                >
+                  <div class="product-create-page__dynamic-card-head">
+                    <div class="product-create-page__drag-head">
+                      <span class="product-create-page__drag-handle" title="Arrastra para reordenar">
+                        <i class="ri-drag-move-2-line"></i>
+                      </span>
+                      <strong>Bloque #{{ index + 1 }}</strong>
+                    </div>
+
+                    <div class="product-create-page__dynamic-card-actions">
+                      <button type="button" class="product-create-page__mini-btn product-create-page__mini-btn--danger" (click)="removeSpecification(index)">
+                        <i class="ri-delete-bin-line"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <label class="product-create-page__field">
+                    <span>Grupo *</span>
+                    <input type="text" formControlName="group" placeholder="Ej. Pantalla, Audio, Conectividad" />
+                    @if (specGroup.controls.group.touched && specGroup.controls.group.hasError('required')) {
+                      <small>El grupo es obligatorio.</small>
+                    }
+                  </label>
+
+                  <label class="product-create-page__field">
+                    <span>Detalle *</span>
+                    <textarea
+                      rows="4"
+                      formControlName="descriptionSpecifications"
+                      placeholder="Describe las especificaciones de ese bloque."
+                    ></textarea>
+                    @if (specGroup.controls.descriptionSpecifications.touched && specGroup.controls.descriptionSpecifications.hasError('required')) {
+                      <small>El detalle del bloque es obligatorio.</small>
+                    }
+                  </label>
+                </div>
+              } @empty {
+                <div class="product-create-page__empty-block">
+                  <i class="ri-file-list-3-line"></i>
+                  <strong>Sin bloques de especificaciones</strong>
+                  <span>Agrega secciones ordenadas para ficha técnica, medidas o compatibilidades.</span>
+                </div>
+              }
+            </div>
+          </section>
+        </div>
+
+        <aside class="product-create-page__side-stack">
+          <section class="product-create-page__panel">
+            <div class="product-create-page__panel-head">
+              <h2 class="product-create-page__panel-title">Galeria inicial *</h2>
+              <span class="product-create-page__panel-meta">La primera imagen sí es la portada</span>
+            </div>
+
+            <input
+              #imagesInput
+              type="file"
+              class="product-create-page__file-input"
+              multiple
+              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+              (change)="onImagesChange($event)"
+            />
+
+            <div
+              class="product-create-page__dropzone"
+              [class.product-create-page__dropzone--active]="isDragOver()"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event)"
+              (click)="openImagesDialog()"
+            >
+              @if (selectedImages().length) {
+                <div class="product-create-page__cover-stage">
+                  <img [src]="summary().coverImage" [alt]="summary().title" class="product-create-page__cover-image" />
+                  <div class="product-create-page__cover-badge">Portada real</div>
+                </div>
+              } @else {
+                <div class="product-create-page__drop-copy">
+                  <i class="ri-gallery-upload-line"></i>
+                  <strong>Arrastra imágenes aquí</strong>
+                  <span>o haz clic para cargar una o varias</span>
+                  <small>JPG, PNG o WEBP. Máximo 2 MB por imagen.</small>
+                </div>
+              }
+            </div>
+
+            @if (imageError()) {
+              <div class="product-create-page__alert product-create-page__alert--error">{{ imageError() }}</div>
+            }
+
+            <div class="product-create-page__gallery-list">
+              @for (image of selectedImages(); track image.previewUrl; let index = $index) {
+                <article
+                  class="product-create-page__gallery-card"
+                  [class.product-create-page__gallery-card--dragging]="isDraggingImage() === index"
+                  [class.product-create-page__gallery-card--drag-over]="isDragOverImage() === index && isDraggingImage() !== index"
+                  draggable="true"
+                  (dragstart)="onImageDragStart($event, index)"
+                  (dragover)="onImageDragOver($event, index)"
+                  (dragleave)="onImageDragLeave()"
+                  (drop)="onImageDrop($event, index)"
+                  (dragend)="onImageDragEnd()"
+                >
+                  <span class="product-create-page__gallery-handle" title="Arrastra para reordenar">
+                    <i class="ri-drag-move-2-line"></i>
+                  </span>
+
+                  <img [src]="image.previewUrl" [alt]="image.name" class="product-create-page__gallery-thumb" />
+
+                  <div class="product-create-page__gallery-info">
+                    <strong>{{ image.name }}</strong>
+                    <small>
+                      @if (image.source === 'new' && image.file; as file) {
+                        {{ formatBytes(file.size) }}
+                      } @else {
+                        Imagen existente
+                      }
+                    </small>
+                    @if (index === 0) {
+                      <span class="product-create-page__gallery-badge">Portada</span>
+                    }
+                  </div>
+
+                  <div class="product-create-page__gallery-actions">
+                    <button type="button" class="product-create-page__mini-btn product-create-page__mini-btn--danger" (click)="removeImage(index)">
+                      <i class="ri-delete-bin-line"></i>
+                    </button>
+                  </div>
+                </article>
+              }
+            </div>
+          </section>
+
+          <section class="product-create-page__panel product-create-page__panel--summary">
+            <span class="product-create-page__summary-kicker">Vista previa admin</span>
+
+            <article class="product-create-page__summary-card">
+              <div class="product-create-page__summary-visual">
+                <img [src]="summary().coverImage" [alt]="summary().title" />
+              </div>
+
+              <div class="product-create-page__summary-body">
+                <div class="product-create-page__summary-line">
+                  <strong>{{ summary().title }}</strong>
+                  <span>{{ summary().priceLabel }}</span>
+                </div>
+
+                <div class="product-create-page__summary-meta">
+                  <span>{{ summary().sku }}</span>
+                  <span>{{ summary().status }}</span>
+                </div>
+
+                <p>{{ summary().description }}</p>
+
+                <div class="product-create-page__summary-grid">
+                  <div>
+                    <span>Marca</span>
+                    <strong>{{ summary().brand }}</strong>
+                  </div>
+                  <div>
+                    <span>Categorias</span>
+                    <strong>{{ summary().categoriesCount }}</strong>
+                  </div>
+                  <div>
+                    <span>Imágenes</span>
+                    <strong>{{ summary().imagesCount }}</strong>
+                  </div>
+                  <div>
+                    <span>Videos</span>
+                    <strong>{{ summary().videosCount }}</strong>
+                  </div>
+                  <div>
+                    <span>Especificaciones</span>
+                    <strong>{{ summary().specificationsCount }}</strong>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </section>
+        </aside>
+
+        <section class="product-create-page__panel product-create-page__panel--submit">
+          <div class="product-create-page__submit-copy">
+            <strong>Antes de guardar</strong>
+            <span>
+              Los campos con `*` son obligatorios. La primera imagen será la portada y el orden de videos y especificaciones se respeta tal como lo dejes aquí.
+            </span>
+          </div>
+
+          <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving()">
+            <i class="ri-save-line"></i>
+            <span>{{ submitLabel() }}</span>
+          </button>
+        </section>
+      </form>
+    }
+  }
+</div>

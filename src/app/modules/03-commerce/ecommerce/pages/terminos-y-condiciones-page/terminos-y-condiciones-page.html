@@ -1,1 +1,158 @@
-<p>terminos-y-condiciones-page works!</p>
+<main class="legal-page" role="main">
+  <section class="legal-hero">
+    <div class="legal-hero__inner">
+      <span class="legal-tag">AFER Bolivia</span>
+      <h1 class="legal-hero__title">TÉRMINOS Y CONDICIONES</h1>
+      <p class="legal-hero__desc">Última actualización: Mayo 2026</p>
+    </div>
+  </section>
+
+  <div class="legal-layout">
+    <div class="legal-sidebar-container">
+      <aside class="legal-sidebar">
+        <nav class="legal-toc">
+          <span class="legal-toc__title">Índice</span>
+          @for (section of sections; track section.id) {
+            <a class="legal-toc__link"
+               [class.active]="activeSection() === section.id"
+               (click)="scrollTo(section.id)">
+              {{ section.title }}
+            </a>
+          }
+        </nav>
+      </aside>
+    </div>
+
+    <div class="legal-content-container">
+      <div class="legal-content">
+
+        <section id="informacion-del-proveedor" class="legal-section">
+          <h2>1. Información del Proveedor</h2>
+          <p>
+            <strong>AFER BOLIVIA</strong>, con NIT 3659834017, con domicilio en Plazuela Heroínas N°6
+            esq. Ricardo Bacherer, zona Refisur, Sucre – Bolivia.
+          </p>
+          <p>Contactos de atención: 69137711 y 69127711.</p>
+        </section>
+
+        <section id="objeto" class="legal-section">
+          <h2>2. Objeto del Contrato</h2>
+          <p>
+            AFER BOLIVIA se dedica a la comercialización de electrodomésticos y artículos para el
+            hogar al por mayor y menor, mediante ventas presenciales y digitales.
+          </p>
+        </section>
+
+        <section id="proceso-de-compra" class="legal-section">
+          <h2>3. Proceso de Compra</h2>
+          <p>
+            Las compras pueden realizarse en tienda física o mediante canales digitales.
+          </p>
+          <p>
+            El cliente solicita información del producto de interés y AFER BOLIVIA proporciona
+            catálogos, características y precios actualizados.
+          </p>
+          <p>
+            Una vez confirmado el pago, se coordina el envío o entrega del producto.
+          </p>
+        </section>
+
+        <section id="precios-y-pago" class="legal-section">
+          <h2>4. Precios y Formas de Pago</h2>
+          <p>Todos los precios están expresados en Bolivianos (BOB).</p>
+          <p>Se aceptan pagos mediante:</p>
+          <ul>
+            <li>Efectivo</li>
+            <li>Depósito bancario</li>
+            <li>Transferencia</li>
+            <li>Cheque</li>
+            <li>Pago mediante QR</li>
+          </ul>
+        </section>
+
+        <section id="entrega-y-plazos" class="legal-section">
+          <h2>5. Entrega y Plazos</h2>
+          <p>
+            Los tiempos de entrega son de 2 a 3 días hábiles, sujetos a disponibilidad y logística
+            de transporte.
+          </p>
+          <p>El costo de envío varía según el destino.</p>
+          <p>Se realizan envíos a todos los departamentos de Bolivia.</p>
+          <p>
+            El servicio de entrega a domicilio está disponible únicamente en Sucre, La Paz, Oruro y
+            Cochabamba.
+          </p>
+        </section>
+
+        <section id="desistimiento" class="legal-section">
+          <h2>6. Derecho de Desistimiento</h2>
+          <p>
+            El cliente podrá solicitar la cancelación de la compra antes del despacho del producto.
+          </p>
+          <p>
+            Una vez realizado el envío o entregado el producto, la solicitud estará sujeta a
+            evaluación según el estado del artículo y las políticas de devolución.
+          </p>
+        </section>
+
+        <section id="garantias" class="legal-section">
+          <h2>7. Garantías</h2>
+          <p>
+            Todos los productos cuentan con garantía de funcionamiento respaldada por la marca o
+            fabricante, con una cobertura de 1 o 2 años según el producto adquirido.
+          </p>
+        </section>
+
+        <section id="devoluciones-y-cambios" class="legal-section">
+          <h2>8. Devoluciones y Cambios</h2>
+          <p>
+            Las devoluciones o cambios aplican únicamente para productos con fallas de fábrica,
+            previa evaluación y reporte del servicio técnico autorizado.
+          </p>
+        </section>
+
+        <section id="propiedad-intelectual" class="legal-section">
+          <h2>9. Propiedad Intelectual</h2>
+          <p>
+            La marca AFER, logotipo, diseños, imágenes, contenido digital y material publicitario
+            son propiedad de AFER BOLIVIA y se encuentran protegidos por normativa vigente.
+          </p>
+        </section>
+
+        <section id="limitacion" class="legal-section">
+          <h2>10. Limitación de Responsabilidad</h2>
+          <p>
+            AFER BOLIVIA no se responsabiliza por daños ocasionados por uso inadecuado, manipulación
+            incorrecta, instalaciones no autorizadas o incumplimiento de las recomendaciones del
+            fabricante.
+          </p>
+          <p>
+            Asimismo, la empresa no asume responsabilidad por retrasos, daños o pérdidas ocasionadas
+            por terceros encargados del transporte.
+          </p>
+        </section>
+
+        <section id="legislacion" class="legal-section">
+          <h2>11. Legislación Aplicable y Jurisdicción</h2>
+          <p>
+            Los presentes términos y condiciones se rigen por las leyes del Estado Plurinacional de
+            Bolivia.
+          </p>
+          <p>
+            Cualquier controversia será resuelta ante las autoridades competentes de Sucre,
+            Chuquisaca.
+          </p>
+        </section>
+
+        <section id="aceptacion" class="legal-section">
+          <h2>12. Aceptación de los Términos</h2>
+          <p>
+            La compra, registro o utilización de los servicios de AFER BOLIVIA implica la aceptación
+            plena de los presentes términos y condiciones.
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</main>

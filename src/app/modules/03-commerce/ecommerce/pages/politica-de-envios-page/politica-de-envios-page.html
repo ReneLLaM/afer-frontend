@@ -1,1 +1,94 @@
-<p>politica-de-envios-page works!</p>
+<main class="legal-page" role="main">
+  <section class="legal-hero">
+    <div class="legal-hero__inner">
+      <span class="legal-tag">AFER Bolivia</span>
+      <h1 class="legal-hero__title">POLÍTICAS DE ENVÍO</h1>
+      <p class="legal-hero__desc">
+        Conoce los plazos, costos y condiciones de entrega de tus pedidos en todo el territorio
+        boliviano.
+      </p>
+      <p class="legal-hero__desc">Última actualización: Mayo 2026</p>
+    </div>
+  </section>
+
+  <div class="legal-layout">
+    <div class="legal-sidebar-container">
+      <aside class="legal-sidebar">
+        <nav class="legal-toc">
+          <span class="legal-toc__title">Índice</span>
+          @for (section of sections; track section.id) {
+            <a class="legal-toc__link"
+               [class.active]="activeSection() === section.id"
+               (click)="scrollTo(section.id)">
+              {{ section.title }}
+            </a>
+          }
+        </nav>
+      </aside>
+    </div>
+
+    <div class="legal-content-container">
+      <div class="legal-content">
+
+        <section id="cobertura" class="legal-section">
+          <h2>1. Cobertura Geográfica</h2>
+          <p>
+            AFER BOLIVIA realiza envíos a todos los departamentos de Bolivia y provincias del
+            departamento de Chuquisaca.
+          </p>
+        </section>
+
+        <section id="plazos" class="legal-section">
+          <h2>2. Plazos de Entrega</h2>
+          <p>
+            Las entregas se realizan en un plazo estimado de 2 a 3 días hábiles, sujeto a
+            disponibilidad de transporte, condiciones climáticas o conflictos sociales.
+          </p>
+        </section>
+
+        <section id="costos" class="legal-section">
+          <h2>3. Costos de Envío</h2>
+          <p>
+            El costo de envío varía de acuerdo con el destino, volumen y peso del producto.
+          </p>
+        </section>
+
+        <section id="seguimiento" class="legal-section">
+          <h2>4. Seguimiento de Pedidos</h2>
+          <p>
+            El cliente podrá realizar seguimiento de su pedido mediante coordinación directa con el
+            transportista o a través de atención al cliente.
+          </p>
+        </section>
+
+        <section id="recepcion" class="legal-section">
+          <h2>5. Recepción del Pedido</h2>
+          <p>
+            Para la entrega del producto, el cliente deberá proporcionar nombre completo y datos
+            correctos de recepción.
+          </p>
+          <p>
+            La guía o comprobante de envío servirá como constancia de entrega.
+          </p>
+        </section>
+
+        <section id="danados" class="legal-section">
+          <h2>6. Productos Dañados o Perdidos</h2>
+          <p>
+            En caso de daños o pérdida durante el transporte, el cliente deberá reportarlo
+            inmediatamente para iniciar el proceso de reclamo con la empresa transportadora
+            correspondiente.
+          </p>
+        </section>
+
+        <section id="envios-internacionales" class="legal-section">
+          <h2>7. Envíos Internacionales</h2>
+          <p>
+            AFER BOLIVIA no realiza envíos internacionales.
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</main>

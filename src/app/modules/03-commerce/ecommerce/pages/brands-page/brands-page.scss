@@ -264,3 +264,7 @@
     margin: 0;
   }
 }
+
+:host ::ng-deep app-pagination .pagination__limit {
+  display: none;
+}
