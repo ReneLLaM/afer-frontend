@@ -41,12 +41,10 @@ export class BrandsService {
 
     // 2. Si existe Y no han pasado más de 5 minutos, lo devolvemos
     if (guardado && ahora - guardado.timestamp < CINCO_MINUTOS) {
-      console.log('📦 Brands: Cargando desde CACHÉ (Vigente)');
       return of(guardado.data);
     }
 
     // 3. Si no existe o ya caducó, pedimos al servidor
-    console.log('🌐 Brands: Pidiendo al SERVIDOR (Caché vacío o caducado)');
 
     const { limit = 10, offset = 0, order = 'ASC', sortBy = 'order', isFeatured } = options;
     let httpParams = new HttpParams();
@@ -61,7 +59,6 @@ export class BrandsService {
 
     return this.http.get<BrandsResponse>(this.apiUrl, { params: httpParams }).pipe(
       tap((response) => {
-        console.log('✅ Brands: Guardado en caché (Vence en 5 min)');
         this.cache.set(cacheKey, { data: response, timestamp: ahora });
       }),
     );

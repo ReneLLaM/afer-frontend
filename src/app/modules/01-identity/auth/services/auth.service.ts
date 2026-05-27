@@ -82,7 +82,12 @@ export class AuthService {
    * estará con emailVerified: false.
    */
   register(data: import('../interfaces').RegisterData): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/register`, data);
+    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/register`, data, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
   /**

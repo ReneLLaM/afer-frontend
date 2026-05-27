@@ -19,6 +19,7 @@ import { BreadcrumbService } from '../../../../../../shared/components/breadcrum
 import { SafeHtmlPipe } from '../../../../../../shared/pipes/safe-html.pipe';
 import { catchError, fromEvent, map, of } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { SeoService } from '../../../../../../core/services/seo.service';
 
 import { ProductCard } from '../../../components/product-card/product-card';
 import { Carousel } from '../../../../../../shared/components/carousel/carousel';
@@ -43,6 +44,7 @@ export class ProductDetailPage {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly productService = inject(ProductsService);
   private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly seoService = inject(SeoService);
   readonly favoritesStore = inject(FavoritesStore);
   readonly cartStore = inject(CartStore);
   readonly authStore = inject(AuthStore);
@@ -280,6 +282,14 @@ export class ProductDetailPage {
       if (data && data.title) {
         const currentUrl = `/productos/${this.productSlug()}`;
         this.breadcrumbService.setDynamicLabel(currentUrl, data.title);
+
+        this.seoService.updateSeoData({
+          title: `${data.title} | AFER Bolivia`,
+          description: data.description || `Compra ${data.title} en AFER Bolivia. Marcas líderes con envío gratis en Bolivia.`,
+          image: data.images?.[0] || 'https://www.aferbolivia.com/images/open-graph-2.jpg',
+          url: `https://www.aferbolivia.com/productos/${data.slug}`,
+          type: 'product'
+        });
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
 

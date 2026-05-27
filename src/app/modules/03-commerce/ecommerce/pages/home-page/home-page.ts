@@ -1,5 +1,6 @@
 import { Component, signal, inject, effect, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { SeoService } from '../../../../../core/services/seo.service';
 import { GiftCardModal } from '../../../../../layout/components/gift-card/modal/modal';
 import { HeroSlider } from './hero-slider/hero-slider';
 import { CategoryCarousel } from './components/category-carousel/category-carousel';
@@ -25,12 +26,14 @@ import { HomeService, FeaturedCategory } from '../../services/home.service';
 })
 export class HomePage {
   private homeService = inject(HomeService);
+  private seoService = inject(SeoService);
 
   showModal = signal(this.shouldShowGiftCardModal());
   featuredCategories = toSignal(this.homeService.getFeaturedCategories(), { initialValue: [] as FeaturedCategory[] });
   selectedCategory = signal<FeaturedCategory | null>(null);
 
   constructor() {
+    this.seoService.updateSeoData({}); // Use defaults for home page
     effect(() => {
       const categories = this.featuredCategories();
       if (categories.length > 0 && !this.selectedCategory()) {

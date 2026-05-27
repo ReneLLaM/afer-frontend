@@ -32,7 +32,6 @@ export class NuestrosServiciosPage {
 
   onSubscribe(): void {
     if (this.isEmailValid()) {
-      console.log('Suscribed:', this.newsletterEmail());
       this.newsletterEmail.set('');
     }
   }

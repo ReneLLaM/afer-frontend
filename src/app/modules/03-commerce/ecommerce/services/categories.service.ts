@@ -21,16 +21,13 @@ export class CategoriesService {
 
     // 1. Buscamos en el caché
     if (this.cache && ahora - this.cache.timestamp < CINCO_MINUTOS) {
-      console.log('📦 Categories: Cargando desde CACHÉ (Vigente)');
       return of(this.cache.data);
     }
 
     // 2. Si no existe o ya caducó, pedimos al servidor
-    console.log('🌐 Categories: Pidiendo al SERVIDOR (Caché vacío o caducado)');
 
     return this.http.get<CategoriesResponse>(this.apiUrl).pipe(
       tap((response) => {
-        console.log('✅ Categories: Guardado en caché (Vence en 5 min)');
         this.cache = { data: response, timestamp: ahora };
       }),
     );

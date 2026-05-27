@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { SeoService } from '../../../../../core/services/seo.service';
 
 interface TimelineEvent {
   year: number;
@@ -76,10 +76,13 @@ const ABOUT_CONTENT: AboutContent = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AcercaDeNosotrosPage {
-  private readonly titleService = inject(Title);
+  private readonly seoService = inject(SeoService);
   readonly content: AboutContent = ABOUT_CONTENT;
 
   constructor() {
-    this.titleService.setTitle('Acerca de Nosotros | AFER Bolivia');
+    this.seoService.updateSeoData({
+      title: 'Acerca de Nosotros | AFER Bolivia',
+      description: 'Conoce la historia, misión y visión de AFER Bolivia. Innovando desde 2009 para ofrecerte lo mejor en tecnología y hogar.'
+    });
   }
 }
