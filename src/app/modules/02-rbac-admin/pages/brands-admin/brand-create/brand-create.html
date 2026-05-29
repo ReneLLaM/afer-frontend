@@ -172,11 +172,13 @@
       </div>
     </aside>
 
-    <section class="brand-create__panel brand-create__panel--submit">
+    
+  
+    <div class="admin-form-actions">
       <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving()">
         <i class="ri-save-line"></i>
         <span>{{ saving() ? 'Creando...' : 'Crear marca' }}</span>
       </button>
-    </section>
+    </div>
   </form>
 </div>

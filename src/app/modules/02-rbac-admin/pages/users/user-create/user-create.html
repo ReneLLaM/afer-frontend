@@ -68,12 +68,7 @@
     </section>
 
     <aside class="user-create__panel user-create__panel--side">
-      <div class="user-create__submit-box">
-        <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving() || loadingRoles()">
-          <i class="ri-save-line"></i>
-          <span>{{ saving() ? 'Creando...' : 'Crear usuario' }}</span>
-        </button>
-      </div>
+      
     </aside>
 
     <section class="user-create__panel user-create__panel--full">
@@ -250,5 +245,12 @@
         </div>
       }
     </section>
+  
+    <div class="admin-form-actions">
+      <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving() || loadingRoles()">
+          <i class="ri-save-line"></i>
+          <span>{{ saving() ? 'Creando...' : 'Crear usuario' }}</span>
+        </button>
+    </div>
   </form>
 </div>

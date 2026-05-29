@@ -78,16 +78,7 @@
       </section>
 
       <aside class="user-create__panel user-create__panel--side">
-        <div class="user-create__submit-box">
-          <button
-            type="submit"
-            class="admin-btn admin-btn--success"
-            [disabled]="saving() || (!canUpdate() && !canAssignAccess())"
-          >
-            <i class="ri-save-line"></i>
-            <span>{{ saving() ? 'Guardando...' : 'Guardar cambios' }}</span>
-          </button>
-        </div>
+        
       </aside>
 
       <section class="user-create__panel user-create__panel--full" *hasPermission="PERMISSIONS.USERS.ASSIGN_ACCESS">
@@ -260,6 +251,17 @@
           </div>
         }
       </section>
-    </form>
+    
+    <div class="admin-form-actions">
+      <button
+            type="submit"
+            class="admin-btn admin-btn--success"
+            [disabled]="saving() || (!canUpdate() && !canAssignAccess())"
+          >
+            <i class="ri-save-line"></i>
+            <span>{{ saving() ? 'Guardando...' : 'Guardar cambios' }}</span>
+          </button>
+    </div>
+  </form>
   }
 </div>

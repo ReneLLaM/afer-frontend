@@ -1,4 +1,3 @@
-
 // Include theming for Angular Material with `mat.theme()`.
 // This Sass mixin will define CSS variables that are used for styling Angular Material
 // components according to the Material 3 design spec.
@@ -14,18 +13,17 @@ html {
   scrollbar-gutter: stable;
   overflow-y: scroll;
   overflow-x: hidden; // Prevents horizontal scroll globally
-  @include mat.theme((
-    color: (
-      primary: theme.$primary-palette,
-      tertiary: theme.$tertiary-palette,
-    ),
-    typography: Inter,
-    density: 0,
-  ));
+  @include mat.theme((color: (primary: theme.$primary-palette,
+        tertiary: theme.$tertiary-palette,
+      ),
+      typography: Inter,
+      density: 0,
+    ));
 
   &[data-theme='light'] {
     @include theme.high-contrast-overrides(light);
   }
+
   &[data-theme='dark'] {
     @include theme.high-contrast-overrides(dark);
   }
@@ -51,4 +49,3 @@ body {
 .no-transition * {
   transition: none !important;
 }
-

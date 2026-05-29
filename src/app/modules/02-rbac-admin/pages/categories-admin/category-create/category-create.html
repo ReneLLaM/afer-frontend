@@ -175,11 +175,13 @@
       </div>
     </aside>
 
-    <section class="category-form-page__panel category-form-page__panel--submit">
+    
+  
+    <div class="admin-form-actions">
       <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving()">
         <i class="ri-save-line"></i>
         <span>{{ saving() ? 'Creando...' : 'Crear categoria' }}</span>
       </button>
-    </section>
+    </div>
   </form>
 </div>

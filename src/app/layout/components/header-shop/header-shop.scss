@@ -121,9 +121,7 @@
   display: block;
 }
 
-.icon-afer-txt {
-  display: none;
-}
+
 
 .theme-toggle-btn {
   mat-icon {
@@ -252,16 +250,6 @@
 }
 
 @media (min-width: 1024px) {
-  .icon-logo {
-    display: none;
-  }
-
-  .icon-afer-txt {
-    display: block;
-    width: 100%;
-    height: 20px;
-  }
-
   // On desktop, .navbar-header is 100% wide (for the background),
   // but we limit its inner content width by using padding-based centering.
   // max-width + margin: auto do NOT work on position: fixed elements.

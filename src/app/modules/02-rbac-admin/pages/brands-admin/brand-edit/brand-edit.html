@@ -170,12 +170,14 @@
         </div>
       </aside>
 
-      <section class="brand-create__panel brand-create__panel--submit">
-        <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving()">
+      
+    
+    <div class="admin-form-actions">
+      <button type="submit" class="admin-btn admin-btn--success" [disabled]="saving()">
           <i class="ri-save-line"></i>
           <span>{{ saving() ? 'Guardando...' : 'Guardar cambios' }}</span>
         </button>
-      </section>
-    </form>
+    </div>
+  </form>
   }
 </div>
