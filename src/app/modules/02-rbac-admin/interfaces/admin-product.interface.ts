@@ -36,6 +36,7 @@ export interface AdminProductCategoryRef {
 
 export interface AdminProductImageItem {
   id: string;
+  imageKey: string;
   url: string;
   order: number;
 }
@@ -106,7 +107,7 @@ export interface AdminProductsQuery {
 
 export interface AdminProductImageMutationItem {
   id?: string;
-  url?: string;
+  imageKey?: string;
   order: number;
 }
 
