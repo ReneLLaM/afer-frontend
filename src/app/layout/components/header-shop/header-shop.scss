@@ -1,18 +1,18 @@
 :host {
   display: block;
   width: 100%;
-  // Compensate for fixed navbar + menu height
   padding-top: 134px;
 
   @media (max-width: 767px) {
-    padding-top: 115px; // Further reduced to bring content even closer
+    padding-top: 115px;
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    padding-top: 100px;
   }
 }
 
-.container {
-  display: block;
-  width: 100%;
-}
+
 
 .navbar-header {
   position: fixed;

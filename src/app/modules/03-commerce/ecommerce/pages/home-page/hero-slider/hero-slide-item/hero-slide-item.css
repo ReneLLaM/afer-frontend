@@ -191,7 +191,7 @@
   .slide__content {
     padding: 40px 32px;
   }
-  
+
   .slide__bottom {
     flex-direction: row;
     align-items: flex-end;
@@ -202,10 +202,16 @@
     max-width: 60%;
     font-size: 1.05rem;
   }
-  
+
   .slide__cta {
     padding: 12px 28px;
     border-radius: 20px 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .slide__title {
+    font-size: clamp(1rem, 3vw, 1.8rem);
   }
 }
 
