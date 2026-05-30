@@ -25,7 +25,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1;
-    background: var(--afer-background);
+    background: var(--afer-surface);
     border-radius: 6px;
     padding: 6px;
     display: flex;
@@ -170,7 +170,7 @@
     border-color: color-mix(in srgb, var(--afer-hover), transparent 50%);
 
     &__img-container {
-      background: color-mix(in srgb, var(--afer-background), #000 15%);
+      background: color-mix(in srgb, var(--afer-surface), #000 10%);
     }
 
     &__img {

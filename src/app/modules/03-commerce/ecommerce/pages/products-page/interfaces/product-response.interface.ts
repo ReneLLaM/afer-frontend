@@ -13,7 +13,7 @@ export interface ProductResponse {
   stock:                 number;
   warranty:              Warranty;
   brand:                 Brand;
-  categories:            Brand[];
+  categories:            Category[];
   images:                string[];
   specifications:        Specification[];
   videos:                string[];
@@ -26,6 +26,14 @@ export interface Brand {
   backgroundColor?: string;
   imageUrl:         null | string;
   image?:           null | string;
+}
+
+export interface Category {
+  id:               string;
+  name:             string;
+  slug:             string;
+  image?:           string | null;
+  imageUrl?:        string | null;
 }
 
 export interface Specification {

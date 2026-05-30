@@ -24,7 +24,7 @@
     width: 130px;
     min-width: 130px;
     height: 100%;
-    background: var(--afer-background);
+    background: var(--afer-surface);
     border-radius: 8px;
     overflow: hidden;
     display: flex;
@@ -397,7 +397,7 @@
     }
 
     &__left {
-      background: color-mix(in srgb, var(--afer-background), #000 15%);
+      background: color-mix(in srgb, var(--afer-surface), #000 10%);
     }
 
     &__brand-badge {
