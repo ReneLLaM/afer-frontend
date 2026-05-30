@@ -1,11 +1,11 @@
 :host {
   display: block;
   width: 100%;
-  // Compensate for fixed navbar height
-  padding-top: 80px;
+  // Compensate for fixed navbar + menu height
+  padding-top: 134px;
 
   @media (max-width: 767px) {
-    padding-top: 105px; // Further reduced to bring content even closer
+    padding-top: 115px; // Further reduced to bring content even closer
   }
 }
 
@@ -22,12 +22,12 @@
   z-index: 1001;
   background-color: var(--afer-background);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  min-height: 80px;
+  min-height: 90px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 10px 0px 10px;
+  padding: 15px 10px 10px 10px;
   // Removed transition for faster theme switching
   box-sizing: border-box;
   border-bottom: 1px solid var(--afer-primary);
@@ -51,6 +51,10 @@
 
     &:hover {
       background-color: var(--afer-hover);
+
+      .icon {
+        color: var(--afer-secondary-absolute);
+      }
     }
 
     &:active {
@@ -109,10 +113,6 @@
   }
 }
 
-.header-separator {
-  display: none; // No longer needed as we use border-bottom on .navbar-header
-}
-
 .icon {
   width: 28px;
   height: 28px;
@@ -127,11 +127,27 @@
   mat-icon {
     transform: scale(1.15);
     color: var(--afer-primary);
+    transition: color 0.2s ease;
+  }
+
+  &:hover mat-icon {
+    color: var(--afer-secondary-absolute);
   }
 }
 
 .icon-logo {
-  height: 32px;
+  width: 28px;
+  height: auto;
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    width: auto !important;
+    height: 45px !important;
+  }
+
+  @media (min-width: 1024px) {
+    width: auto !important;
+    height: 60px !important;
+  }
 }
 .search-input {
   flex-basis: 100%;
@@ -256,7 +272,7 @@
   .navbar-header {
     // Use left/right padding to simulate centering:
     // The content area stays at most 1350px wide, centered in the viewport.
-    padding: 15px max(50px, calc((100% - 1350px) / 2 + 50px));
+    padding: 5px max(50px, calc((100% - 1350px) / 2 + 50px));
 
     .mobile-only {
       display: none;

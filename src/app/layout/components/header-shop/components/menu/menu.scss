@@ -2,8 +2,11 @@
   width: 100%;
   display: none; // Hidden by default (mobile)
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  position: relative;
-  z-index: 10;
+  position: fixed !important;
+  top: 90px !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
 
   // Theme-aware background
   :host-context([data-theme='light']) & {

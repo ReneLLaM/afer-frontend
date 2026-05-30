@@ -144,7 +144,7 @@
   font-weight: 700;
   text-decoration: none;
   padding: 10px 22px;
-  border-radius: 14px;
+  border-radius: 20px 0;
   box-shadow: 0 4px 14px rgba(26, 111, 168, 0.4);
   transition: all 0.3s ease;
   opacity: 0;
@@ -205,7 +205,7 @@
   
   .slide__cta {
     padding: 12px 28px;
-    border-radius: 16px;
+    border-radius: 20px 0;
   }
 }
 
