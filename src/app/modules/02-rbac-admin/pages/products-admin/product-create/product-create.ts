@@ -970,8 +970,8 @@ export class ProductCreatePage {
     );
 
     const images = this.selectedImages().map<AdminProductImageMutationItem>((image, index) => ({
-      id: image.id,
-      url: image.source === 'existing' ? image.previewUrl : undefined,
+      id: image.source === 'existing' ? image.id : undefined,
+      imageKey: image.source === 'existing' ? image.id : undefined,
       order: index + 1,
     }));
 

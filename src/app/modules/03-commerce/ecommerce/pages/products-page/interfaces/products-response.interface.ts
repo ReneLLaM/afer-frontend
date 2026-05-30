@@ -28,6 +28,8 @@ export interface Category {
   id: string;
   name: string;
   slug: string;
+  image?: string | null;
+  imageUrl?: string | null;
 }
 
 export interface Meta {
